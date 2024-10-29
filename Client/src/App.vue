@@ -1,11 +1,9 @@
 <script setup lang="ts">
+import  NavBar  from "./components/NavBar.vue";
 </script>
 
 <template>
-  <nav>
-    <RouterLink to="/">Home</RouterLink>
-    <RouterLink to="/Pokemon">Pokemon</RouterLink>
-  </nav>
+  <NavBar/>
   <RouterView/>
 </template>
 
