@@ -7,5 +7,8 @@
 </head>
 <body>
     Test works
+    <div id="api">
+        {{$current}}
+    </div>
 </body>
 </html>
