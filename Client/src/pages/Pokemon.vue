@@ -1,6 +1,8 @@
 <script setup lang="ts">
   import { getAll } from '../service';
-  getAll();
+  getAll(cb=>{
+    console.log(cb)
+  });
 </script>
 
 <template>
