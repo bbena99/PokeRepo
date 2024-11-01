@@ -12,10 +12,10 @@ class PokeController{
   public function __construct(){
     $this->api = new PokeApi();
   }
-  public function test(){
-  return response()->json($this->api->pokemon('10'))
-    ->header('Access-Control-Allow-Origin', '*')
-    ->header('Access-Control-Allow-Methods', 'GET');
+  public function test(Request $request){
+    return response()->json($this->api->pokemon($request->query('id')))
+      ->header('Access-Control-Allow-Origin', '*')
+      ->header('Access-Control-Allow-Methods', 'GET');
   }
 }
 

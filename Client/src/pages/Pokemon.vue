@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import { getAll } from '../service';
-  getAll(cb=>{
+  import { getOne } from '../service';
+  getOne('6',cb=>{
     console.log(cb)
   });
 </script>
