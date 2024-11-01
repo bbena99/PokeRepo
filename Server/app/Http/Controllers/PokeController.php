@@ -21,8 +21,8 @@ class PokeController{
       ->header('Access-Control-Allow-Origin', '*')
       ->header('Access-Control-Allow-Methods', 'GET');
   }
-  public function getOne(Request $request){
-    return response()->json($this->api->pokemon($request->param('identifier')))
+  public function getOne($identifier){
+    return response()->json($this->api->pokemon($identifier))
       ->header('Access-Control-Allow-Origin', '*')
       ->header('Access-Control-Allow-Methods', 'GET');
   }

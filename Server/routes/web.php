@@ -6,6 +6,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/test', [PokeController::class, 'getAll']);
-Route::get('/test/{identifier}', [PokeController::class, 'getOne']);
+Route::get('/pokemon', [PokeController::class, 'getAll']);
+Route::get('/pokemon/{identifier}', [PokeController::class, 'getOne']);
 
