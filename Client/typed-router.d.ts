@@ -19,6 +19,7 @@ declare module 'vue-router/auto-routes' {
    */
   export interface RouteNamedMap {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
-    '/Pokemon': RouteRecordInfo<'/Pokemon', '/Pokemon', Record<never, never>, Record<never, never>>,
+    '/Pokemon/': RouteRecordInfo<'/Pokemon/', '/Pokemon', Record<never, never>, Record<never, never>>,
+    '/Pokemon/[identifier]': RouteRecordInfo<'/Pokemon/[identifier]', '/Pokemon/:identifier', { identifier: ParamValue<true> }, { identifier: ParamValue<false> }>,
   }
 }

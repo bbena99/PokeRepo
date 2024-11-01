@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import { getOne } from '../service';
-  getOne('6',cb=>{
+  import { getOne } from '../../service';
+  getOne('',cb=>{
     console.log(cb)
   });
 </script>
