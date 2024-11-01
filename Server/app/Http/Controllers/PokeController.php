@@ -8,12 +8,21 @@ use PokePHP\PokeApi;
 
 class PokeController{
   protected $api;
+  protected $limit;
+  protected $offset;
 
   public function __construct(){
     $this->api = new PokeApi();
   }
-  public function test(Request $request){
-    return response()->json($this->api->pokemon($request->query('id')))
+  public function getAll(Request $request){
+    $this->limit = $request->query('limit','20');
+    $this->offset = $request->query('offset','0');
+    return response()->json($this->api->resourceList('pokemon',$this->limit,$this->offset))
+      ->header('Access-Control-Allow-Origin', '*')
+      ->header('Access-Control-Allow-Methods', 'GET');
+  }
+  public function getOne(Request $request){
+    return response()->json($this->api->pokemon($request->param('identifier')))
       ->header('Access-Control-Allow-Origin', '*')
       ->header('Access-Control-Allow-Methods', 'GET');
   }

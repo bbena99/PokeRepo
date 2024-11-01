@@ -1,6 +1,11 @@
 <script setup lang="ts">
-  import { getOne } from '../../service';
-  getOne('',cb=>{
+  import { useRoute } from 'vue-router';
+  import { getAll } from '../../service';
+
+  const route = useRoute();
+  const query = route.query;
+  console.log(query)
+  getAll({offset:+(query.offset??0),limit:+(query.limit??20)},cb=>{
     console.log(cb)
   });
 </script>
