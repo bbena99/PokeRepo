@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  .light {
+    --color-bg1: #f9fafb;
+    --color-bg2: #9ca3af;
+    --color-header: #030712;
+    --color-text: #111827;
+    --color-hover: #0e7490;
+    --color-btn: #6b7280;
+  }
+  .dark {
+    --color-bg1: #374151;
+    --color-bg2: #111827;
+    --color-header: #f3f4f6;
+    --color-text: #9ca3af;
+    --color-hover: #67e8f9;
+    --color-btn: #6b7280;
+  }
+}
