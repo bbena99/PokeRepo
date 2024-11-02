@@ -16,6 +16,9 @@ getOne(route.params.identifier,cb=>{
   <h1>Pokemon/[identifier] page works</h1>
   <p>Your identifier is: {{ route.params.identifier }}</p>
   <p>you found {{ curPokemon.name }}</p>
+  <div class="w-64 h-64 bg-red-600">
+    box
+  </div>
 </template>
 
 <style scoped>
