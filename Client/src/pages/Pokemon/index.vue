@@ -19,18 +19,19 @@ function getPokéSrc(url:string):string{
 </script>
 
 <template>
-  <h1>Pokemon page works</h1>
-  <ul class="flex flex-wrap overflow-scroll">
-    <li v-for="poke in pokeList" :key="poke.name" onclick="">
-      <RouterLink :to="'pokemon/'+poke.name" class="w-full h-full">
-        <img
-          class="w-24 h-24"
-          :src=getPokéSrc(poke.url)
-        />
-        {{ poke.name }}
-      </RouterLink>
-    </li>
-  </ul>
+  <div class="w-full h-full flex justify-center">
+    <ul class="w-full xl:w-3/4 grid grid-cols-12 overflow-y-scroll overflow-x-hidden">
+      <li v-for="poke in pokeList" :key="poke.name" onclick="">
+        <RouterLink :to="'pokemon/'+poke.name" class="w-full h-full">
+          <img
+            class="w-24 h-24"
+            :src=getPokéSrc(poke.url)
+          />
+          {{ poke.name }}
+        </RouterLink>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <style scoped>
