@@ -14,6 +14,13 @@ class PokeController{
   public function __construct(){
     $this->api = new PokeApi();
   }
+  public function getResource($parse, $identifier){
+    $endpoint = $parse+"/"+$identifier;
+    return response()->json($this->api->resourceList($endpoint,null,null))
+      ->header('Access-Control-Allow-Origin', '*')
+      ->header('Access-Control-Allow-Methods', 'GET');
+
+  }
   public function getAll(Request $request){
     $this->limit = $request->query('limit','20');
     $this->offset = $request->query('offset','0');

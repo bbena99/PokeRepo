@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { standardPair } from '../models';
 
 interface FiltersI{
   offset:number;
@@ -7,7 +8,10 @@ interface FiltersI{
   gen?:number;
   type?:number;
 }
-
+export function getResource(resource:standardPair){
+  const splitUrl = resource.url.split('/');
+  console.log(splitUrl);
+}
 export function getAll(filters:FiltersI,cb:(a:any)=>void):void{
   axios.get(`http://127.0.0.1:8000/pokemon?limit=${filters.limit}&offset=${filters.offset}`)
   .then(res=>{
