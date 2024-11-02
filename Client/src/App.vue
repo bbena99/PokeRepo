@@ -9,7 +9,9 @@ const secondary = ref(localStorage.getItem('Theme')??'');
 <template>
   <div :class="[theme,secondary]">
     <NavBar />
-    <RouterView/>
+    <div class="w-screen overflow-scroll"style="height: calc(100vh - 5rem);">
+      <RouterView/>
+    </div>
   </div>
 </template>
 
