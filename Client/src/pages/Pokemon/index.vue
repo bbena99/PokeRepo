@@ -13,10 +13,6 @@ getAll({offset:+(query.offset??0),limit:+(query.limit??60)},cb=>{
   console.log(cb)
   pokeList.value=cb.results;
 });
-function getPokéSrc(url:string):string{
-  const index = url.match(/\d+/g)?.map(Number)[1];
-  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index}.png`
-}
 </script>
 
 <template>
