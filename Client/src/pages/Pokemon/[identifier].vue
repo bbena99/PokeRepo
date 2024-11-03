@@ -2,11 +2,11 @@
 import { useRoute } from 'vue-router/auto';
 import { getOne } from '../../service';
 import { ref } from 'vue';
-import { Pokémon } from '../../models'
+import { emptyPokemon, Pokémon } from '../../models'
 
 const route = useRoute('/Pokemon/[identifier]');
 
-const curPokemon = ref({});
+const curPokemon = ref<Pokémon>(emptyPokemon());
 getOne(route.params.identifier,(cb:Pokémon)=>{
   console.log(cb)
   curPokemon.value=cb;

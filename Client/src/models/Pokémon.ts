@@ -62,21 +62,21 @@ export interface Pokémon{
     front_shiny_default?:string;
     front_shiny_female?:string;
     other:{
-      dream_world:{
+      dream_world?:{
         front_default?:string;
         front_female?:string;
       }
-      home:{
+      home?:{
         front_default?:string;
         front_female?:string;
         front_shiny_default?:string;
         front_shiny_female?:string;
       }
-      'official-artwork':{
+      'official-artwork'?:{
         front_default?:string;
         front_shiny?:string;
       }
-      showdown:{
+      showdown?:{
         back_default?:string;
         back_female?:string;
         back_shiny_default?:string;
@@ -98,4 +98,33 @@ export interface Pokémon{
     type:standardPair;
   }[];
   weight:number;
+}
+
+export function emptyPokemon():Pokémon{
+  return {
+    abilities:[],
+    cries:{
+      latest: "",
+      legacy: ""
+    },
+    forms:[],
+    game_indices:[],
+    height:-1,
+    held_items:[],
+    id:-1,
+    is_default:false,
+    location_area_encounters:'',
+    moves:[],
+    name:'',
+    order:-1,
+    past_abilities:[],
+    past_types:[],
+    species:{name:'',url:''},
+    sprites:{
+      other:{}
+    },
+    stats:[],
+    types:[],
+    weight:-1
+  }
 }
