@@ -9,7 +9,7 @@ const query = route.query;
 const pokeList = ref<{name:string,url:string}[]>([]);
 console.log(pokeList.value);
 
-getAll({offset:+(query.offset??0),limit:+(query.limit??60)},cb=>{
+getAll({offset:+(query.offset??0),limit:+(query.limit??50)},cb=>{
   console.log(cb)
   pokeList.value=cb.results;
 });
