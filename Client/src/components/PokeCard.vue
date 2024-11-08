@@ -20,8 +20,8 @@ const STAT_COLOR = [
 </script>
 
 <template>
-  <div class="w-full h-full max-h-48 flex flex-wrap content-start justify-end bg-bg1 border-2 border-bg2 rounded overflow-hidden">
-    <div class="w-32 h-32 -m-14 flex justify-end items-end bg-bg2 rounded-full relative">
+  <div class="w-full h-full max-h-48 flex flex-wrap content-start justify-end bg-bg1 border-2 border-bg2 group-hover:border-hover rounded overflow-hidden">
+    <div class="w-32 h-32 -m-14 flex justify-end items-end bg-bg2 group-hover:bg-hover rounded-full relative">
       <img :src="pokemon.sprites.front_default" :alt="pokemon.name+'.png'" class="w-1/2 m-2"/>
     </div>
     <h1 style="width: calc(100% - 1rem);" class="h-8 text-header text-lg flex justify-end px-2">
