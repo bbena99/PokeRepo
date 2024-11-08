@@ -11,11 +11,11 @@ getOne(poke.name,(cb:Pokémon)=>{
 });
 const STAT_COLOR = [
   'bg-green-500', //hp
-  'bg-yellow-500',//atk
-  'bg-orange-500',//def
-  'bg-cyan-500',  //sp atk
+  'bg-red-600',//atk
+  'bg-blue-600',//def
+  'bg-yellow-400',  //sp atk
   'bg-purple-500',//sp def
-  'bg-pink-500',  //spd
+  'bg-cyan-500',  //spd
 ]
 </script>
 
