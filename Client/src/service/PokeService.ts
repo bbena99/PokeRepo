@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { standardPair } from '../models';
+import { PokémonI, standardPair } from '../models';
 
 interface FiltersI{
   offset:number;
@@ -26,7 +26,6 @@ export function getParse(parse:string,identifier:string,cb:(a:any)=>void){
     console.error(err);
     cb(err);
   });
-
 }
 export function getAll(filters:FiltersI,cb:(a:any)=>void):void{
   axios.get(`http://127.0.0.1:8000/pokemon?limit=${filters.limit}&offset=${filters.offset}`)
@@ -39,7 +38,7 @@ export function getAll(filters:FiltersI,cb:(a:any)=>void):void{
     cb(err);
   });
 }
-export function getOne(identifier:string,cb:(a:any)=>void):void{
+export function getOne(identifier:string,cb:(a:PokémonI)=>void):void{
   axios.get(`http://127.0.0.1:8000/pokemon/${identifier}`)
   .then(res=>{
     cb(JSON.parse(res.data));

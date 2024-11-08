@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { emptyPokemon, Pokémon, standardPair } from '../models';
+import { emptyPokemon, PokémonI, standardPair } from '../models';
 import { getOne } from '../service';
 
 const props = defineProps(['poke']);
 const poke:standardPair = props.poke;
-const pokemon= ref<Pokémon>(emptyPokemon());
-getOne(poke.name,(cb:Pokémon)=>{
+const pokemon= ref<PokémonI>(emptyPokemon());
+getOne(poke.name,(cb:PokémonI)=>{
   pokemon.value=cb;
 });
 const STAT_COLOR = [

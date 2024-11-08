@@ -1,6 +1,6 @@
 import { standardPair } from "./";
 
-export interface Pokémon{
+export interface PokémonI{
   abilities:{
     ability: standardPair
     is_hidden:boolean;
@@ -100,7 +100,7 @@ export interface Pokémon{
   weight:number;
 }
 
-export function emptyPokemon():Pokémon{
+export function emptyPokemon():PokémonI{
   return {
     abilities:[],
     cries:{
