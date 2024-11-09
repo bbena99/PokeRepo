@@ -10,12 +10,10 @@ const route = useRoute('/Pokemon/[identifier]');
 const curPokemon = ref<PokémonI>(emptyPokemon());
 const typeData = ref<TypeI[]>([]);
 getOne(route.params.identifier,(cb:PokémonI)=>{
-  console.log(cb)
   curPokemon.value=cb;
   curPokemon.value.types.forEach((t)=>{
     getParse('type',t.type.name,(type:TypeI)=>{
       typeData.value.push(type);
-      console.log(typeData.value)
     });
   })
 });

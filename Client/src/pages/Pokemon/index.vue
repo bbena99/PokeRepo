@@ -8,7 +8,6 @@ import { PokémonI, standardPair } from '../../models';
 const route = useRoute();
 const query = route.query;
 const pokeList = ref<Map<number,PokémonI>>(new Map());
-console.log(pokeList.value);
 
 getAll({offset:+(query.offset??0),limit:+(query.limit??50)},cb=>{
   cb.results.forEach((poke:standardPair)=>{
