@@ -8,6 +8,9 @@ interface FiltersI{
   gen?:number;
   type?:number;
 }
+
+const url='http://127.0.0.1:8000/'
+
 export function getResource(resource:standardPair,cb:(a:any)=>void){
   console.log(typeof(resource))
   const splitUrl = resource.url.split('/');
@@ -17,7 +20,7 @@ export function getResource(resource:standardPair,cb:(a:any)=>void){
   getParse(parse!,identifier!,cb);
 }
 export function getParse(parse:string,identifier:string,cb:(a:any)=>void){
-  axios.get(`http://127.0.0.1:8000/${parse}/${identifier}`)
+  axios.get(`${url}${parse}/${identifier}`)
   .then(res=>{
     cb(JSON.parse(res.data));
   })
@@ -28,7 +31,7 @@ export function getParse(parse:string,identifier:string,cb:(a:any)=>void){
   });
 }
 export function getAll(filters:FiltersI,cb:(a:any)=>void):void{
-  axios.get(`http://127.0.0.1:8000/pokemon?limit=${filters.limit}&offset=${filters.offset}`)
+  axios.get(`${url}pokemon?limit=${filters.limit}&offset=${filters.offset}`)
   .then(res=>{
     cb(JSON.parse(res.data));
   })
@@ -39,7 +42,7 @@ export function getAll(filters:FiltersI,cb:(a:any)=>void):void{
   });
 }
 export function getOne(identifier:string,cb:(a:PokémonI)=>void):void{
-  axios.get(`http://127.0.0.1:8000/pokemon/${identifier}`)
+  axios.get(`${url}pokemon/${identifier}`)
   .then(res=>{
     cb(JSON.parse(res.data));
   })
