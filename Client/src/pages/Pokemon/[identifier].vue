@@ -3,18 +3,19 @@
 import { useRoute } from 'vue-router/auto';
 import { ref } from 'vue';
 import { getOne, getParse } from '../../service';
-import { emptyPokemon, PokémonI } from '../../models';
+import { emptyPokemon, PokémonI, TypeI } from '../../models';
 
 const route = useRoute('/Pokemon/[identifier]');
 
 const curPokemon = ref<PokémonI>(emptyPokemon());
-const typeData = ref([]);
+const typeData = ref<TypeI[]>([]);
 getOne(route.params.identifier,(cb:PokémonI)=>{
   console.log(cb)
   curPokemon.value=cb;
-  curPokemon.value.types.forEach(t=>{
-    getParse('type',t.type.name,(type)=>{
-      console.log(type);
+  curPokemon.value.types.forEach((t)=>{
+    getParse('type',t.type.name,(type:TypeI)=>{
+      typeData.value.push(type);
+      console.log(typeData.value)
     });
   })
 });
@@ -38,7 +39,9 @@ getOne(route.params.identifier,(cb:PokémonI)=>{
         <img class="w-1/6 bg-bg2 rounded-s-full" :src="curPokemon.sprites.front_default" alt="front-sprite.png">
         <img class="w-1/6 bg-bg2 rounded-e-full" :src="curPokemon.sprites.back_default" alt="back-default.png">
         <div class="w-full">
-          <div></div>
+          <span class="text-header text-2xl">
+            Damage relations:
+          </span>
         </div>
       </div>
       <div>
