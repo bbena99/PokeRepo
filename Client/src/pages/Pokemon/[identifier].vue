@@ -4,6 +4,8 @@ import { useRoute } from 'vue-router/auto';
 import { ref } from 'vue';
 import { getOne, getParse } from '../../service';
 import { emptyPokemon, PokémonI, TypeI } from '../../models';
+import { TYPES } from '../../constants';
+import DamageMultiplier from '../../components/DamageMultiplier.vue';
 
 const route = useRoute('/Pokemon/[identifier]');
 
@@ -14,6 +16,7 @@ getOne(route.params.identifier,(cb:PokémonI)=>{
   curPokemon.value.types.forEach((t)=>{
     getParse('type',t.type.name,(type:TypeI)=>{
       typeData.value.push(type);
+      console.log(typeData.value)
     });
   })
 });
@@ -29,7 +32,7 @@ getOne(route.params.identifier,(cb:PokémonI)=>{
           </h1>
           <img 
             v-for="t in curPokemon.types"
-            :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-viii/sword-shield/'+t.type.url.split('/')[6]+'.png'"
+            :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/'+t.type.url.split('/')[6]+'.png'"
             :alt="t.type.name+'.png'"
             class="max-h-11 md:m-4"
           >
@@ -40,6 +43,13 @@ getOne(route.params.identifier,(cb:PokémonI)=>{
           <span class="text-header text-2xl">
             Damage relations:
           </span>
+          <div class=" h-36 grid grid-cols-10 items-center">
+            <DamageMultiplier
+              v-for="(ty,index) in TYPES"
+              :type="ty"
+              :mult="index"
+            />
+          </div>
         </div>
       </div>
       <div>
