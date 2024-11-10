@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { PokémonI } from '../models';
+
 const props = defineProps(['pokemon']);
-const pokemon = props.pokemon;
+const pokemon:PokémonI = props.pokemon;
 const STAT_COLOR = [
   'bg-green-500', //hp
   'bg-red-600',//atk
@@ -9,10 +11,13 @@ const STAT_COLOR = [
   'bg-purple-500',//sp def
   'bg-cyan-500',  //spd
 ]
+const baseStatTotal = pokemon.stats.map(stat=>{
+  return stat.base_stat;
+}).reduce((sum,a)=>sum+a,0);
 </script>
 
 <template>
-  <div class="w-full h-full max-h-48 flex flex-wrap content-start justify-end bg-bg1 border-2 border-bg2 group-hover:border-hover rounded overflow-hidden">
+  <div class="w-full h-full max-h-58 flex flex-wrap content-start justify-end bg-bg1 border-2 border-bg2 group-hover:border-hover rounded overflow-hidden">
     <div class="w-32 h-32 -m-14 flex justify-end items-end bg-bg2 group-hover:bg-hover rounded-full relative">
       <img :src="pokemon.sprites.front_default" :alt="pokemon.name+'.png'" class="w-1/2 m-2"/>
     </div>
@@ -27,7 +32,7 @@ const STAT_COLOR = [
         class="w-full h-1/2 max-w-20 pb-1 pr-1"
       >
     </div>
-    <div class="w-full flex flex-wrap">
+    <div class="w-full my-1 flex flex-wrap">
       <div
         v-for="(stat,index) in pokemon.stats"
         :id="pokemon.name+'_'+stat.stat"
@@ -37,9 +42,14 @@ const STAT_COLOR = [
       >
         <div
           :class="'h-full pl-0.5 flex items-center text-header rounded-full '+STAT_COLOR[index]"
-          :style="{'width': (stat.base_stat/200*100+'\%')}"
+          :style="{'width': (stat.base_stat/210*100+'\%')}"
         >
           {{ stat.base_stat }}
+        </div>
+      </div>
+      <div class="w-full h-6 m-1 bg-text rounded-full overflow-hidden">
+        <div :style="{'width': (baseStatTotal/700*100+'\%')}" class="h-full pl-1 flex items-center text-header rounded-e-full bg-bg2">
+          {{ baseStatTotal }}
         </div>
       </div>
     </div>
