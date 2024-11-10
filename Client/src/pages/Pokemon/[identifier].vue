@@ -11,12 +11,12 @@ const route = useRoute('/Pokemon/[identifier]');
 
 const curPokemon = ref<PokémonI>(emptyPokemon());
 const typeData = ref<TypeI[]>([]);
+
 getOne(route.params.identifier,(cb:PokémonI)=>{
   curPokemon.value=cb;
   curPokemon.value.types.forEach((t)=>{
     getParse('type',t.type.name,(type:TypeI)=>{
       typeData.value.push(type);
-      console.log(typeData.value)
     });
   })
 });
@@ -43,7 +43,7 @@ getOne(route.params.identifier,(cb:PokémonI)=>{
           <span class="text-header text-2xl">
             Damage relations:
           </span>
-          <div class=" h-36 grid grid-cols-10 items-center">
+          <div class=" h-36 grid grid-cols-7 items-center">
             <DamageMultiplier
               v-for="(ty,index) in TYPES"
               :type="ty"
