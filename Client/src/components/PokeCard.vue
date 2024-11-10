@@ -19,10 +19,10 @@ const STAT_COLOR = [
     <h1 style="width: calc(100% - 1rem);" class="h-8 text-header text-lg flex justify-end px-2">
       {{ pokemon.name.charAt(0).toUpperCase()+pokemon.name.slice(1) }}
     </h1>
-    <div class="w-1/2 h-10 flex flex-wrap">
+    <div class="w-1/2 h-10 flex flex-wrap justify-end">
       <img 
         v-for="t in pokemon.types"
-        :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-viii/sword-shield/'+t.type.url.split('/')[6]+'.png'"
+        :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/'+t.type.url.split('/')[6]+'.png'"
         :alt="t.type.name+'.png'"
         class="w-full h-1/2 max-w-20 pb-1 pr-1"
       >
