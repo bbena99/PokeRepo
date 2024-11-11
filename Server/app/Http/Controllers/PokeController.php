@@ -24,14 +24,21 @@ class PokeController{
   public function getAll(Request $request){
     $this->limit = $request->query('limit','20');
     $this->offset = $request->query('offset','0');
-    return response()->json($this->api->resourceList('pokemon',$this->limit,$this->offset))
-      ->header('Access-Control-Allow-Origin', '*')
-      ->header('Access-Control-Allow-Methods', 'GET');
+    $nameArray = json_decode($this->api->resourceList('pokemon',$this->limit,$this->offset),true);
+    $pokeArray=[];
+    foreach( $nameArray['results'] as $name) {
+      $poke = json_decode($this->api->pokemon($name['name']),true);
+      $pokeArray[$poke['id']] = json_encode($poke);
+    }
+    return response()->json($pokeArray,200,[],JSON_PRETTY_PRINT);
+      // ->header('Access-Control-Allow-Origin', '*')
+      // ->header('Access-Control-Allow-Methods', 'GET');
   }
   public function getOne($identifier){
-    return response()->json($this->api->pokemon($identifier))
-      ->header('Access-Control-Allow-Origin', '*')
-      ->header('Access-Control-Allow-Methods', 'GET');
+    $poke = json_decode($this->api->pokemon($identifier),true);
+    return response($poke,200,[]);
+      // ->header('Access-Control-Allow-Origin', '*')
+      // ->header('Access-Control-Allow-Methods', 'GET');
   }
 }
 
