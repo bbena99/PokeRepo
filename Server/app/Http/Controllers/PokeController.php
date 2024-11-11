@@ -26,13 +26,13 @@ class PokeController{
     $this->offset = $request->query('offset','0');
     $nameArray = json_decode($this->api->resourceList('pokemon',$this->limit,$this->offset),true);
     $pokeArray=[];
-    foreach( $nameArray['results'] as $name) {
-      $poke = json_decode($this->api->pokemon($name['name']),true);
+    foreach( $nameArray['results'] as $stdPair) {
+      $poke = json_decode($this->api->pokemon($stdPair['name']),true);
       $pokeArray[$poke['id']] = json_encode($poke);
     }
-    return response()->json($pokeArray,200,[],JSON_PRETTY_PRINT);
-      // ->header('Access-Control-Allow-Origin', '*')
-      // ->header('Access-Control-Allow-Methods', 'GET');
+    return response()->json($pokeArray,200,[],JSON_PRETTY_PRINT)
+      ->header('Access-Control-Allow-Origin', '*')
+      ->header('Access-Control-Allow-Methods', 'GET');
   }
   public function getOne($identifier){
     $poke = json_decode($this->api->pokemon($identifier),true);
