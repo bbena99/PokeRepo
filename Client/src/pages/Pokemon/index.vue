@@ -1,20 +1,16 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
-import { getAll, getOne } from '../../service';
+import { getAll } from '../../service';
 import { ref } from 'vue';
 import PokeCard from '../../components/PokeCard.vue';
-import { PokémonI, standardPair } from '../../models';
+import { PokémonI } from '../../models';
 
 const route = useRoute();
 const query = route.query;
 const pokeList = ref<Map<number,PokémonI>>(new Map());
 
-getAll({offset:+(query.offset??0),limit:+(query.limit??50)},cb=>{
-  cb.results.forEach((poke:standardPair)=>{
-    getOne(poke.name,(a:PokémonI)=>{
-      pokeList.value.set(a.id,a);
-    })
-  })
+getAll({offset:+(query.offset??0),limit:+(query.limit??50)},(cb)=>{
+  pokeList.value.set(cb.id,cb);
 });
 </script>
 

@@ -30,10 +30,16 @@ export function getParse(parse:string,identifier:string,cb:(a:any)=>void){
     cb(err);
   });
 }
-export function getAll(filters:FiltersI,cb:(a:any)=>void):void{
+export function getAll(filters:FiltersI,cb:(a:PokémonI)=>void):void{
   axios.get(`${url}pokemon?limit=${filters.limit}&offset=${filters.offset}`)
   .then(res=>{
-    cb(JSON.parse(res.data));
+    const strPokeJSON:string[] = res.data;
+    console.log(strPokeJSON);
+    Object.keys(strPokeJSON).forEach(strPoke=>{
+      console.log(strPoke);
+      const poke = JSON.parse(strPokeJSON[strPoke]);
+      cb(poke);
+    })
   })
   .catch(err=>{
     console.warn("err in PokeServe.ts/getAll()");
