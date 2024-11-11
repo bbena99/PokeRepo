@@ -28,6 +28,22 @@ class PokeController{
     $pokeArray=[];
     foreach( $nameArray['results'] as $stdPair) {
       $poke = json_decode($this->api->pokemon($stdPair['name']),true);
+      unset(//Removing unused properties to reduce the payload of data.
+        $poke['abilities'],
+        $poke['cries'],
+        $poke['forms'],
+        $poke['game_indices'],
+        $poke['height'],
+        $poke['held_items'],
+        $poke['is_default'],
+        $poke['location_area_encounters'],
+        $poke['moves'],
+        $poke['order'],
+        $poke['past_abilities'],
+        $poke['past_types'],
+        $poke['species'],
+        $poke['weight'],
+      );
       $pokeArray[$poke['id']] = json_encode($poke);
     }
     return response()->json($pokeArray,200,[],JSON_PRETTY_PRINT)
