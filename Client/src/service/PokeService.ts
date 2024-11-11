@@ -34,10 +34,8 @@ export function getAll(filters:FiltersI,cb:(a:PokémonI)=>void):void{
   axios.get(`${url}pokemon?limit=${filters.limit}&offset=${filters.offset}`)
   .then(res=>{
     const strPokeJSON:string[] = res.data;
-    console.log(strPokeJSON);
     Object.keys(strPokeJSON).forEach(strPoke=>{
-      console.log(strPoke);
-      const poke = JSON.parse(strPokeJSON[strPoke]);
+      const poke = JSON.parse(strPokeJSON[+strPoke]);
       cb(poke);
     })
   })
@@ -53,7 +51,7 @@ export function getOne(identifier:string,cb:(a:PokémonI)=>void):void{
     cb(JSON.parse(res.data));
   })
   .catch(err=>{
-    console.warn("err in PokeServe.ts/getAll()");
+    console.warn("err in PokeServe.ts/getOne()");
     console.error(err);
     cb(err);
   });
