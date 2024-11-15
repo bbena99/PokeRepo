@@ -82,5 +82,14 @@ return new class extends Migration
   {
     //
     Schema::drop('pokemon');
+    Schema::drop('abilities');
+    Schema::drop('moves');
+    Schema::drop('items');
+    Schema::drop('types');
+    Schema::drop('relation_pokemon_abilities');
+    Schema::drop('relation_pokemon_type');
+    Schema::drop('relation_pokemon_moves');
+    Schema::drop('relation_type_moves');
+    Schema::drop('relation_damage');
   }
 };
