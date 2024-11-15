@@ -18,8 +18,7 @@ export default {
     },
   },
   plugins: [
-    require('flowbite/plugin'),
-    require('tailwindcss-primeui')
+    require('flowbite/plugin')
   ],
 }
 
