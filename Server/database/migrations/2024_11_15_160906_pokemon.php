@@ -19,7 +19,6 @@ return new class extends Migration
       $table->integer('order');
       $table->string('front_sprite');
       $table->string('back_sprite');
-      $table->json('stats');
     });
     Schema::create('abilities', function(Blueprint $table){
       $table->id();
@@ -62,11 +61,20 @@ return new class extends Migration
       $table->foreignId('pokemon_id');
       $table->foreignID('move_id');
       $table->tinyInteger('level');
-      $table->tinyInteger('machine');
+      $table->tinyInteger('learn_method');
+    });
+    Schema::create('relation_pokemon_items', function(Blueprint $table){
+      $table->foreignId('pokemon_id');
+      $table->foreignId('item_id');
     });
     Schema::create('relation_type_moves', function(Blueprint $table){
       $table->foreignId('type_id');
       $table->foreignId('move_id');
+    });
+    Schema::create('relation_pokemon_stat', function(Blueprint $table){
+      $table->foreignId('pokemon_id');
+      $table->string('stat_name');
+      $table->tinyInteger('base_stat');
     });
     Schema::create('relation_damage', function(Blueprint $table){
       $table->foreignId('dealer_id');
