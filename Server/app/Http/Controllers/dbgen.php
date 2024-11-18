@@ -12,11 +12,9 @@ use PokePHP\PokeApi;
 class dbgen
 {
   protected $api;
-  protected $out;
 
   public function __construct(){
     $this->api = new PokeApi();
-    $this->out = new \Symfony\Component\Console\Output\ConsoleOutput();
   }
 
   public function initDb($key){
@@ -75,7 +73,14 @@ class dbgen
         // ]);
       }
       $pokemon->setSingleStat($base_stat_total,'total');
-      $pokemon->debugPrint();
+      #$pokemon->debugPrint();
+
+      /** Start of abilities */
+      $moveNamesArray = json_decode($this->api->resourceList('move',1,0));
+      foreach($moveNamesArray->results as $moveStdPair){
+        $moveJSON = json_decode(Http::get($moveStdPair->url));
+        return response()->json($moveJSON);
+      }
     }
     return response('Job Done');
     //return response()->json(['message'=>'initDb ok']);
