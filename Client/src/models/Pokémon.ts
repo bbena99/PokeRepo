@@ -32,7 +32,7 @@ export interface PokémonI{
       level_learned_at:number;
       move_learn_method:standardPair;
       version_group:standardPair;
-    }
+    }[]
   }[];
   name:string;
   order:number;
