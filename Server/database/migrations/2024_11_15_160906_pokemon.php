@@ -29,6 +29,7 @@ return new class extends Migration
       $table->id();
       $table->string('name');
       $table->tinyInteger('damage_type');
+      $table->tinyInteger('accuracy');
       $table->tinyInteger('power');
       $table->tinyInteger('pp');
       $table->tinyInteger('priority');
@@ -45,6 +46,7 @@ return new class extends Migration
       $table->string('name');
       $table->string('src');
     });
+
     /** Start of relation tables */
     Schema::create('relation_pokemon_abilities', function(Blueprint $table){
       $table->foreignId('pokemon_id');

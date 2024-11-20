@@ -79,7 +79,22 @@ class dbgen
       $moveNamesArray = json_decode($this->api->resourceList('move',1,0));
       foreach($moveNamesArray->results as $moveStdPair){
         $moveJSON = json_decode(Http::get($moveStdPair->url));
-        return response()->json($moveJSON);
+        $dc = substr_replace($moveJSON->damage_class->url,'',-1);
+        $dc = substr($dc,strrpos($dc,'/'));
+        $dc = substr($dc,1);
+        $move = [
+            'id'=>$moveJSON->id,
+            'name'=>$moveJSON->name,
+            'damage_type'=>$dc,
+            'accuracy'=>$moveJSON->accuracy,
+            'power'=>$moveJSON->power,
+            'pp'=>$moveJSON->pp,
+            'priority'=>$moveJSON->priority,
+            'effect_chance'=>$moveJSON->effect_chance,
+            'effect_entry'=>$moveJSON->effect_entries[0]->effect,
+            'meta'=>$moveJSON->meta
+        ];
+        return response()->json($move);
       }
     }
     return response('Job Done');
