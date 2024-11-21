@@ -85,7 +85,7 @@ class dbgen
         $move = [
             'id'=>$moveJSON->id,
             'name'=>$moveJSON->name,
-            'damage_type'=>$dc,
+            'damage_type'=>+$dc,
             'accuracy'=>$moveJSON->accuracy,
             'power'=>$moveJSON->power,
             'pp'=>$moveJSON->pp,
