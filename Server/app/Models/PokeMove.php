@@ -132,4 +132,8 @@ class PokeMove extends Model
     }
     $out->writeln(".................................................................................");
   }
+  public function minimalPrint():void{
+    $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+    $out->writeln("#".$this->id.":\t".$this->name);
+  }
 }
