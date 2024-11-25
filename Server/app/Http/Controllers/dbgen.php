@@ -115,7 +115,7 @@ class dbgen
       foreach($typeJSON->damage_relations->no_damage_to as $noDamageJSON){
         $type->setSingleNoDamage($this->parseIdentifier($noDamageJSON->url),$noDamageJSON->name);
       }
-      $type->debugPrint();
+      $type->minimalPrint();
     }
     return response('Job Done');
     //return response()->json(['message'=>'initDb ok']);
