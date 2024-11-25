@@ -83,17 +83,17 @@ class PokeType extends Model
     $out = new \Symfony\Component\Console\Output\ConsoleOutput();
     $out->writeln([
       ".................................................................................",
-      "<info>#".$this->id.":\t".$this->name."</info>",
-      "<comment>Double Damage to:</comment>"
+      "#".$this->id.":\t".$this->name,
+      "Double Damage to:"
     ]);
     foreach($this->double_damage as $id => $name){
       $out->writeln("-[".$id."] => ".$name);
     }
-    $out->writeln("<comment>Half Damage to:</comment>");
+    $out->writeln("Half Damage to:");
     foreach($this->half_damage as $id => $name){
       $out->writeln("-[".$id."] => ".$name);
     }
-    $out->writeln("<comment>No Damage to:</comment>");
+    $out->writeln("No Damage to:");
     foreach($this->no_damage as $id => $name){
       $out->writeln("-[".$id."] => ".$name);
     }
