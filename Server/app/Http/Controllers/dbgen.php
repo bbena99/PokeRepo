@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Pokemon;
 use App\Models\PokeMove;
+use App\Models\PokeType;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
@@ -91,7 +92,30 @@ class dbgen
             ->setEffectChance($moveJSON->effect_chance)
             ->setEffectEntry($moveJSON->effect_entries[0]->effect)
             ->setMeta($moveJSON->meta);
-      $move->debugPrint();
+      $move->minimalPrint();
+    }
+
+    /** Start of types */
+    $typeNamesArray = json_decode($this->api->resourceList('type',1,0));
+    foreach($typeNamesArray->results as $typeStdPair){
+      $typeJSON = json_decode(Http::get($typeStdPair->url));
+      $type = new PokeType();
+      $type ->setId($typeJSON->id)
+            ->setName($typeJSON->name)
+            ->setSrc("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/".$typeJSON->id.".png")
+            ->setDoubleDamage([])
+            ->setHalfDamage([])
+            ->setNoDamage([]);
+      foreach($typeJSON->damage_relations->double_damage_to as $doubleDamageJSON){
+        $type->setSingleDoubleDamage($this->parseIdentifier($doubleDamageJSON->url),$doubleDamageJSON->name);
+      }
+      foreach($typeJSON->damage_relations->half_damage_to as $halfDamageJSON){
+        $type->setSingleHalfDamage($this->parseIdentifier($halfDamageJSON->url),$halfDamageJSON->name);
+      }
+      foreach($typeJSON->damage_relations->no_damage_to as $noDamageJSON){
+        $type->setSingleNoDamage($this->parseIdentifier($noDamageJSON->url),$noDamageJSON->name);
+      }
+      $type->debugPrint();
     }
     return response('Job Done');
     //return response()->json(['message'=>'initDb ok']);
