@@ -99,4 +99,8 @@ class PokeType extends Model
     }
     $out->writeln(".................................................................................");
   }
+  public function minimalPrint(){
+    $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+    $out->writeln("#".$this->id.": ".$this->name);
+  }
 }
