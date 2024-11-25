@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pokemon;
+use App\Models\PokeMove;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
@@ -82,19 +83,18 @@ class dbgen
         $dc = substr_replace($moveJSON->damage_class->url,'',-1);
         $dc = substr($dc,strrpos($dc,'/'));
         $dc = substr($dc,1);
-        $move = [
-            'id'=>$moveJSON->id,
-            'name'=>$moveJSON->name,
-            'damage_type'=>+$dc,
-            'accuracy'=>$moveJSON->accuracy,
-            'power'=>$moveJSON->power,
-            'pp'=>$moveJSON->pp,
-            'priority'=>$moveJSON->priority,
-            'effect_chance'=>$moveJSON->effect_chance,
-            'effect_entry'=>$moveJSON->effect_entries[0]->effect,
-            'meta'=>$moveJSON->meta
-        ];
-        return response()->json($move);
+        $move = new PokeMove();
+        $move ->setId($moveJSON->id)
+              ->setName($moveJSON->name)
+              ->setDamageType($dc)
+              ->setAccuracy($moveJSON->accuracy)
+              ->setPower($moveJSON->power)
+              ->setPP($moveJSON->pp)
+              ->setPriority($moveJSON->priority)
+              ->setEffectChance($moveJSON->effect_chance)
+              ->setEffectEntry($moveJSON->effect_entries[0]->effect)
+              ->setMeta($moveJSON->meta);
+        $move->debugPrint();
       }
     }
     return response('Job Done');
