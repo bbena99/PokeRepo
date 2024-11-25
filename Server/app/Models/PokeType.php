@@ -78,4 +78,25 @@ class PokeType extends Model
   public function isNoDamage($id):bool{
     return $this->no_damage[$id]?true:false;
   }
+
+  public function debugPrint():void{
+    $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+    $out->writeln([
+      ".................................................................................",
+      "<info>#".$this->id.":\t".$this->name."</info>",
+      "<comment>Double Damage to:</comment>"
+    ]);
+    foreach($this->double_damage as $id => $name){
+      $out->writeln("-[".$id."] => ".$name);
+    }
+    $out->writeln("<comment>Half Damage to:</comment>");
+    foreach($this->half_damage as $id => $name){
+      $out->writeln("-[".$id."] => ".$name);
+    }
+    $out->writeln("<comment>No Damage to:</comment>");
+    foreach($this->no_damage as $id => $name){
+      $out->writeln("-[".$id."] => ".$name);
+    }
+    $out->writeln(".................................................................................");
+  }
 }
