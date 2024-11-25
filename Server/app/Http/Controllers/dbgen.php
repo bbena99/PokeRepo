@@ -74,30 +74,32 @@ class dbgen
         // ]);
       }
       $pokemon->setSingleStat($base_stat_total,'total');
-      #$pokemon->debugPrint();
-
-      /** Start of abilities */
-      $moveNamesArray = json_decode($this->api->resourceList('move',1,0));
-      foreach($moveNamesArray->results as $moveStdPair){
-        $moveJSON = json_decode(Http::get($moveStdPair->url));
-        $dc = substr_replace($moveJSON->damage_class->url,'',-1);
-        $dc = substr($dc,strrpos($dc,'/'));
-        $dc = substr($dc,1);
-        $move = new PokeMove();
-        $move ->setId($moveJSON->id)
-              ->setName($moveJSON->name)
-              ->setDamageType($dc)
-              ->setAccuracy($moveJSON->accuracy)
-              ->setPower($moveJSON->power)
-              ->setPP($moveJSON->pp)
-              ->setPriority($moveJSON->priority)
-              ->setEffectChance($moveJSON->effect_chance)
-              ->setEffectEntry($moveJSON->effect_entries[0]->effect)
-              ->setMeta($moveJSON->meta);
-        $move->debugPrint();
-      }
+      $pokemon->minimalPrint();
+    }
+    /** Start of abilities */
+    $moveNamesArray = json_decode($this->api->resourceList('move',1,0));
+    foreach($moveNamesArray->results as $moveStdPair){
+      $moveJSON = json_decode(Http::get($moveStdPair->url));
+      $move = new PokeMove();
+      $move ->setId($moveJSON->id)
+            ->setName($moveJSON->name)
+            ->setDamageType($this->parseIdentifier($moveJSON->damage_class->url))
+            ->setAccuracy($moveJSON->accuracy)
+            ->setPower($moveJSON->power)
+            ->setPP($moveJSON->pp)
+            ->setPriority($moveJSON->priority)
+            ->setEffectChance($moveJSON->effect_chance)
+            ->setEffectEntry($moveJSON->effect_entries[0]->effect)
+            ->setMeta($moveJSON->meta);
+      $move->debugPrint();
     }
     return response('Job Done');
     //return response()->json(['message'=>'initDb ok']);
+  }
+  private function parseIdentifier($url):string{
+    $ret = substr_replace($url,'',-1);
+    $ret = substr($ret,strrpos($ret,'/'));
+    $ret = substr($ret,1);
+    return $ret;
   }
 }
