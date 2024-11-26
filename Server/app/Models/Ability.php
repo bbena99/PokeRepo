@@ -40,4 +40,8 @@ class Ability extends Model
       ".................................................................................",
     ]);
   }
+  public function minimalPrint():void{
+    $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+    $out->writeln("#".$this->id.": ".$this->name);
+  }
 }
