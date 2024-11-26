@@ -37,10 +37,6 @@ return new class extends Migration
       $table->string('effect_entry');
       $table->json('meta');
     });
-    Schema::create('items', function(Blueprint $table){
-      $table->id();
-      $table->string('name');
-    });
     Schema::create('types', function(Blueprint $table){
       $table->id();
       $table->string('name');
@@ -64,10 +60,6 @@ return new class extends Migration
       $table->foreignID('move_id');
       $table->tinyInteger('level');
       $table->tinyInteger('learn_method');
-    });
-    Schema::create('relation_pokemon_items', function(Blueprint $table){
-      $table->foreignId('pokemon_id');
-      $table->foreignId('item_id');
     });
     Schema::create('relation_type_moves', function(Blueprint $table){
       $table->foreignId('type_id');
@@ -94,7 +86,6 @@ return new class extends Migration
     Schema::drop('pokemon');
     Schema::drop('abilities');
     Schema::drop('moves');
-    Schema::drop('items');
     Schema::drop('types');
     Schema::drop('relation_pokemon_abilities');
     Schema::drop('relation_pokemon_type');
