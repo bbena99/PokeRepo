@@ -58,8 +58,7 @@ return new class extends Migration
     Schema::create('relation_pokemon_moves', function(Blueprint $table){
       $table->foreignId('pokemon_id');
       $table->foreignID('move_id');
-      $table->tinyInteger('level');
-      $table->tinyInteger('learn_method');
+      $table->tinyInteger('level');//-1=TMmachine | 0=egg | >0=level up
     });
     Schema::create('relation_type_moves', function(Blueprint $table){
       $table->foreignId('type_id');
