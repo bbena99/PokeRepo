@@ -22,7 +22,8 @@ class dbgen
   public function initDb($key){
     set_time_limit(5000000);
     if(env('INITKEY',NULL)!=$key) return response()->json(['error'=>'Unauthorized access'], Response::HTTP_UNAUTHORIZED);
-    $pokemonNamesArray = json_decode($this->api->resourceList('pokemon',1400,0));
+    $pokemonNamesArray = json_decode($this->api->resourceList('pokemon',1,0));
+    $pokemonArray =[];
     foreach($pokemonNamesArray->results as $pokemonStdPair){
       $pokemonJSON = json_decode(Http::get($pokemonStdPair->url));
       $pokemon = new Pokemon();
@@ -32,18 +33,8 @@ class dbgen
               ->setOrder($pokemonJSON->order)
               ->setFrontSprite($pokemonJSON->sprites->front_default)
               ->setBackSprite($pokemonJSON->sprites->back_default);
-      // DB::insert('insert into pokemon (id, name, is_default, order, front_sprite, back_sprite)',[
-      //   $pokemon->id,
-      //   $pokemon->name,
-      //   $pokemon->is_default,
-      //   $pokemon->order,
-      //   $pokemon->sprites->front_default,
-      //   $pokemon->sprites->back_default,
-      // ]);
       foreach($pokemonJSON->abilities as $index => $abilityJSON){
-        $id = substr_replace($abilityJSON->ability->url,'',-1);
-        $id = substr($id,strrpos($id,'/'));
-        $id = substr($id,1);
+        $id = $this->parseIdentifier($abilityJSON->ability->url);
         $ability = [
           'ability_id' => $id,
           'name' => $abilityJSON->ability->name,
@@ -52,18 +43,14 @@ class dbgen
         $pokemon->setSingleAbility($ability,$index);
       }
       foreach($pokemonJSON->types as $index => $typeJSON){
-        $id = substr_replace($typeJSON->type->url,'',-1);
-        $id = substr($id,strrpos($id,'/'));
-        $id = substr($id,1);
+        $id = $this->parseIdentifier($typeJSON->type->url);
         $type = [
           'type_id'=>$id,
           'name'=>$typeJSON->type->name
         ];
         $pokemon->setSingleType($type,$index);
       }
-      foreach($pokemonJSON->moves as $move){
-        //$this->out->writeln($move->move->name."\tlevel:".$move->version_group_details[0]->level_learned_at."\tMethod:".$move->version_group_details[0]->move_learn_method->name);
-      }
+      $pokemon->setMoves($pokemonJSON->moves);
       $base_stat_total=0;
       foreach($pokemonJSON->stats as $stat){
         $base_stat_total+=$stat->base_stat;
@@ -75,10 +62,11 @@ class dbgen
         // ]);
       }
       $pokemon->setSingleStat($base_stat_total,'total');
-      $pokemon->minimalPrint();
+      $pokemonArray[$pokemon->getId()]=$pokemon;
+      $pokemon->debugPrint();
     }
     /** Start of abilities */
-    $moveNamesArray = json_decode($this->api->resourceList('move',3000,0));
+    $moveNamesArray = json_decode($this->api->resourceList('move',1,0));
     foreach($moveNamesArray->results as $moveStdPair){
       $moveJSON = json_decode(Http::get($moveStdPair->url));
       $move = new PokeMove();
@@ -97,7 +85,7 @@ class dbgen
     }
 
     /** Start of types */
-    $typeNamesArray = json_decode($this->api->resourceList('type',20,0));
+    $typeNamesArray = json_decode($this->api->resourceList('type',1,0));
     foreach($typeNamesArray->results as $typeStdPair){
       $typeJSON = json_decode(Http::get($typeStdPair->url));
       $type = new PokeType();

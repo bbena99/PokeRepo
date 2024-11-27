@@ -10,62 +10,86 @@ class Pokemon extends Model
    * This model holds the data for a pokemon.
    *
   */
-  private $id;
-  private $name;
-  private $is_default;
-  private $order;
-  private $front_sprite;
-  private $back_sprite;
-  private $stats;
-  private $types;
-  private $abilities;
+  private int       $id;
+  private string    $name;
+  private bool      $is_default;
+  private int       $order;
+  private string    $front_sprite;
+  private string    $back_sprite;
+  private array     $stats;
+  private array     $types;
+  private array     $abilities;
+  private array     $moves;
 
-  public function setId($id_in):self{
+  public function setId(int $id_in):self{
     $this->id = $id_in;
     return $this;
   }
-  public function setName($name_in):self{
+  public function setName(string $name_in):self{
     $this->name = $name_in;
     return $this;
   }
-  public function setIsDefault($is_default_in):self{
+  public function setIsDefault(bool $is_default_in):self{
     $this->is_default = $is_default_in;
     return $this;
   }
-  public function setOrder($order_in):self{
+  public function setOrder(int $order_in):self{
     $this->order = $order_in;
     return $this;
   }
-  public function setFrontSprite($front_sprite_in):self{
+  public function setFrontSprite(string $front_sprite_in):self{
     $this->front_sprite = $front_sprite_in;
     return $this;
   }
-  public function setBackSprite($back_sprite_in):self{
+  public function setBackSprite(string $back_sprite_in):self{
     $this->back_sprite = $back_sprite_in;
     return $this;
   }
-  public function setStats($stats_array_in):self{
+  public function setStats(array $stats_array_in):self{
     $this->stats = $stats_array_in;
     return $this;
   }
-  public function setSingleStat($value, $index):self{
+  public function setSingleStat(int $value, string $index):self{
     $this->stats[$index] = $value;
     return $this;
   }
-  public function setTypes($types_in) : self {
+  public function setTypes(array $types_in) : self {
     $this->types = $types_in;
     return $this;
   }
-  public function setSingleType($type_in, $index):self{
+  public function setSingleType(array $type_in, int $index):self{
     $this->types[$index]=$type_in;
     return $this;
   }
-  public function setAbilities($abilities_in):self{
+  public function setAbilities(array $abilities_in):self{
     $this->abilities = $abilities_in;
     return $this;
   }
-  public function setSingleAbility($ability,$index):self{
+  public function setSingleAbility(array $ability, int $index):self{
     $this->abilities[$index]=$ability;
+    return $this;
+  }
+  public function setMoves(array $moves_in):self{
+    foreach($moves_in as $move_in){
+      $id = $this->parseIdentifier($move_in->move->url);
+      $data_in = end($move_in->version_group_details);
+      $level = NULL;
+      switch ($data_in->move_learn_method->name) {
+        case 'level-up':
+          $level = $data_in->level_learned_at;
+          break;
+        case 'egg':
+          $level = 0;
+          break;
+        case 'machine':
+        case 'tutor':
+          $level = -1;
+          break;
+        default:
+          break;
+      }
+      $this->moves[$id]=$level;
+    }
     return $this;
   }
   public function getId():int{
@@ -104,6 +128,9 @@ class Pokemon extends Model
   public function getSingleAbility($index):string{
     return $this->abilities[$index];
   }
+  public function getMoves():array{
+    return $this->moves;
+  }
   public function debugPrint():void{
     $out = new \Symfony\Component\Console\Output\ConsoleOutput();
     $out->writeln([
@@ -136,11 +163,25 @@ class Pokemon extends Model
     }
     $out->writeln([
       "}",
+      "moves:{"
+    ]);
+    foreach($this->moves as $id => $level){
+      $out->writeln("-[".$id."]=>".$level);
+    }
+    $out->writeln([
+      "}",
       ".................................................................................",
     ]);
   }
   public function minimalPrint():void{
     $out = new \Symfony\Component\Console\Output\ConsoleOutput();
     $out->writeln("#".$this->id.":\t".$this->name);
+  }
+
+  private function parseIdentifier($url):string{
+    $ret = substr_replace($url,'',-1);
+    $ret = substr($ret,strrpos($ret,'/'));
+    $ret = substr($ret,1);
+    return $ret;
   }
 }
