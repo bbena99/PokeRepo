@@ -22,7 +22,7 @@ class dbgen
   public function initDb($key){
     set_time_limit(5000000);
     if(env('INITKEY',NULL)!=$key) return response()->json(['error'=>'Unauthorized access'], Response::HTTP_UNAUTHORIZED);
-    $pokemonNamesArray = json_decode($this->api->resourceList('pokemon',1,0));
+    $pokemonNamesArray = json_decode($this->api->resourceList('pokemon',1400,0));
     foreach($pokemonNamesArray->results as $pokemonStdPair){
       $pokemonJSON = json_decode(Http::get($pokemonStdPair->url));
       $pokemon = new Pokemon();
@@ -78,10 +78,11 @@ class dbgen
       $pokemon->minimalPrint();
     }
     /** Start of abilities */
-    $moveNamesArray = json_decode($this->api->resourceList('move',1,0));
+    $moveNamesArray = json_decode($this->api->resourceList('move',3000,0));
     foreach($moveNamesArray->results as $moveStdPair){
       $moveJSON = json_decode(Http::get($moveStdPair->url));
       $move = new PokeMove();
+      $effectEntryJSON = $moveJSON->effect_entries[0]->effect??NULL;
       $move ->setId($moveJSON->id)
             ->setName($moveJSON->name)
             ->setDamageType($this->parseIdentifier($moveJSON->damage_class->url))
@@ -90,13 +91,13 @@ class dbgen
             ->setPP($moveJSON->pp)
             ->setPriority($moveJSON->priority)
             ->setEffectChance($moveJSON->effect_chance)
-            ->setEffectEntry($moveJSON->effect_entries[0]->effect)
+            ->setEffectEntry($effectEntryJSON)
             ->setMeta($moveJSON->meta);
       $move->minimalPrint();
     }
 
     /** Start of types */
-    $typeNamesArray = json_decode($this->api->resourceList('type',1,0));
+    $typeNamesArray = json_decode($this->api->resourceList('type',20,0));
     foreach($typeNamesArray->results as $typeStdPair){
       $typeJSON = json_decode(Http::get($typeStdPair->url));
       $type = new PokeType();
