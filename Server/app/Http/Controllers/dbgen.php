@@ -22,6 +22,7 @@ class dbgen
   public function initDb($key){
     set_time_limit(5000000);
     if(env('INITKEY',NULL)!=$key) return response()->json(['error'=>'Unauthorized access'], Response::HTTP_UNAUTHORIZED);
+    /** Start of pokemon */
     $pokemonNamesArray = json_decode($this->api->resourceList('pokemon',1,0));
     $pokemonArray =[];
     foreach($pokemonNamesArray->results as $pokemonStdPair){
@@ -33,6 +34,7 @@ class dbgen
               ->setOrder($pokemonJSON->order)
               ->setFrontSprite($pokemonJSON->sprites->front_default)
               ->setBackSprite($pokemonJSON->sprites->back_default);
+      /** Start of pokemon => abilities */
       foreach($pokemonJSON->abilities as $index => $abilityJSON){
         $id = $this->parseIdentifier($abilityJSON->ability->url);
         $ability = [
@@ -42,6 +44,7 @@ class dbgen
         ];
         $pokemon->setSingleAbility($ability,$index);
       }
+      /** Start of pokemon => types */
       foreach($pokemonJSON->types as $index => $typeJSON){
         $id = $this->parseIdentifier($typeJSON->type->url);
         $type = [
@@ -50,16 +53,12 @@ class dbgen
         ];
         $pokemon->setSingleType($type,$index);
       }
+      /** Start of pokemon => moves */
       $pokemon->setMoves($pokemonJSON->moves);
       $base_stat_total=0;
       foreach($pokemonJSON->stats as $stat){
         $base_stat_total+=$stat->base_stat;
         $pokemon->setSingleStat($stat->base_stat,$stat->stat->name);
-        // DB::insert('insert into relation_pokemon_stat (pokemon_id, stat_name, base_stat)',[
-        //   $pokemon->id,
-        //   $stat->stat->name,
-        //   $stat->base_stat,
-        // ]);
       }
       $pokemon->setSingleStat($base_stat_total,'total');
       $pokemonArray[$pokemon->getId()]=$pokemon;
