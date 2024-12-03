@@ -48,26 +48,24 @@ return new class extends Migration
       $table->foreignId('pokemon_id');
       $table->foreignId('ability_id');
       $table->boolean('hidden');
-      $table->boolean('past');
     });
     Schema::create('relation_pokemon_type', function(Blueprint $table){
       $table->foreignId('pokemon_id');
       $table->foreignId('type_id');
-      $table->boolean('past');
     });
     Schema::create('relation_pokemon_moves', function(Blueprint $table){
       $table->foreignId('pokemon_id');
       $table->foreignID('move_id');
-      $table->tinyInteger('level');//-1=TMmachine | 0=egg | >0=level up
-    });
-    Schema::create('relation_type_moves', function(Blueprint $table){
-      $table->foreignId('type_id');
-      $table->foreignId('move_id');
+      $table->tinyInteger('level');//-1=TMmachine/Tutor | 0=egg | >0=level up
     });
     Schema::create('relation_pokemon_stat', function(Blueprint $table){
       $table->foreignId('pokemon_id');
       $table->string('stat_name');
       $table->tinyInteger('base_stat');
+    });
+    Schema::create('relation_type_moves', function(Blueprint $table){
+      $table->foreignId('type_id');
+      $table->foreignId('move_id');
     });
     Schema::create('relation_damage', function(Blueprint $table){
       $table->foreignId('dealer_id');

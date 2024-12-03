@@ -35,6 +35,7 @@ class dbgen
               ->setFrontSprite($pokemonJSON->sprites->front_default)
               ->setBackSprite($pokemonJSON->sprites->back_default);
       /** Start of pokemon => abilities */
+      return response()->json($pokemonJSON->abilities);
       foreach($pokemonJSON->abilities as $index => $abilityJSON){
         $id = $this->parseIdentifier($abilityJSON->ability->url);
         $ability = [
@@ -62,7 +63,7 @@ class dbgen
       }
       $pokemon->setSingleStat($base_stat_total,'total');
       $pokemonArray[$pokemon->getId()]=$pokemon;
-      $pokemon->minimalPrint();
+      $pokemon->debugPrint();
     }
     /** Start of abilities */
     $moveNamesArray = json_decode($this->api->resourceList('move',1,0));
@@ -94,6 +95,7 @@ class dbgen
       $type ->setId($typeJSON->id)
             ->setName($typeJSON->name)
             ->setSrc("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/".$typeJSON->id.".png")
+            ->setMoves($typeJSON->moves)
             ->setDoubleDamage([])
             ->setHalfDamage([])
             ->setNoDamage([]);
@@ -109,7 +111,62 @@ class dbgen
       $typeArray[$type->getId()]=$type;
       $type->minimalPrint();
     }
+
     /** Start of DB insertions */
+    /** Inserting pokemon */
+    foreach($pokemonArray as $DBPokemon){
+      DB::insert('INSERT INTO pokemon ( id, name, is_default, order, front_sprite, back_sprite )',[
+        $DBPokemon->getId(),
+        $DBPokemon->getName(),
+        $DBPokemon->getIsDefault(),
+        $DBPokemon->getOrder(),
+        $DBPokemon->getFrontSprite(),
+        $DBPokemon->getBackSprite(),
+      ]);
+      /** Inserting relation_pokemon_type */
+      foreach($DBPokemon->getTypes() as $DBPokemonTypeID => $DBPokemonTypeName){
+        DB::insert('INSERT INTO relation_pokemon_type ( pokemon_id, type_id )',[
+          $DBPokemon->getId(),
+          $DBPokemonTypeID
+        ]);
+      }
+      /** Inserting relation_pokemon_ability */
+      foreach($DBPokemon->getAbilities() as $DBPokemonAbilityObj){
+        DB::insert('INSERT INTO relation_pokemon_abilities ( pokemon_id, ability_id, is_hidden )',[
+          $DBPokemon->getId(),
+          $DBPokemonAbilityObj->ability_id,
+          $DBPokemonAbilityObj->is_hidden,
+        ]);
+      }
+      /** Inserting relation_pokemon_moves */
+      foreach($DBPokemon->getMoves() as $DBPokemonMoveID => $DBPokemonMoveLevel){
+        DB::insert('INSERT INTO relation_pokemon_moves ( pokemon_id, move_id, level)',[
+          $DBPokemon->getId(),
+          $DBPokemonMoveID,
+          $DBPokemonMoveLevel,
+        ]);
+      }
+    }
+    /** Inserting type */
+    foreach($typeArray as $DBType){
+      DB::insert('INSERT INTO types (id, name, src)',[
+        $DBType->getId(),
+        $DBType->getName(),
+        $DBType->getSrc(),
+      ]);
+      /** Inserting relation_type_moves */
+      foreach($DBType->getMoves() as $DBTypeMoveID => $DBTypeMoveName){
+        DB::insert('INSERT INTO relation_type_moves ( type_id, move_id )',[
+          $DBType->getId(),
+          $DBTypeMoveID
+        ]);
+      }
+      /** Inserting relation_damage */
+      foreach($DBType->getDoubleDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
+
+      }
+    }
+
     return response()->json(['message'=>'initDb done']);
   }
   private function parseIdentifier($url):string{
