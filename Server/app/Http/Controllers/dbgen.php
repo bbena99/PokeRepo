@@ -63,10 +63,11 @@ class dbgen
       }
       $pokemon->setSingleStat($base_stat_total,'total');
       $pokemonArray[$pokemon->getId()]=$pokemon;
-      $pokemon->debugPrint();
+      $pokemon->minimalPrint();
     }
     /** Start of abilities */
     $moveNamesArray = json_decode($this->api->resourceList('move',1,0));
+    $moveArray = [];
     foreach($moveNamesArray->results as $moveStdPair){
       $moveJSON = json_decode(Http::get($moveStdPair->url));
       $move = new PokeMove();
@@ -81,11 +82,13 @@ class dbgen
             ->setEffectChance($moveJSON->effect_chance)
             ->setEffectEntry($effectEntryJSON)
             ->setMeta($moveJSON->meta);
+      $moveArray[$move->getId()] = $move;
       $move->minimalPrint();
     }
 
     /** Start of types */
     $typeNamesArray = json_decode($this->api->resourceList('type',1,0));
+    $typeArray = [];
     foreach($typeNamesArray->results as $typeStdPair){
       $typeJSON = json_decode(Http::get($typeStdPair->url));
       $type = new PokeType();
@@ -104,10 +107,11 @@ class dbgen
       foreach($typeJSON->damage_relations->no_damage_to as $noDamageJSON){
         $type->setSingleNoDamage($this->parseIdentifier($noDamageJSON->url),$noDamageJSON->name);
       }
+      $typeArray[$type->getId()]=$type;
       $type->minimalPrint();
     }
-    return response('Job Done');
-    //return response()->json(['message'=>'initDb ok']);
+    /** Start of DB insertions */
+    return response()->json(['message'=>'initDb done']);
   }
   private function parseIdentifier($url):string{
     $ret = substr_replace($url,'',-1);
