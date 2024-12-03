@@ -9,21 +9,34 @@ class PokeType extends Model
   private $id;
   private $name;
   private $src;
+  private $moves;
   private $double_damage;
   private $half_damage;
   private $no_damage;
 
 
-  public function setId($id_in):self{
+  public function setId(int $id_in):self{
     $this->id = $id_in;
     return $this;
   }
-  public function setName($name_in):self{
+  public function setName(string $name_in):self{
     $this->name = $name_in;
     return $this;
   }
-  public function setSrc($src_in):self{
+  public function setSrc(string $src_in):self{
     $this->src = $src_in;
+    return $this;
+  }
+  public function setMoves(array $moves):self{
+    $this->moves = [];
+    foreach($moves as $moveStdPair){
+        $id = $this->parseIdentifier($moveStdPair->url);
+        $this->moves[$id]=$moveStdPair->name;
+    }
+    return $this;
+  }
+  public function setSingleMove(int $id, string $name):self{
+    $this->moves[$id] = $name;
     return $this;
   }
   public function setDoubleDamage($double_damage_in):self{
@@ -60,6 +73,9 @@ class PokeType extends Model
   public function getSrc():string{
     return $this->src;
   }
+  public function getMoves():array{
+    return $this->moves;
+  }
   public function getDoubleDamage():array{
     return $this->double_damage;
   }
@@ -79,13 +95,22 @@ class PokeType extends Model
     return $this->no_damage[$id]?true:false;
   }
 
+  public function hasMove(int $id):bool{
+    return $this->moves[$id]?true:false;
+  }
+
   public function debugPrint():void{
     $out = new \Symfony\Component\Console\Output\ConsoleOutput();
     $out->writeln([
       ".................................................................................",
       "#".$this->id.":\t".$this->name,
-      "Double Damage to:"
+      "src:\t".$this->src,
+      "Moves:"
     ]);
+    foreach($this->moves as $id => $name){
+      $out->writeln("-[".$id."] => ".$name);
+    }
+    $out->writeln("Double Damage to:");
     foreach($this->double_damage as $id => $name){
       $out->writeln("-[".$id."] => ".$name);
     }
@@ -102,5 +127,12 @@ class PokeType extends Model
   public function minimalPrint(){
     $out = new \Symfony\Component\Console\Output\ConsoleOutput();
     $out->writeln("#".$this->id.":\t".$this->name);
+  }
+
+  private function parseIdentifier($url):string{
+    $ret = substr_replace($url,'',-1);
+    $ret = substr($ret,strrpos($ret,'/'));
+    $ret = substr($ret,1);
+    return $ret;
   }
 }
