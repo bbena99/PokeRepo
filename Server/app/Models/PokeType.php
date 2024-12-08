@@ -63,38 +63,77 @@ class PokeType extends Model
     $this->no_damage[$id] = $name;
     return $this;
   }
-
+  /**
+   * get the ID of $this Type.
+   */
   public function getId():int{
     return $this->id;
   }
+  /**
+   * get the Name of $this Type.
+   */
   public function getName():string{
     return $this->name;
   }
+  /**
+   * get the <img>'s associated src of $this Type.
+   */
   public function getSrc():string{
     return $this->src;
   }
+  /**
+   * get a list of all the moves this Type has.
+   * format: $this->moves['move id'] => 'move name'
+   */
   public function getMoves():array{
     return $this->moves;
   }
+  /**
+   * get a list of all double damage relations to this type
+   * format: $this->double_damage['receiver id']=>'receiver name'
+   * (so $this deals double damage to the receiver type.)
+   */
   public function getDoubleDamage():array{
     return $this->double_damage;
   }
-  public function isDoubleDamage($id):bool{
+  /**
+   * check if $this deals double damage to $id
+   */
+  public function isDoubleDamage(int $id):bool{
     return $this->double_damage[$id]?true:false;
   }
+  /**
+   * get a list of all half damage relations to this type
+   * format: $this->half_damage['receiver id']=>'receiver name'
+   * (so $this deals half damage to the receiver type.)
+   */
   public function getHalfDamage():array{
     return $this->half_damage;
   }
-  public function isHalfDamage($id):bool{
+  /**
+   * check if $this deals half damage to $id
+   */
+  public function isHalfDamage(int $id):bool{
     return $this->half_damage[$id]?true:false;
   }
+  /**
+   * get a list of all no damage relations to this type
+   * format: $this->no_damage['receiver id']=>'receiver name'
+   * (so $this deals no damage to the receiver type.)
+   */
   public function getNoDamage():array{
     return $this->no_damage;
   }
-  public function isNoDamage($id):bool{
+  /**
+   * check if $this deals no damage to $id
+   */
+  public function isNoDamage(int $id):bool{
     return $this->no_damage[$id]?true:false;
   }
 
+  /**
+   * check if $this type has $id move
+   */
   public function hasMove(int $id):bool{
     return $this->moves[$id]?true:false;
   }
