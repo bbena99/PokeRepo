@@ -109,20 +109,7 @@ class Pokemon extends Model
     return $this;
   }
   /**
-   * @param array<object> $moves_in
-   * (index => {
-   *  object 'move' {
-   *    string name,
-   *    string url
-   *  },
-   *  array<int,object> version_group_details [version_group_index => {
-   *    int level_learned_at,
-   *    object move_learn_method {
-   *      string name,
-   *      string url
-   *    }
-   *  }]
-   * })
+   * @param array<int,object> $moves_in (index => {object 'move' {string name, string url}, array<int,object> version_group_details [version_group_index => {int level_learned_at,object move_learn_method {string name, string url}}]})
    */
   public function setMoves(array $moves_in):self{
     foreach($moves_in as $move_in){
@@ -147,45 +134,91 @@ class Pokemon extends Model
     }
     return $this;
   }
+  /**
+   * @return int get the ID of $this pokemon
+   */
   public function getId():int{
     return $this->id;
   }
+  /**
+   * @return string get the Name of $this pokemon
+   */
   public function getName():string{
     return $this->name;
   }
+  /**
+   * @return bool Check if this pokemon is default or not
+   */
   public function getIsDefault():bool{
     return $this->is_default;
   }
+  /**
+   * @return int get the Order of this pokemon
+   */
   public function getOrder():int{
     return $this->order;
   }
+  /**
+   * @return string get the src for an img tag related to the front this pokemon.
+   */
   public function getFrontSprite():string{
     return $this->front_sprite;
   }
+  /**
+   * @return string get the src for an img tag related to the back this pokemon.
+   */
   public function getBackSprite():string{
     return $this->back_sprite;
   }
+  /**
+   * @return array<string,int> returns an array of stat values for the pokemon (stat_name => stat_value)
+   */
   public function getStats():array{
     return $this->stats;
   }
+  /**
+   * @param string $stat the name of the $stat you want to get the value of.
+   * @return int returns the value of $stat if it exists
+   */
   public function getSingleStat($stat):int{
-    return $this->stats[$stat];
+    return $this->stats[$stat]??-1;
   }
+  /**
+   * @return array<int,array<string,mixed>> returns all types associated with this pokemon (index => ['type_id'=>int, 'name'=>string])
+   */
   public function getTypes():array{
     return $this->types;
   }
-  public function getSingleType($index):string{
+  /**
+   * @param int $index returns the type at that index
+   * @return array<string,mixed> ['type_id'=>int, 'name'=>string]
+   */
+  public function getSingleType(int $index):array{
     return $this->types[$index];
   }
+  /**
+   * @return array<int,array> (index => ['ability_id'=>int, 'name'=>string, 'is_hidden'=>bool])
+   */
   public function getAbilities():array{
     return $this->abilities;
   }
-  public function getSingleAbility($index):string{
+  /**
+   * @param int $index index of the ability
+   * @return array<string,mixed> ['ability_id'=>int, 'name'=>string, 'is_hidden'=>bool]
+   */
+  public function getSingleAbility(int $index):array{
     return $this->abilities[$index];
   }
+  /**
+   * @return array<int,int> (move_id => move_level)
+   */
   public function getMoves():array{
     return $this->moves;
   }
+
+  /**
+   * Print out to Symfony's console the full details of $this.
+   */
   public function debugPrint():void{
     $out = new \Symfony\Component\Console\Output\ConsoleOutput();
     $out->writeln([
@@ -228,6 +261,9 @@ class Pokemon extends Model
       ".................................................................................",
     ]);
   }
+  /**
+   * Print out to Symfony's console the id and name only from $this.
+   */
   public function minimalPrint():void{
     $out = new \Symfony\Component\Console\Output\ConsoleOutput();
     $out->writeln("#".$this->id.":\t".$this->name);
