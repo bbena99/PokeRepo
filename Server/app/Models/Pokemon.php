@@ -79,7 +79,7 @@ class Pokemon extends Model
     return $this;
   }
   /**
-   * @param array<int,object> $types_in (index => {int id, string name})
+   * @param array<int,array> $types_in (index => ['type_id'=>int, 'name'=>string])
    */
   public function setTypes(array $types_in) : self {
     $this->types = $types_in;
@@ -87,14 +87,14 @@ class Pokemon extends Model
   }
   /**
    * @param int $index index of type.
-   * @param array $type_in [int 'id', string 'name'].
+   * @param array $type_in ['id'=>int, 'name'=>string].
    */
   public function setSingleType( int $index, array $type_in):self{
     $this->types[$index]=$type_in;
     return $this;
   }
   /**
-   * @param array<int,array> $abilities_in (index => [int 'ability_id', string 'name', bool 'is_hidden'])
+   * @param array<int,array> $abilities_in (index => ['ability_id'=>int , 'name'=>string, 'is_hidden'=>bool])
    */
   public function setAbilities(array $abilities_in):self{
     $this->abilities = $abilities_in;
@@ -102,7 +102,7 @@ class Pokemon extends Model
   }
   /**
    * @param int $index index of ability
-   * @param array $ability [int 'ability_id', string 'name', bool 'is_hidden']
+   * @param array $ability ['ability_id'=>int, 'name'=>string, 'is_hidden'=>bool]
    */
   public function setSingleAbility(int $index, array $ability):self{
     $this->abilities[$index]=$ability;
