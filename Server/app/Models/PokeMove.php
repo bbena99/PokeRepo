@@ -17,14 +17,23 @@ class PokeMove extends Model
   private $effect_entry;
   private $meta;
 
-  public function setId($id_in):self{
+  /**
+   * @param int $id_in sets the ID of $this move
+   */
+  public function setId(int $id_in):self{
     $this->id = $id_in;
     return $this;
   }
-  public function setName($name_in):self{
+  /**
+   * @param string $name_in sets the name of $this move
+   */
+  public function setName(string $name_in):self{
     $this->name = $name_in;
     return $this;
   }
+  /**
+   * @param int $damage_type_in sets the damage type of the move (1:Status 2:Physical 3:Special)
+   */
   public function setDamageType($damage_type_in):self{
     $this->damage_type = $damage_type_in;
     return $this;
