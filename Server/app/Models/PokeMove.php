@@ -87,34 +87,64 @@ class PokeMove extends Model
     $this->meta = $meta_in;
     return $this;
   }
+  /**
+   * @return int returns ID of $this move
+   */
   public function getId():int{
     return $this->id;
   }
+  /**
+   * @return string returns Name of $this move
+   */
   public function getName():string{
     return $this->name;
   }
+  /**
+   * @return int returns the type of move $this is
+   */
   public function getDamageType():int{
     return $this->damage_type;
   }
+  /**
+   * @return int returns the accuracy of $this move
+   */
   public function getAccuracy():int{
     return $this->accuracy;
   }
+  /**
+   * @return int returns the power of $this move
+   */
   public function getPower():int{
     return $this->power;
   }
+  /**
+   * @return int returns the pp count of $this move
+   */
   public function getPP():int{
     return $this->pp;
   }
+  /**
+   * @return int returns the priority of $this move
+   */
   public function getPriority():int{
     return $this->priority;
   }
+  /**
+   * @return int returns the effect chance of $this move
+   */
   public function getEffectChance():int{
     return $this->effect_chance;
   }
-  public function getEffectEntry():int{
+  /**
+   * @return string returns the description of $this move's effect
+   */
+  public function getEffectEntry():string{
     return $this->effect_entry;
   }
-  public function getMeta(){
+  /**
+   * @return object returns the meta data for $this move
+   */
+  public function getMeta():object{
     return $this->meta;
   }
 
