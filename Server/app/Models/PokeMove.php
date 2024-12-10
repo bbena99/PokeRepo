@@ -34,35 +34,56 @@ class PokeMove extends Model
   /**
    * @param int $damage_type_in sets the damage type of the move (1:Status 2:Physical 3:Special)
    */
-  public function setDamageType($damage_type_in):self{
+  public function setDamageType(int $damage_type_in):self{
     $this->damage_type = $damage_type_in;
     return $this;
   }
-  public function setAccuracy($accuracy_in):self{
+  /**
+   * @param int $accuracy_in sets the accuracy of $this move
+   */
+  public function setAccuracy(int $accuracy_in):self{
     $this->accuracy = $accuracy_in;
     return $this;
   }
-  public function setPower($power_in):self{
+  /**
+   * @param int $power_in sets the power of $this move
+   */
+  public function setPower(int $power_in):self{
     $this->power = $power_in;
     return $this;
   }
-  public function setPP($pp_in):self{
+  /**
+   * @param int $pp_in sets the pp count of $this move
+   */
+  public function setPP(int $pp_in):self{
     $this->pp = $pp_in;
     return $this;
   }
-  public function setPriority($priority_in):self{
+  /**
+   * @param int $priority_in sets the priority of $this move
+   */
+  public function setPriority(int $priority_in):self{
     $this->priority = $priority_in;
     return $this;
   }
-  public function setEffectChance($effect_chance_in):self{
+  /**
+   * @param int $effect_chance_in sets the effect chance of $this move
+   */
+  public function setEffectChance(int $effect_chance_in):self{
     $this->effect_chance = $effect_chance_in;
     return $this;
   }
-  public function setEffectEntry($effect_entry_in):self{
+  /**
+   * @param string $effect_entry_in set the effect description for $this move
+   */
+  public function setEffectEntry(string $effect_entry_in):self{
     $this->effect_entry = $effect_entry_in;
     return $this;
   }
-  public function setMeta($meta_in):self{
+  /**
+   * @param object $meta_in set the meta data of $this move
+   */
+  public function setMeta(object $meta_in):self{
     $this->meta = $meta_in;
     return $this;
   }
