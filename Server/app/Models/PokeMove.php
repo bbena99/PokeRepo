@@ -148,6 +148,9 @@ class PokeMove extends Model
     return $this->meta;
   }
 
+  /**
+   * Print out to Symfony's console the full details of $this.
+   */
   public function debugPrint(){
     $out = new \Symfony\Component\Console\Output\ConsoleOutput();
     $out->writeln([
@@ -192,6 +195,9 @@ class PokeMove extends Model
     }
     $out->writeln(".................................................................................");
   }
+  /**
+   * Print out to Symfony's console the id and name only from $this.
+   */
   public function minimalPrint():void{
     $out = new \Symfony\Component\Console\Output\ConsoleOutput();
     $out->writeln("#".$this->id.":\t".$this->name);
