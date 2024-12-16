@@ -100,9 +100,8 @@ class dbgen
             ->setEffectEntry($effectEntryJSON)
             ->setMeta($moveJSON->meta);
       $moveArray[$move->getId()] = $move;
-      $move->debugPrint();
+      $move->minimalPrint();
     }
-    return response()->json("job done");
 
     /** Start of types */
     $typeNamesArray = json_decode($this->api->resourceList('type',1,0));
@@ -127,8 +126,9 @@ class dbgen
         $type->setSingleNoDamage($this->parseIdentifier($noDamageJSON->url),$noDamageJSON->name);
       }
       $typeArray[$type->getId()]=$type;
-      $type->minimalPrint();
+      $type->debugPrint();
     }
+    return response()->json("job done");
 
     /** Start of DB insertions */
 
@@ -195,11 +195,11 @@ class dbgen
           true
         ]);
       }
-      foreach($DBType->getHalfDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
+      foreach($DBType->getNoDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
         DB::insert('INSERT INTO relation_damage (dealer_id, receiver_id, damageable)',[
           $DBReceiverTypeID,
           $DBType->getId(),
-          true
+          false
         ]);
       }
     }
