@@ -63,7 +63,7 @@ class dbgen
         $base_stat_total+=$stat->base_stat;
         $pokemon->setSingleStat($stat->stat->name,$stat->base_stat);
       }
-      $pokemon->setSingleStat($base_stat_total,'total');
+      $pokemon->setSingleStat('total',$base_stat_total);
       $pokemonArray[$pokemon->getId()]=$pokemon;
       $pokemon->debugPrint();
     }
