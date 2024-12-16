@@ -174,7 +174,7 @@ class PokeMove extends Model
     $out->writeln([
       "power: ".$this->power."\t\tpp: ".$this->pp,
       "accuracy: ".$this->accuracy."\tpriority: ".$this->priority,
-      "effect: ".$this->effect_chance."% to".$this->effect_entry,
+      "effect: ".$this->effect_chance."% to ".$this->effect_entry,
       "meta data:"
     ]);
     foreach($this->meta as $key => $value){
