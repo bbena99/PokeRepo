@@ -66,7 +66,7 @@ class dbgen
       }
       $pokemon->setSingleStat('total',$base_stat_total);
       $pokemonArray[$pokemon->getId()]=$pokemon;
-      $pokemon->debugPrint();
+      $pokemon->minimalPrint();
     }
     /** Start of abilities */
     $abilityNamesArray = json_decode($this->api->resourceList('ability',1,0));
@@ -79,10 +79,9 @@ class dbgen
       $ability->setID($abilityJSON->id)
               ->setName($abilityJSON->name)
               ->setEffectEntry($effectEntry->short_effect);
-      $ability->debugPrint();
+      $ability->minimalPrint();
       $abilityArray[$ability->getID()]=$ability;
     }
-    return response()->json("job done");
     /** Start of moves */
     $moveNamesArray = json_decode($this->api->resourceList('move',1,0));
     $moveArray = [];
@@ -97,12 +96,13 @@ class dbgen
             ->setPower($moveJSON->power)
             ->setPP($moveJSON->pp)
             ->setPriority($moveJSON->priority)
-            ->setEffectChance($moveJSON->effect_chance)
+            ->setEffectChance($moveJSON->effect_chance??0)
             ->setEffectEntry($effectEntryJSON)
             ->setMeta($moveJSON->meta);
       $moveArray[$move->getId()] = $move;
-      $move->minimalPrint();
+      $move->debugPrint();
     }
+    return response()->json("job done");
 
     /** Start of types */
     $typeNamesArray = json_decode($this->api->resourceList('type',1,0));
