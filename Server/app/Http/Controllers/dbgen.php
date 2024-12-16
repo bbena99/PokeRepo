@@ -55,7 +55,7 @@ class dbgen
         $pokemon->setSingleType($index,$type);
       }
       /** Start of pokemon => moves */
-      return response()->json($pokemonJSON->moves);
+      // return response()->json($pokemonJSON->moves);
       $pokemon->setMoves($pokemonJSON->moves);
       /** Start of pokemon => stats */
       $base_stat_total=0;
@@ -137,8 +137,8 @@ class dbgen
       foreach($DBPokemon->getAbilities() as $DBPokemonAbilityObj){
         DB::insert('INSERT INTO relation_pokemon_abilities ( pokemon_id, ability_id, is_hidden )',[
           $DBPokemon->getId(),
-          $DBPokemonAbilityObj->ability_id,
-          $DBPokemonAbilityObj->is_hidden,
+          $DBPokemonAbilityObj['ability_id'],
+          $DBPokemonAbilityObj['is_hidden'],
         ]);
       }
       /** Inserting relation_pokemon_moves */
