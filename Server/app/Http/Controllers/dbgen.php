@@ -35,7 +35,7 @@ class dbgen
               ->setFrontSprite($pokemonJSON->sprites->front_default)
               ->setBackSprite($pokemonJSON->sprites->back_default);
       /** Start of pokemon => abilities */
-      return response()->json($pokemonJSON->abilities);
+      // return response()->json($pokemonJSON->abilities);
       foreach($pokemonJSON->abilities as $index => $abilityJSON){
         $id = $this->parseIdentifier($abilityJSON->ability->url);
         $ability = [
@@ -43,7 +43,7 @@ class dbgen
           'name' => $abilityJSON->ability->name,
           'is_hidden' => $abilityJSON->is_hidden??0
         ];
-        $pokemon->setSingleAbility($ability,$index);
+        $pokemon->setSingleAbility($index,$ability);
       }
       /** Start of pokemon => types */
       foreach($pokemonJSON->types as $index => $typeJSON){
@@ -52,10 +52,12 @@ class dbgen
           'type_id'=>$id,
           'name'=>$typeJSON->type->name
         ];
-        $pokemon->setSingleType($type,$index);
+        $pokemon->setSingleType($index,$type);
       }
       /** Start of pokemon => moves */
+      return response()->json($pokemonJSON->moves);
       $pokemon->setMoves($pokemonJSON->moves);
+      /** Start of pokemon => stats */
       $base_stat_total=0;
       foreach($pokemonJSON->stats as $stat){
         $base_stat_total+=$stat->base_stat;
@@ -65,7 +67,7 @@ class dbgen
       $pokemonArray[$pokemon->getId()]=$pokemon;
       $pokemon->debugPrint();
     }
-    /** Start of abilities */
+    /** Start of moves */
     $moveNamesArray = json_decode($this->api->resourceList('move',1,0));
     $moveArray = [];
     foreach($moveNamesArray->results as $moveStdPair){
@@ -113,6 +115,7 @@ class dbgen
     }
 
     /** Start of DB insertions */
+
     /** Inserting pokemon */
     foreach($pokemonArray as $DBPokemon){
       DB::insert('INSERT INTO pokemon ( id, name, is_default, order, front_sprite, back_sprite )',[
@@ -163,7 +166,25 @@ class dbgen
       }
       /** Inserting relation_damage */
       foreach($DBType->getDoubleDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
-
+        DB::insert('INSERT INTO relation_damage (dealer_id, receiver_id, damageable)',[
+          $DBType->getId(),
+          $DBReceiverTypeID,
+          true
+        ]);
+      }
+      foreach($DBType->getHalfDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
+        DB::insert('INSERT INTO relation_damage (dealer_id, receiver_id, damageable)',[
+          $DBReceiverTypeID,
+          $DBType->getId(),
+          true
+        ]);
+      }
+      foreach($DBType->getHalfDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
+        DB::insert('INSERT INTO relation_damage (dealer_id, receiver_id, damageable)',[
+          $DBReceiverTypeID,
+          $DBType->getId(),
+          true
+        ]);
       }
     }
 
