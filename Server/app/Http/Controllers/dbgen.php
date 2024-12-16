@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ability;
 use App\Models\Pokemon;
 use App\Models\PokeMove;
 use App\Models\PokeType;
@@ -70,7 +71,18 @@ class dbgen
     /** Start of abilities */
     $abilityNamesArray = json_decode($this->api->resourceList('ability',1,0));
     $abilityArray = [];
-    return response()->json($abilityNamesArray);
+    foreach($abilityNamesArray->results as $abilityStdPair){
+      $abilityJSON = json_decode(Http::get($abilityStdPair->url));
+      $abilityJSON->flavor_text_entries=[];
+      $ability = new Ability();
+      $effectEntry = end($abilityJSON->effect_entries);
+      $ability->setID($abilityJSON->id)
+              ->setName($abilityJSON->name)
+              ->setEffectEntry($effectEntry->short_effect);
+      $ability->debugPrint();
+      $abilityArray[$ability->getID()]=$ability;
+    }
+    return response()->json("job done");
     /** Start of moves */
     $moveNamesArray = json_decode($this->api->resourceList('move',1,0));
     $moveArray = [];
