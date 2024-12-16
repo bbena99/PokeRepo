@@ -61,12 +61,16 @@ class dbgen
       $base_stat_total=0;
       foreach($pokemonJSON->stats as $stat){
         $base_stat_total+=$stat->base_stat;
-        $pokemon->setSingleStat($stat->base_stat,$stat->stat->name);
+        $pokemon->setSingleStat($stat->stat->name,$stat->base_stat);
       }
       $pokemon->setSingleStat($base_stat_total,'total');
       $pokemonArray[$pokemon->getId()]=$pokemon;
       $pokemon->debugPrint();
     }
+    /** Start of abilities */
+    $abilityNamesArray = json_decode($this->api->resourceList('ability',1,0));
+    $abilityArray = [];
+    return response()->json($abilityNamesArray);
     /** Start of moves */
     $moveNamesArray = json_decode($this->api->resourceList('move',1,0));
     $moveArray = [];
