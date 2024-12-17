@@ -14,7 +14,7 @@ return new class extends Migration
     //
     Schema::create('pokemon', function(Blueprint $table){
       $table->id();
-      $table->string('pokemon_name');
+      $table->string('name');
       $table->boolean('is_default');
       $table->integer('order');
       $table->string('front_sprite');
@@ -22,12 +22,12 @@ return new class extends Migration
     });
     Schema::create('abilities', function(Blueprint $table){
       $table->id();
-      $table->string('ability_name');
+      $table->string('name');
       $table->string('effect_entries');
     });
     Schema::create('moves', function(Blueprint $table){
       $table->id();
-      $table->string('move_name');
+      $table->string('name');
       $table->tinyInteger('damage_type');
       $table->tinyInteger('accuracy');
       $table->tinyInteger('power');
@@ -39,7 +39,7 @@ return new class extends Migration
     });
     Schema::create('types', function(Blueprint $table){
       $table->id();
-      $table->string('type_name');
+      $table->string('name');
       $table->string('src');
     });
 
