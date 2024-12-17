@@ -126,12 +126,24 @@ class dbgen
         $type->setSingleNoDamage($this->parseIdentifier($noDamageJSON->url),$noDamageJSON->name);
       }
       $typeArray[$type->getId()]=$type;
-      $type->debugPrint();
+      $type->minimalPrint();
     }
-    return response()->json("job done");
 
     /** Start of DB insertions */
 
+    /** Inserting ability */
+    foreach($abilityArray as $DBAbility){
+      DB::table('abilities')->upsert([
+        "id"  =>$DBAbility->getID(),
+        "name" =>$DBAbility->getName(),
+        "effect_entries"  =>$DBAbility->getEffectEntry()
+      ],[
+        'id'
+      ],[
+        'name','effect_entries'
+      ]);
+    }
+    return response()->json("job done");
     /** Inserting pokemon */
     foreach($pokemonArray as $DBPokemon){
       DB::insert('INSERT INTO pokemon ( id, name, is_default, order, front_sprite, back_sprite )',[
