@@ -143,38 +143,48 @@ class dbgen
         'name','effect_entries'
       ]);
     }
-    return response()->json("job done");
     /** Inserting pokemon */
     foreach($pokemonArray as $DBPokemon){
-      DB::insert('INSERT INTO pokemon ( id, name, is_default, order, front_sprite, back_sprite )',[
-        $DBPokemon->getId(),
-        $DBPokemon->getName(),
-        $DBPokemon->getIsDefault(),
-        $DBPokemon->getOrder(),
-        $DBPokemon->getFrontSprite(),
-        $DBPokemon->getBackSprite(),
+      DB::table('pokemon')->upsert([
+        'id'=>$DBPokemon->getId(),
+        'name'=>$DBPokemon->getName(),
+        'is_default'=>$DBPokemon->getIsDefault(),
+        'order'=>$DBPokemon->getOrder(),
+        'front_sprite'=>$DBPokemon->getFrontSprite(),
+        'back_sprite'=>$DBPokemon->getBackSprite(),
+      ],[
+        'id'
+      ],[
+        'name','is_default','order','front_sprite','back_sprite'
       ]);
       /** Inserting relation_pokemon_type */
       foreach($DBPokemon->getTypes() as $DBPokemonTypeID => $DBPokemonTypeName){
-        DB::insert('INSERT INTO relation_pokemon_type ( pokemon_id, type_id )',[
-          $DBPokemon->getId(),
-          $DBPokemonTypeID
+        DB::table('relation_pokemon_type')->upsert([
+          'pokemon_id'=>$DBPokemon->getId(),
+          'type_id'=>$DBPokemonTypeID
+        ],[],[
+          'pokemon_id','type_id'
         ]);
       }
+      return response()->json("job done");
       /** Inserting relation_pokemon_ability */
       foreach($DBPokemon->getAbilities() as $DBPokemonAbilityObj){
-        DB::insert('INSERT INTO relation_pokemon_abilities ( pokemon_id, ability_id, is_hidden )',[
-          $DBPokemon->getId(),
-          $DBPokemonAbilityObj['ability_id'],
-          $DBPokemonAbilityObj['is_hidden'],
+        DB::table('relation_pokemon_abilities')->upsert([
+          'pokemon_id'=>$DBPokemon->getId(),
+          'ability_id'=>$DBPokemonAbilityObj['ability_id'],
+          'is_hidden'=>$DBPokemonAbilityObj['is_hidden'],
+        ],[],[
+          'pokemon_id','ability_id','is_hidden'
         ]);
       }
       /** Inserting relation_pokemon_moves */
       foreach($DBPokemon->getMoves() as $DBPokemonMoveID => $DBPokemonMoveLevel){
-        DB::insert('INSERT INTO relation_pokemon_moves ( pokemon_id, move_id, level)',[
-          $DBPokemon->getId(),
-          $DBPokemonMoveID,
-          $DBPokemonMoveLevel,
+        DB::table('relation_pokemon_moves')->upsert([
+          'pokemon_id'=>$DBPokemon->getId(),
+          'move_id'=>$DBPokemonMoveID,
+          'level'=>$DBPokemonMoveLevel,
+        ],[],[
+          'pokemon_id','move_id','level'
         ]);
       }
     }
