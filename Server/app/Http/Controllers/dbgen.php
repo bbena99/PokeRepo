@@ -131,7 +131,7 @@ class dbgen
 
     /** Start of DB insertions */
     $out = new \Symfony\Component\Console\Output\ConsoleOutput();//Using the console to keep track of the progress of the insertions
-    $out->writeln(["---Start of Inserting into DataBase---",">\t>Start of inserting Abilities"]);
+    $out->writeln(["---Start of Inserting into DataBase---","##Start of inserting Abilities"]);
     /** Inserting ability */
     foreach($abilityArray as $DBAbility){
       DB::table('abilities')->upsert([
@@ -143,10 +143,10 @@ class dbgen
       ],[
         'name','effect_entries'
       ]);
-      $out->writeln("[".$DBAbility->getID()."] => ".$DBAbility->getName());
+      $out->writeln("=[".$DBAbility->getID()."]=> ".$DBAbility->getName());
     }
     /** Inserting pokemon */
-    $out->writeln(">\t>Start of inserting Pokemon");
+    $out->writeln("##Start of inserting Pokemon");
     foreach($pokemonArray as $DBPokemon){
       DB::table('pokemon')->upsert([
         'id'=>$DBPokemon->getId(),
@@ -160,7 +160,7 @@ class dbgen
       ],[
         'name','is_default','order','front_sprite','back_sprite'
       ]);
-      $out->writeln("[".$DBPokemon->getId()."] => ".$DBPokemon->getName());
+      $out->writeln("=[".$DBPokemon->getId()."]=> ".$DBPokemon->getName());
       /** Inserting relation_pokemon_type */
       $out->writeln($DBPokemon->getName()." types:");
       foreach($DBPokemon->getTypes() as $DBPokemonType){
@@ -170,7 +170,7 @@ class dbgen
         ],[],[
           'pokemon_id','type_id'
         ]);
-        $out->writeln("--[".$DBPokemonType['type_id']."] => ".$DBPokemonType['name']);
+        $out->writeln("=[".$DBPokemonType['type_id']."]=> ".$DBPokemonType['name']);
       }
       /** Inserting relation_pokemon_ability */
       $out->writeln($DBPokemon->getName()." abilities:");
@@ -182,7 +182,7 @@ class dbgen
         ],[],[
           'pokemon_id','ability_id','hidden'
         ]);
-        $out->writeln("--[".$DBPokemonAbility['ability_id']."] => ".$DBPokemonAbility['is_hidden']);
+        $out->writeln("=[".$DBPokemonAbility['ability_id']."]=> ".$DBPokemonAbility['is_hidden']);
       }
       /** Inserting relation_pokemon_moves */
       $out->writeln($DBPokemon->getName()." moves:");
@@ -194,23 +194,27 @@ class dbgen
         ],[],[
           'pokemon_id','move_id','level'
         ]);
-        $out->writeln("--[".$DBPokemonMoveID."] => ".$DBPokemonMoveLevel);
+        $out->writeln("=[".$DBPokemonMoveID."]=> ".$DBPokemonMoveLevel);
       }
       return response()->json("job done");
     }
     /** Inserting type */
+    $out->writeln("##Start of inserting Types");
     foreach($typeArray as $DBType){
       DB::insert('INSERT INTO types (id, name, src)',[
         $DBType->getId(),
         $DBType->getName(),
         $DBType->getSrc(),
       ]);
+      $out->writeln("=[".$DBType->getId()."]=> ".$DBType->getName());
       /** Inserting relation_type_moves */
+      $out->writeln($DBType->getName()." moves:");
       foreach($DBType->getMoves() as $DBTypeMoveID => $DBTypeMoveName){
         DB::insert('INSERT INTO relation_type_moves ( type_id, move_id )',[
           $DBType->getId(),
           $DBTypeMoveID
         ]);
+        $out->writeln("=[".$DBTypeMoveID."]=> ".$DBTypeMoveName);
       }
       /** Inserting relation_damage */
       foreach($DBType->getDoubleDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
