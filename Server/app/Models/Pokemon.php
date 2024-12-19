@@ -87,7 +87,7 @@ class Pokemon extends Model
   }
   /**
    * @param int $index index of type.
-   * @param array $type_in ['id'=>int, 'name'=>string].
+   * @param array $type_in ['type_id'=>int, 'name'=>string].
    */
   public function setSingleType( int $index, array $type_in):self{
     $this->types[$index]=$type_in;
