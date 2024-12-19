@@ -158,10 +158,10 @@ class dbgen
         'name','is_default','order','front_sprite','back_sprite'
       ]);
       /** Inserting relation_pokemon_type */
-      foreach($DBPokemon->getTypes() as $DBPokemonTypeID => $DBPokemonTypeName){
+      foreach($DBPokemon->getTypes() as $DBPokemonType){
         DB::table('relation_pokemon_type')->upsert([
           'pokemon_id'=>$DBPokemon->getId(),
-          'type_id'=>$DBPokemonTypeID
+          'type_id'=>$DBPokemonType['type_id']
         ],[],[
           'pokemon_id','type_id'
         ]);
