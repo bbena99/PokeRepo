@@ -196,17 +196,19 @@ class dbgen
         ]);
         $out->writeln("=[".$DBPokemonMoveID."]=> ".$DBPokemonMoveLevel);
       }
-      return response()->json("job done");
     }
     /** Inserting type */
     $out->writeln("##Start of inserting Types");
     foreach($typeArray as $DBType){
-      DB::insert('INSERT INTO types (id, name, src)',[
-        $DBType->getId(),
-        $DBType->getName(),
-        $DBType->getSrc(),
+      DB::table('types')->upsert([
+        'id'=>$DBType->getId(),
+        'name'=>$DBType->getName(),
+        'src'=>$DBType->getSrc(),
+      ],[],[
+        'id','name','src'
       ]);
       $out->writeln("=[".$DBType->getId()."]=> ".$DBType->getName());
+      return response()->json("job done");
       /** Inserting relation_type_moves */
       $out->writeln($DBType->getName()." moves:");
       foreach($DBType->getMoves() as $DBTypeMoveID => $DBTypeMoveName){
