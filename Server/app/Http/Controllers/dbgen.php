@@ -166,17 +166,17 @@ class dbgen
           'pokemon_id','type_id'
         ]);
       }
-      return response()->json("job done");
       /** Inserting relation_pokemon_ability */
       foreach($DBPokemon->getAbilities() as $DBPokemonAbilityObj){
         DB::table('relation_pokemon_abilities')->upsert([
           'pokemon_id'=>$DBPokemon->getId(),
           'ability_id'=>$DBPokemonAbilityObj['ability_id'],
-          'is_hidden'=>$DBPokemonAbilityObj['is_hidden'],
+          'hidden'=>$DBPokemonAbilityObj['is_hidden'],
         ],[],[
-          'pokemon_id','ability_id','is_hidden'
+          'pokemon_id','ability_id','hidden'
         ]);
       }
+      return response()->json("job done");
       /** Inserting relation_pokemon_moves */
       foreach($DBPokemon->getMoves() as $DBPokemonMoveID => $DBPokemonMoveLevel){
         DB::table('relation_pokemon_moves')->upsert([
