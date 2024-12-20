@@ -84,7 +84,7 @@ class PokeMove extends Model
    * @param object $meta_in set the meta data of $this move
    */
   public function setMeta(object|null $meta_in):self{
-    $this->meta = $meta_in;
+    $this->meta = json_encode($meta_in);
     return $this;
   }
   /**
@@ -144,8 +144,8 @@ class PokeMove extends Model
   /**
    * @return object returns the meta data for $this move
    */
-  public function getMeta():object{
-    return $this->meta;
+  public function getMeta():string{
+    return $this->meta??"";
   }
 
   /**
@@ -175,24 +175,8 @@ class PokeMove extends Model
       "power: ".$this->power."\t\tpp: ".$this->pp,
       "accuracy: ".$this->accuracy."\tpriority: ".$this->priority,
       "effect: ".$this->effect_chance."% to ".$this->effect_entry,
-      "meta data:"
+      "meta data:".$this->meta
     ]);
-    foreach($this->meta as $key => $value){
-      #$out->writeln(gettype($value));
-      switch (gettype($value)) {
-        case 'string':
-        case 'integer':
-        case 'NULL':
-          $out->writeln("-[".$key."] => ".$value);
-          break;
-        default:
-          $out->writeln("-[".$key."] =>");
-          foreach($value as $subKey => $subValue){
-            $out->writeln("---[".$subKey."] => ".$subValue);
-          }
-          break;
-      }
-    }
     $out->writeln(".................................................................................");
   }
   /**
