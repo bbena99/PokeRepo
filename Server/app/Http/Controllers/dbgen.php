@@ -69,7 +69,7 @@ class dbgen
       $pokemon->minimalPrint();
     }
     /** Start of abilities */
-    $abilityNamesArray = json_decode($this->api->resourceList('ability',2000,0));
+    $abilityNamesArray = json_decode($this->api->resourceList('ability',1000,0));
     $abilityArray = [];
     foreach($abilityNamesArray->results as $abilityStdPair){
       $abilityJSON = json_decode(Http::get($abilityStdPair->url));
@@ -82,7 +82,7 @@ class dbgen
       $abilityArray[$ability->getID()]=$ability;
     }
     /** Start of moves */
-    $moveNamesArray = json_decode($this->api->resourceList('move',2000,0));
+    $moveNamesArray = json_decode($this->api->resourceList('move',3000,0));
     $moveArray = [];
     foreach($moveNamesArray->results as $moveStdPair){
       $moveJSON = json_decode(Http::get($moveStdPair->url));
@@ -155,12 +155,12 @@ class dbgen
         "pp"=>$DBMove->getPP(),
         "priority"=>$DBMove->getPriority(),
         "effect_chance"=>$DBMove->getEffectChance(),
-        "effect_entries"  =>$DBMove->getEffectEntry(),
+        "effect_entry"  =>$DBMove->getEffectEntry(),
         "meta"=>$DBMove->getMeta(),
       ],[
         'id'
       ],[
-        'name','damage_type','accuracy','power','pp','effect_chance','effect_entries','meta'
+        'name','damage_type','accuracy','power','pp','effect_chance','effect_entry','meta'
       ]);
       $out->writeln("=[".$DBMove->getID()."]=> ".$DBMove->getName());
     }
