@@ -167,9 +167,9 @@ class dbgen
         DB::table('relation_pokemon_type')->upsert([
           'pokemon_id'=>$DBPokemon->getId(),
           'type_id'=>$DBPokemonType['type_id']
-        ],[],[
+        ],[
           'pokemon_id','type_id'
-        ]);
+        ],[]);
         $out->writeln("=[".$DBPokemonType['type_id']."]=> ".$DBPokemonType['name']);
       }
       /** Inserting relation_pokemon_ability */
@@ -179,8 +179,10 @@ class dbgen
           'pokemon_id'=>$DBPokemon->getId(),
           'ability_id'=>$DBPokemonAbility['ability_id'],
           'hidden'=>$DBPokemonAbility['is_hidden'],
-        ],[],[
-          'pokemon_id','ability_id','hidden'
+        ],[
+          'pokemon_id','ability_id',
+        ],[
+          'hidden'
         ]);
         $out->writeln("=[".$DBPokemonAbility['ability_id']."]=> ".$DBPokemonAbility['is_hidden']);
       }
@@ -191,8 +193,10 @@ class dbgen
           'pokemon_id'=>$DBPokemon->getId(),
           'move_id'=>$DBPokemonMoveID,
           'level'=>$DBPokemonMoveLevel,
-        ],[],[
-          'pokemon_id','move_id','level'
+        ],[
+          'pokemon_id','move_id',
+        ],[
+          'level'
         ]);
         $out->writeln("=[".$DBPokemonMoveID."]=> ".$DBPokemonMoveLevel);
       }
@@ -204,8 +208,10 @@ class dbgen
         'id'=>$DBType->getId(),
         'name'=>$DBType->getName(),
         'src'=>$DBType->getSrc(),
-      ],[],[
-        'id','name','src'
+      ],[
+        'id',
+      ],[
+        'name','src'
       ]);
       $out->writeln("=[".$DBType->getId()."]=> ".$DBType->getName());
       /** Inserting relation_type_moves */
@@ -214,26 +220,34 @@ class dbgen
         DB::table('relation_type_moves')->upsert([
           'type_id'=>$DBType->getId(),
           'move_id'=>$DBTypeMoveID,
-        ],[],[
+        ],[
           'type_id','move_id'
-        ]);
+        ],[]);
         $out->writeln("=[".$DBTypeMoveID."]=> ".$DBTypeMoveName);
       }
       return response()->json("job done");
       /** Inserting relation_damage */
       foreach($DBType->getDoubleDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
-        DB::insert('INSERT INTO relation_damage (dealer_id, receiver_id, damageable)',[
-          $DBType->getId(),
-          $DBReceiverTypeID,
-          true
+        DB::table('relation_damage')->upsert([
+          'dealer_id'=>$DBType->getId(),
+          'receiver_id'=>$DBReceiverTypeID,
+          'damageable'=>true
+        ],[
+          'dealer_id','receiver_id'
+        ],[
+          'damageable'
         ]);
+        $out->writeln("=[".$DBType->getId()."]=> ".$DBReceiverTypeID." = 2");
       }
       foreach($DBType->getHalfDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
-        DB::insert('INSERT INTO relation_damage (dealer_id, receiver_id, damageable)',[
-          $DBReceiverTypeID,
-          $DBType->getId(),
-          true
+        DB::table('relation_damage')->upsert([
+          'dealer_id'=>$DBReceiverTypeID,
+          'receiver_id'=>$DBType->getId(),
+          'damageable'=>true
+        ],[],[
+          'type_id','move_id'
         ]);
+        $out->writeln("=[".$DBType->getId()."]=> ".$DBReceiverTypeID." = 2");
       }
       foreach($DBType->getNoDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
         DB::insert('INSERT INTO relation_damage (dealer_id, receiver_id, damageable)',[
