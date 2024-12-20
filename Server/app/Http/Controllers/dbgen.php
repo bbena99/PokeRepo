@@ -24,7 +24,7 @@ class dbgen
     set_time_limit(5000000);
     if(env('INITKEY',NULL)!=$key) return response()->json(['error'=>'Unauthorized access'], Response::HTTP_UNAUTHORIZED);
     /** Start of pokemon */
-    $pokemonNamesArray = json_decode($this->api->resourceList('pokemon',2000,0));
+    $pokemonNamesArray = json_decode($this->api->resourceList('pokemon',3000,0));
     $pokemonArray =[];
     foreach($pokemonNamesArray->results as $pokemonStdPair){
       $pokemonJSON = json_decode(Http::get($pokemonStdPair->url));
@@ -33,8 +33,8 @@ class dbgen
               ->setName($pokemonJSON->name)
               ->setIsDefault($pokemonJSON->is_default)
               ->setOrder($pokemonJSON->order)
-              ->setFrontSprite($pokemonJSON->sprites->front_default)
-              ->setBackSprite($pokemonJSON->sprites->back_default);
+              ->setFrontSprite($pokemonJSON->sprites->front_default??"")
+              ->setBackSprite($pokemonJSON->sprites->back_default??"");
       /** Start of pokemon => abilities */
       // return response()->json($pokemonJSON->abilities);
       foreach($pokemonJSON->abilities as $index => $abilityJSON){
@@ -69,16 +69,15 @@ class dbgen
       $pokemon->minimalPrint();
     }
     /** Start of abilities */
-    $abilityNamesArray = json_decode($this->api->resourceList('ability',1000,0));
+    $abilityNamesArray = json_decode($this->api->resourceList('ability',2000,0));
     $abilityArray = [];
     foreach($abilityNamesArray->results as $abilityStdPair){
       $abilityJSON = json_decode(Http::get($abilityStdPair->url));
-      $abilityJSON->flavor_text_entries=[];
       $ability = new Ability();
       $effectEntry = end($abilityJSON->effect_entries);
       $ability->setID($abilityJSON->id)
               ->setName($abilityJSON->name)
-              ->setEffectEntry($effectEntry->short_effect);
+              ->setEffectEntry($effectEntry->short_effect??"");
       $ability->minimalPrint();
       $abilityArray[$ability->getID()]=$ability;
     }
@@ -92,12 +91,12 @@ class dbgen
       $move ->setId($moveJSON->id)
             ->setName($moveJSON->name)
             ->setDamageType($this->parseIdentifier($moveJSON->damage_class->url))
-            ->setAccuracy($moveJSON->accuracy)
-            ->setPower($moveJSON->power)
-            ->setPP($moveJSON->pp)
-            ->setPriority($moveJSON->priority)
+            ->setAccuracy($moveJSON->accuracy??0)
+            ->setPower($moveJSON->power??0)
+            ->setPP($moveJSON->pp??0)
+            ->setPriority($moveJSON->priority??0)
             ->setEffectChance($moveJSON->effect_chance??0)
-            ->setEffectEntry($effectEntryJSON)
+            ->setEffectEntry($effectEntryJSON??"")
             ->setMeta($moveJSON->meta);
       $moveArray[$move->getId()] = $move;
       $move->minimalPrint();
@@ -144,6 +143,26 @@ class dbgen
         'name','effect_entries'
       ]);
       //$out->writeln("=[".$DBAbility->getID()."]=> ".$DBAbility->getName());
+    }
+    /** Inserting moves */
+    foreach($moveArray as $DBMove){
+      DB::table('moves')->upsert([
+        "id"  =>$DBMove->getID(),
+        "name" =>$DBMove->getName(),
+        "damage_type"=>$DBMove->getDamageType(),
+        "accuracy"=>$DBMove->getAccuracy(),
+        "power"=>$DBMove->getPower(),
+        "pp"=>$DBMove->getPP(),
+        "priority"=>$DBMove->getPriority(),
+        "effect_chance"=>$DBMove->getEffectChance(),
+        "effect_entries"  =>$DBMove->getEffectEntry(),
+        "meta"=>$DBMove->getMeta(),
+      ],[
+        'id'
+      ],[
+        'name','damage_type','accuracy','power','pp','effect_chance','effect_entries','meta'
+      ]);
+      $out->writeln("=[".$DBMove->getID()."]=> ".$DBMove->getName());
     }
     /** Inserting pokemon */
     $out->writeln("##Start of inserting Pokemon");
