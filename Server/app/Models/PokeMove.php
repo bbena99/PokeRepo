@@ -83,7 +83,7 @@ class PokeMove extends Model
   /**
    * @param object $meta_in set the meta data of $this move
    */
-  public function setMeta(object $meta_in):self{
+  public function setMeta(object|null $meta_in):self{
     $this->meta = $meta_in;
     return $this;
   }
