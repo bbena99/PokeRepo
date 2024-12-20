@@ -128,6 +128,7 @@ class Pokemon extends Model
           $level = -1;
           break;
         default:
+          $level = -2;
           break;
       }
       $this->moves[$id]=$level;
