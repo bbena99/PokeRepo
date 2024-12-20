@@ -21,7 +21,7 @@ class dbgen
   }
 
   public function initDb($key){
-    set_time_limit(5000000);
+    set_time_limit(50000000);
     if(env('INITKEY',NULL)!=$key) return response()->json(['error'=>'Unauthorized access'], Response::HTTP_UNAUTHORIZED);
     /** Start of pokemon */
     $pokemonNamesArray = json_decode($this->api->resourceList('pokemon',3000,0));
