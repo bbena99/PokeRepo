@@ -208,16 +208,18 @@ class dbgen
         'id','name','src'
       ]);
       $out->writeln("=[".$DBType->getId()."]=> ".$DBType->getName());
-      return response()->json("job done");
       /** Inserting relation_type_moves */
       $out->writeln($DBType->getName()." moves:");
       foreach($DBType->getMoves() as $DBTypeMoveID => $DBTypeMoveName){
-        DB::insert('INSERT INTO relation_type_moves ( type_id, move_id )',[
-          $DBType->getId(),
-          $DBTypeMoveID
+        DB::table('relation_type_moves')->upsert([
+          'type_id'=>$DBType->getId(),
+          'move_id'=>$DBTypeMoveID,
+        ],[],[
+          'type_id','move_id'
         ]);
         $out->writeln("=[".$DBTypeMoveID."]=> ".$DBTypeMoveName);
       }
+      return response()->json("job done");
       /** Inserting relation_damage */
       foreach($DBType->getDoubleDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
         DB::insert('INSERT INTO relation_damage (dealer_id, receiver_id, damageable)',[
