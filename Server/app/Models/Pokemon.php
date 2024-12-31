@@ -112,6 +112,10 @@ class Pokemon extends Model
    * @param array<int,object> $moves_in (index => {object 'move' {string name, string url}, array<int,object> version_group_details [version_group_index => {int level_learned_at,object move_learn_method {string name, string url}}]})
    */
   public function setMoves(array $moves_in):self{
+    if($moves_in === []){
+      $this->moves = [];
+      return $this;
+    }
     foreach($moves_in as $move_in){
       $id = $this->parseIdentifier($move_in->move->url);
       $data_in = end($move_in->version_group_details);

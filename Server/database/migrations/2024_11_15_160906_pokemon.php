@@ -34,8 +34,8 @@ return new class extends Migration
       $table->tinyInteger('pp');
       $table->tinyInteger('priority');
       $table->tinyInteger('effect_chance');
-      $table->string('effect_entry');
-      $table->json('meta');
+      $table->text('effect_entry');
+      $table->longText('meta');
     });
     Schema::create('types', function(Blueprint $table){
       $table->id();

@@ -69,7 +69,7 @@ class dbgen
       $pokemon->minimalPrint();
     }
     /** Start of abilities */
-    $abilityNamesArray = json_decode($this->api->resourceList('ability',1000,0));
+    $abilityNamesArray = json_decode($this->api->resourceList('ability',3000,0));
     $abilityArray = [];
     foreach($abilityNamesArray->results as $abilityStdPair){
       $abilityJSON = json_decode(Http::get($abilityStdPair->url));
