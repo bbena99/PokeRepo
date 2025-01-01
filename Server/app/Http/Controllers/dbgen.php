@@ -21,7 +21,7 @@ class dbgen
   }
 
   public function initDb($key){
-    return response()->json(['message'=>'initDb currently disabled']);
+    return response()->json(['error'=>'initDb currently disabled'],500);
     set_time_limit(50000000);
     if(env('INITKEY',NULL)!=$key) return response()->json(['error'=>'Unauthorized access'], Response::HTTP_UNAUTHORIZED);
     /** Start of pokemon */
