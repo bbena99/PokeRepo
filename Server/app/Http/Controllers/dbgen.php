@@ -21,7 +21,7 @@ class dbgen
   }
 
   public function initDb($key){
-    return response()->json(['error'=>'initDb currently disabled'],500);
+    // return response()->json(['error'=>'initDb currently disabled'],500);
     set_time_limit(50000000);
     if(env('INITKEY',NULL)!=$key) return response()->json(['error'=>'Unauthorized access'], Response::HTTP_UNAUTHORIZED);
     /** Start of pokemon */
@@ -235,6 +235,26 @@ class dbgen
         ]);
         //$out->writeln("=[".$DBPokemonMoveID."]=> ".$DBPokemonMoveLevel);
       }
+      /** Inserting relation_pokemon_stat */
+      $out->writeln($DBPokemon->getName()." moves:");
+      foreach($DBPokemon->getStats() as $DBPokemonStatName => $DBPokemonStatValue){
+        $exists = DB::table('relation_pokemon_stat')
+          ->where([
+            ['pokemon_id','=',$DBPokemon->getId()],
+            ['stat_name','=',$DBPokemonStatName],
+            ['base_stat','=',$DBPokemonStatValue]
+          ])->count();
+        if(!$exists)DB::table('relation_pokemon_stat')->upsert([
+          'pokemon_id'=>$DBPokemon->getId(),
+          'stat_name'=>$DBPokemonStatName,
+          'base_stat'=>$DBPokemonStatValue,
+        ],[
+          'pokemon_id','stat_name',
+        ],[
+          'base_stat'
+        ]);
+        //$out->writeln("=[".$DBPokemonStatName."]=> ".$DBPokemonStatValue);
+      }
     }
     /** Inserting type */
     $out->writeln("##Start of inserting Types");
@@ -268,7 +288,12 @@ class dbgen
       /** Inserting relation_damage */
       $out->writeln($DBType->getName()." double damage");
       foreach($DBType->getDoubleDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
-        DB::table('relation_damage')->upsert([
+        $exists = DB::table('relation_damage')
+          ->where([
+            ['dealer_id','=',$DBType->getId()],
+            ['receiver_id','=',$DBReceiverTypeID]
+          ])->count();
+        if(!$exists)DB::table('relation_damage')->upsert([
           'dealer_id'=>$DBType->getId(),
           'receiver_id'=>$DBReceiverTypeID,
           'damageable'=>true
@@ -281,7 +306,12 @@ class dbgen
       }
       $out->writeln($DBType->getName()." half damage");
       foreach($DBType->getHalfDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
-        DB::table('relation_damage')->upsert([
+        $exists = DB::table('relation_damage')
+          ->where([
+              ['dealer_id','=',$DBReceiverTypeID],
+              ['receiver_id','=',$DBType->getId()],
+          ])->count();
+        if(!$exists)DB::table('relation_damage')->upsert([
           'dealer_id'=>$DBReceiverTypeID,
           'receiver_id'=>$DBType->getId(),
           'damageable'=>true
@@ -294,7 +324,12 @@ class dbgen
       }
       $out->writeln($DBType->getName()." no damage");
       foreach($DBType->getNoDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
-        DB::table('relation_damage')->upsert([
+        $exists = DB::table('relation_damage')
+          ->where([
+            ['dealer_id','=',$DBType->getId()],
+            ['receiver_id','=',$DBReceiverTypeID]
+          ])->count();
+        if(!$exists)DB::table('relation_damage')->upsert([
           'dealer_id'=>$DBType->getId(),
           'receiver_id'=>$DBReceiverTypeID,
           'damageable'=>false
