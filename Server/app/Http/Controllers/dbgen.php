@@ -270,7 +270,7 @@ class dbgen
       ]);
       $out->writeln("=[".$DBType->getId()."]=> ".$DBType->getName());
       /** Inserting relation_type_moves */
-      $out->writeln($DBType->getName()." moves");
+      $out->writeln($DBType->getName()." stats");
       foreach($DBType->getMoves() as $DBTypeMoveID => $DBTypeMoveName){
         $exists = DB::table('relation_type_moves')
           ->where([
