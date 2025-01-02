@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use PokePHP\PokeApi;
+use Illuminate\Support\Facades\DB;
 
 class PokeController{
   protected $api;
@@ -24,28 +25,23 @@ class PokeController{
   public function getAll(Request $request){
     $this->limit = $request->query('limit','20');
     $this->offset = $request->query('offset','0');
-    $nameArray = json_decode($this->api->resourceList('pokemon',$this->limit,$this->offset),true);
-    $pokeArray=[];
-    foreach( $nameArray['results'] as $stdPair) {
-      $poke = json_decode($this->api->pokemon($stdPair['name']),true);
-      unset(//Removing unused properties to reduce the payload of data.
-        $poke['abilities'],
-        $poke['cries'],
-        $poke['forms'],
-        $poke['game_indices'],
-        $poke['height'],
-        $poke['held_items'],
-        $poke['is_default'],
-        $poke['location_area_encounters'],
-        $poke['moves'],
-        $poke['order'],
-        $poke['past_abilities'],
-        $poke['past_types'],
-        $poke['species'],
-        $poke['weight'],
-      );
-      $pokeArray[$poke['id']] = json_encode($poke);
+    $dbPokemon = DB::table('pokemon')->where('id','=',4000)->count();
+    if($dbPokemon){
+      $respon = true;
+    }else {
+      $respon = false;
     }
+    return response()->json($respon);
+
+    foreach($dbPokemon as $pokemon){
+      $types = DB::table('relation_pokemon_type')->where('pokemon_id','=',$pokemon->id)->get();
+      foreach($types as $type){
+        $pokemon->types[$type->type_id] = DB::table('types')->where('id','=',$type->type_id)->get();
+      }
+      $dbstats = DB::table('relation_pokemon_stat')->where('pokemon_id','=',$pokemon->id)->get();
+
+    }
+    return response()->json($dbPokemon);
     return response()->json($pokeArray,200,[],JSON_PRETTY_PRINT)
       ->header('Access-Control-Allow-Origin', '*')
       ->header('Access-Control-Allow-Methods', 'GET');
