@@ -184,18 +184,28 @@ class dbgen
       /** Inserting relation_pokemon_type */
       $out->writeln($DBPokemon->getName()." types:");
       foreach($DBPokemon->getTypes() as $DBPokemonType){
-        DB::table('relation_pokemon_type')->upsert([
+        $exists = DB::table('relation_pokemon_type')
+          ->where([
+            ['pokemon_id','=',$DBPokemon->getId()],
+            ['type_id','=',$DBPokemonType['type_id']]
+          ])->count();
+        if(!$exists)DB::table('relation_pokemon_type')->upsert([
           'pokemon_id'=>$DBPokemon->getId(),
           'type_id'=>$DBPokemonType['type_id']
         ],[
           'pokemon_id','type_id'
-        ],[]);
+        ]);
         //$out->writeln("=[".$DBPokemonType['type_id']."]=> ".$DBPokemonType['name']);
       }
       /** Inserting relation_pokemon_ability */
       $out->writeln($DBPokemon->getName()." abilities:");
       foreach($DBPokemon->getAbilities() as $DBPokemonAbility){
-        DB::table('relation_pokemon_abilities')->upsert([
+        $exists = DB::table('relation_pokemon_abilities')
+          ->where([
+            ['pokemon_id','=',$DBPokemon->getId()],
+            ['ability_id','=',$DBPokemonAbility]
+          ])->count();
+        if(!$exists)DB::table('relation_pokemon_abilities')->upsert([
           'pokemon_id'=>$DBPokemon->getId(),
           'ability_id'=>$DBPokemonAbility['ability_id'],
           'hidden'=>$DBPokemonAbility['is_hidden'],
@@ -209,7 +219,12 @@ class dbgen
       /** Inserting relation_pokemon_moves */
       $out->writeln($DBPokemon->getName()." moves:");
       foreach($DBPokemon->getMoves() as $DBPokemonMoveID => $DBPokemonMoveLevel){
-        DB::table('relation_pokemon_moves')->upsert([
+        $exists = DB::table('relation_pokemon_moves')
+          ->where([
+            ['pokemon_id','=',$DBPokemon->getId()],
+            ['move_id','=',$DBPokemonMoveID]
+          ])->count();
+        if(!$exists)DB::table('relation_pokemon_moves')->upsert([
           'pokemon_id'=>$DBPokemon->getId(),
           'move_id'=>$DBPokemonMoveID,
           'level'=>$DBPokemonMoveLevel,
@@ -237,7 +252,12 @@ class dbgen
       /** Inserting relation_type_moves */
       $out->writeln($DBType->getName()." moves");
       foreach($DBType->getMoves() as $DBTypeMoveID => $DBTypeMoveName){
-        DB::table('relation_type_moves')->upsert([
+        $exists = DB::table('relation_type_moves')
+          ->where([
+            ['type_id','=',$DBType->getId()],
+            ['move_id','=',$DBTypeMoveID]
+          ])->count();
+        if(!$exists)DB::table('relation_type_moves')->upsert([
           'type_id'=>$DBType->getId(),
           'move_id'=>$DBTypeMoveID,
         ],[
