@@ -27,7 +27,6 @@ export function getAll(filters:FiltersI,cb:(a:PokémonI)=>void):void{
   axios.get(`${url}pokemon?limit=${filters.limit}&offset=${filters.offset}`)
     .then(res=>{
       const serverPokeJSON:PokémonI[] = res.data;
-      console.log(serverPokeJSON);
       serverPokeJSON.forEach(pokemon=>{
         const newTypes:{id:number,name:string,src:string}[] = [];
         Object.keys(pokemon.types).forEach(value=>{
@@ -35,9 +34,6 @@ export function getAll(filters:FiltersI,cb:(a:PokémonI)=>void):void{
           newTypes.push(pokemon.types[+value][0]);
         })
         pokemon.types=newTypes;
-        if(pokemon.id===1){
-          console.log(pokemon);
-        }
         cb(pokemon)
       })
     })
