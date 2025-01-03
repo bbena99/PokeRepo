@@ -12,7 +12,6 @@ interface FiltersI{
 const url='http://127.0.0.1:8000/'
 
 export function getResource(resource:standardPair,cb:(a:any)=>void){
-  console.log(typeof(resource))
   const splitUrl = resource.url.split('/');
   splitUrl.pop()
   const identifier = splitUrl.pop();
@@ -22,6 +21,7 @@ export function getResource(resource:standardPair,cb:(a:any)=>void){
 export function getParse(parse:string,identifier:string,cb:(a:any)=>void){
   axios.get(`${url}${parse}/${identifier}`)
   .then(res=>{
+    console.log(res.data)
     cb(JSON.parse(res.data));
   })
   .catch(err=>{
@@ -32,27 +32,28 @@ export function getParse(parse:string,identifier:string,cb:(a:any)=>void){
 }
 export function getAll(filters:FiltersI,cb:(a:PokémonI)=>void):void{
   axios.get(`${url}pokemon?limit=${filters.limit}&offset=${filters.offset}`)
-  .then(res=>{
-    const strPokeJSON:string[] = res.data;
-    Object.keys(strPokeJSON).forEach(strPoke=>{
-      const poke = JSON.parse(strPokeJSON[+strPoke]);
-      cb(poke);
+    .then(res=>{
+      const strPokeJSON = res.data;
+      console.log(strPokeJSON);
+      Object.keys(strPokeJSON).forEach(strPoke=>{
+        const poke = JSON.parse(strPokeJSON[+strPoke]);
+        cb(poke);
+      })
     })
-  })
-  .catch(err=>{
-    console.warn("err in PokeServe.ts/getAll()");
-    console.error(err);
-    cb(err);
-  });
+    .catch(err=>{
+      console.warn("err in PokeServe.ts/getAll()");
+      console.error(err);
+      cb(err);
+    });
 }
 export function getOne(identifier:string,cb:(a:PokémonI)=>void):void{
   axios.get(`${url}pokemon/${identifier}`)
-  .then(res=>{
-    cb(JSON.parse(res.data));
-  })
-  .catch(err=>{
-    console.warn("err in PokeServe.ts/getOne()");
-    console.error(err);
-    cb(err);
-  });
+    .then(res=>{
+      cb(JSON.parse(res.data));
+    })
+    .catch(err=>{
+      console.warn("err in PokeServe.ts/getOne()");
+      console.error(err);
+      cb(err);
+    });
 }
