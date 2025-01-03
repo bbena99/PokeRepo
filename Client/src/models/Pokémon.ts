@@ -1,130 +1,43 @@
-import { standardPair } from "./";
-
 export interface PokémonI{
-  abilities:{
-    ability: standardPair
-    is_hidden:boolean;
-    slot:number;
-  }[];
-  cries:{
-    latest:string;
-    legacy:string;
-  }
-  forms:standardPair[]
-  game_indices:{
-    game_index:number;
-    version:standardPair;
-  }[];
-  height:number;
-  held_items:{
-    item:standardPair;
-    version_details:{
-      rarity:number;
-      version:standardPair;
-    }[]
-  }[];
   id:number;
-  is_default:boolean;
-  location_area_encounters:string;
-  moves:{
-    move:standardPair;
-    version_group_details:{
-      level_learned_at:number;
-      move_learn_method:standardPair;
-      version_group:standardPair;
-    }[]
-  }[];
   name:string;
+  is_default:boolean;
   order:number;
-  past_abilities:{
-    abilities:{
-      ability: standardPair
-      is_hidden:boolean;
-      slot:number;
-    }[];
-    generation:standardPair;
-  }[];
-  past_types:{
-    generation:standardPair;
-    types:{
-      slot:number;
-      type:standardPair;
-    }[];
-  }[];
-  species:standardPair;
-  sprites:{
-    back_default?:string;
-    back_female?:string;
-    back_shiny_default?:string;
-    back_shiny_female?:string;
-    front_default?:string;
-    front_female?:string;
-    front_shiny_default?:string;
-    front_shiny_female?:string;
-    other:{
-      dream_world?:{
-        front_default?:string;
-        front_female?:string;
-      }
-      home?:{
-        front_default?:string;
-        front_female?:string;
-        front_shiny_default?:string;
-        front_shiny_female?:string;
-      }
-      'official-artwork'?:{
-        front_default?:string;
-        front_shiny?:string;
-      }
-      showdown?:{
-        back_default?:string;
-        back_female?:string;
-        back_shiny_default?:string;
-        back_shiny_female?:string;
-        front_default?:string;
-        front_female?:string;
-        front_shiny_default?:string;
-        front_shiny_female?:string;
-      }
-    }
-  };
-  stats:{
-    base_stat:number;
-    effort:number;
-    stat:standardPair;
-  }[];
+  front_sprite:string;
+  back_sprite:string;
   types:{
-    slot:number;
-    type:standardPair;
+    id:number;
+    name:string;
+    src:string;
   }[];
-  weight:number;
+  stats:{
+    hp:number;
+    attack:number;
+    defense:number;
+    'special-attack':number;
+    'special-defense':number;
+    speed:number;
+    total?:number;
+  }
 }
 
 export function emptyPokemon():PokémonI{
   return {
-    abilities:[],
-    cries:{
-      latest: "",
-      legacy: ""
-    },
-    forms:[],
-    game_indices:[],
-    height:-1,
-    held_items:[],
     id:-1,
-    is_default:false,
-    location_area_encounters:'',
-    moves:[],
     name:'',
+    is_default:false,
     order:-1,
-    past_abilities:[],
-    past_types:[],
-    species:{name:'',url:''},
-    sprites:{
-      other:{}
-    },
-    stats:[],
+    front_sprite:'',
+    back_sprite:'',
     types:[],
-    weight:-1
+    stats:{
+      hp:-1,
+      attack:-1,
+      defense:-1,
+      'special-attack':-1,
+      'special-defense':-1,
+      speed:-1,
+      total:-1
+    }
   }
 }

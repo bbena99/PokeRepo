@@ -9,7 +9,7 @@ const route = useRoute();
 const query = route.query;
 const pokeList = ref<Map<number,PokémonI>>(new Map());
 
-getAll({offset:+(query.offset??0),limit:+(query.limit??50)},(cb)=>{
+getAll({offset:+(query.offset??0),limit:+(query.limit??50)},(cb:PokémonI)=>{
   pokeList.value.set(cb.id,cb);
 });
 </script>
