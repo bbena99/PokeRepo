@@ -20,18 +20,14 @@ class PokeController{
     $this->offset = $request->query('offset','0');
     $dbPokemon = DB::table('pokemon')->get();
     foreach($dbPokemon as $pokemon){
-      $dbtypes = DB::table('relation_pokemon_type')
-      ->where('pokemon_id','=',$pokemon->id)
-      ->join('types','relation_pokemon_type.type_id','=','types.id')
-      ->get();
-    foreach($dbtypes as $type){
-      unset($type->pokemon_id);
-      unset($type->type_id);
-    }
-    $pokemon->types = $dbtypes;
+      $pokemon->types = DB::table('relation_pokemon_type')
+        ->where('pokemon_id','=',$pokemon->id)
+        ->join('types','relation_pokemon_type.type_id','=','types.id')
+        ->select('types.*')
+        ->get();
 
-      $dbstats = DB::table('relation_pokemon_stat')->where('pokemon_id','=',$pokemon->id)->get();
-      foreach($dbstats as $dbstat){
+      $dbStats = DB::table('relation_pokemon_stat')->where('pokemon_id','=',$pokemon->id)->get();
+      foreach($dbStats as $dbstat){
         $pokemon->stats[$dbstat->stat_name]=$dbstat->base_stat;
       }
     }
@@ -43,30 +39,27 @@ class PokeController{
     if(filter_var($identifier, FILTER_VALIDATE_INT))$poke = DB::table('pokemon')->where('id','=',$identifier)->get()[0];
     else $poke = DB::table('pokemon')->where('name','=',$identifier)->get()[0];
 
-    $dbtypes = DB::table('relation_pokemon_type')
+    $poke->types = DB::table('relation_pokemon_type')
       ->where('pokemon_id','=',$poke->id)
       ->join('types','relation_pokemon_type.type_id','=','types.id')
+      ->select('types.*')
       ->get();
-    foreach($dbtypes as $type){
-      unset($type->pokemon_id);
-      unset($type->type_id);
-    }
-    $poke->types = $dbtypes;
 
-    $dbstats = DB::table('relation_pokemon_stat')->where('pokemon_id','=',$poke->id)->get();
-    foreach($dbstats as $dbstat){
+    $dbStats = DB::table('relation_pokemon_stat')->where('pokemon_id','=',$poke->id)->get();
+    foreach($dbStats as $dbstat){
       $poke->stats[$dbstat->stat_name]=$dbstat->base_stat;
     }
 
-    $dbabilities = DB::table('relation_pokemon_abilities')
+    $poke->abilities = DB::table('relation_pokemon_abilities')
       ->where('pokemon_id','=',$poke->id)
       ->join('abilities','relation_pokemon_abilities.ability_id','=','abilities.id')
+      ->select('abilities.*','relation_pokemon_abilities.hidden')
       ->get();
-    foreach($dbabilities as $ability){
-      unset($ability->pokemon_id);
-      unset($ability->ability_id);
-    }
-    $poke->abilities = $dbabilities;
+
+    // $dbMoves = DB::table('relation_pokemon_moves')
+    //   ->where('pokemon_id','=',$poke->id)
+    //   ->join('moves','relation_pokemon_moves.move_id','=','moves.id')
+    //   ->get();
 
     return response()->json($poke)
       ->header('Access-Control-Allow-Origin', '*')
