@@ -8,19 +8,12 @@ use PokePHP\PokeApi;
 use Illuminate\Support\Facades\DB;
 
 class PokeController{
-  protected $api;
+  protected $output;
   protected $limit;
   protected $offset;
 
   public function __construct(){
-    $this->api = new PokeApi();
-  }
-  public function getResource($parse, $identifier){
-    $endpoint = $parse."/".$identifier;
-    return response()->json($this->api->resourceList($endpoint,null,null))
-      ->header('Access-Control-Allow-Origin', '*')
-      ->header('Access-Control-Allow-Methods', 'GET');
-
+    $this->output = new \Symfony\Component\Console\Output\ConsoleOutput();//Using the console to keep track of the progress of the insertions
   }
   public function getAll(Request $request){
     $this->limit = $request->query('limit','20');
@@ -43,17 +36,34 @@ class PokeController{
       ->header('Access-Control-Allow-Methods', 'GET');
   }
   public function getOne($identifier){
-    $poke = DB::table('pokemon')->where('id','=',$identifier)->get()[0];
-    $types = DB::table('relation_pokemon_type')->where('pokemon_id','=',$poke->id)->get();
-    foreach($types as $type){
-      $dbtype = DB::table('types')->where('id','=',$type->type_id)->get();
-      unset($dbtype["id"]);
-      $poke->types[(int)$type->type_id]=$dbtype;
+    if(is_int(+$identifier))$poke = DB::table('pokemon')->where('id','=',$identifier)->get()[0];
+    else $poke = DB::table('pokemon')->where('name','=',$identifier)->get()[0];
+
+    $dbtypes = DB::table('relation_pokemon_type')
+      ->where('pokemon_id','=',$poke->id)
+      ->join('types','relation_pokemon_type.type_id','=','types.id')
+      ->get();
+    foreach($dbtypes as $type){
+      unset($type->pokemon_id);
+      unset($type->type_id);
     }
+    $poke->types = $dbtypes;
+
     $dbstats = DB::table('relation_pokemon_stat')->where('pokemon_id','=',$poke->id)->get();
     foreach($dbstats as $dbstat){
       $poke->stats[$dbstat->stat_name]=$dbstat->base_stat;
     }
+
+    $dbabilities = DB::table('relation_pokemon_abilities')
+      ->where('pokemon_id','=',$poke->id)
+      ->join('abilities','relation_pokemon_abilities.ability_id','=','abilities.id')
+      ->get();
+    foreach($dbabilities as $ability){
+      unset($ability->pokemon_id);
+      unset($ability->ability_id);
+    }
+    $poke->abilities = $dbabilities;
+
     return response()->json($poke)
       ->header('Access-Control-Allow-Origin', '*')
       ->header('Access-Control-Allow-Methods', 'GET');
