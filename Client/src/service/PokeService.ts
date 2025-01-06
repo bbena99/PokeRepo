@@ -28,12 +28,6 @@ export function getAll(filters:FiltersI,cb:(a:PokémonI)=>void):void{
     .then(res=>{
       const serverPokeJSON:PokémonI[] = res.data;
       serverPokeJSON.forEach(pokemon=>{
-        const newTypes:{id:number,name:string,src:string}[] = [];
-        Object.keys(pokemon.types).forEach(value=>{
-          //@ts-ignore
-          newTypes.push(pokemon.types[+value][0]);
-        })
-        pokemon.types=newTypes;
         cb(pokemon)
       })
     })
@@ -46,7 +40,9 @@ export function getAll(filters:FiltersI,cb:(a:PokémonI)=>void):void{
 export function getOne(identifier:string,cb:(a:PokémonI)=>void):void{
   axios.get(`${url}pokemon/${identifier}`)
     .then(res=>{
-      cb(JSON.parse(res.data));
+      const pokemon:PokémonI = res.data;
+      console.log(pokemon);
+      cb(pokemon);
     })
     .catch(err=>{
       console.warn("err in PokeServe.ts/getOne()");
