@@ -56,10 +56,12 @@ class PokeController{
       ->select('abilities.*','relation_pokemon_abilities.hidden')
       ->get();
 
-    // $dbMoves = DB::table('relation_pokemon_moves')
-    //   ->where('pokemon_id','=',$poke->id)
-    //   ->join('moves','relation_pokemon_moves.move_id','=','moves.id')
-    //   ->get();
+    $poke->moves = DB::table('relation_pokemon_moves')
+      ->where('pokemon_id','=',$poke->id)
+      ->join('moves','relation_pokemon_moves.move_id','=','moves.id')
+      ->select('moves.name','moves.id','moves.damage_type','moves.accuracy','moves.power','moves.pp','relation_pokemon_moves.level')
+      ->orderBy('level','desc')
+      ->get();
 
     return response()->json($poke)
       ->header('Access-Control-Allow-Origin', '*')
