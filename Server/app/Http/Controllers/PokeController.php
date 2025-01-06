@@ -40,7 +40,7 @@ class PokeController{
       ->header('Access-Control-Allow-Methods', 'GET');
   }
   public function getOne($identifier){
-    if(is_int(+$identifier))$poke = DB::table('pokemon')->where('id','=',$identifier)->get()[0];
+    if(filter_var($identifier, FILTER_VALIDATE_INT))$poke = DB::table('pokemon')->where('id','=',$identifier)->get()[0];
     else $poke = DB::table('pokemon')->where('name','=',$identifier)->get()[0];
 
     $dbtypes = DB::table('relation_pokemon_type')
