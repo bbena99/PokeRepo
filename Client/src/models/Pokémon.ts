@@ -19,6 +19,21 @@ export interface PokémonI{
     speed:number;
     total?:number;
   }
+  abilities:{
+    id:number;
+    name:string;
+    hidden:boolean;
+    effect_entries:string;
+  }[];
+  moves:{
+    id:number;
+    name:string;
+    damage_type:number;
+    accuracy:number;
+    power:number;
+    pp:number;
+    level:number;
+  }[];
 }
 
 export function emptyPokemon():PokémonI{
@@ -38,6 +53,8 @@ export function emptyPokemon():PokémonI{
       'special-defense':-1,
       speed:-1,
       total:-1
-    }
+    },
+    abilities:[],
+    moves:[]
   }
 }
