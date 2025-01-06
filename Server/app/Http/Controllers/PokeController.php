@@ -20,12 +20,16 @@ class PokeController{
     $this->offset = $request->query('offset','0');
     $dbPokemon = DB::table('pokemon')->get();
     foreach($dbPokemon as $pokemon){
-      $types = DB::table('relation_pokemon_type')->where('pokemon_id','=',$pokemon->id)->get();
-      foreach($types as $type){
-        $dbtype = DB::table('types')->where('id','=',$type->type_id)->get();
-        unset($dbtype["id"]);
-        $pokemon->types[(int)$type->type_id]=$dbtype;
-      }
+      $dbtypes = DB::table('relation_pokemon_type')
+      ->where('pokemon_id','=',$pokemon->id)
+      ->join('types','relation_pokemon_type.type_id','=','types.id')
+      ->get();
+    foreach($dbtypes as $type){
+      unset($type->pokemon_id);
+      unset($type->type_id);
+    }
+    $pokemon->types = $dbtypes;
+
       $dbstats = DB::table('relation_pokemon_stat')->where('pokemon_id','=',$pokemon->id)->get();
       foreach($dbstats as $dbstat){
         $pokemon->stats[$dbstat->stat_name]=$dbstat->base_stat;
