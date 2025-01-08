@@ -41,7 +41,6 @@ export function getOne(identifier:string,cb:(a:PokémonI)=>void):void{
   axios.get(`${url}pokemon/${identifier}`)
     .then(res=>{
       const pokemon:PokémonI = res.data;
-      console.log(pokemon);
       cb(pokemon);
     })
     .catch(err=>{
