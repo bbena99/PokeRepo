@@ -20,15 +20,18 @@ switch(obj.mult){
 </script>
 
 <template>
-  <div :class="'w-28 h-5/6 rounded-full pr-2 flex justify-between items-center '+obj.color">
+  <div :class="'cust-container w-28 h-5/6 rounded-full pr-2 flex justify-between items-center overflow-hidden '+obj.color">
     <img 
       :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/'+type.url.split('/')[6]+'.png'"
       :alt="type.name+'.png'"
-      class="w-20 h-full rounded-full"
+      class="w-20 h-5 rounded-full"
     >
     {{ obj.mult+'x' }}
   </div>
 </template>
 
 <style scoped>
+.cust-container{
+  padding-top: -1.25rem;
+}
 </style>
