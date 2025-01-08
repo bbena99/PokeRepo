@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { standardPair } from '../models';
 
 const props = defineProps(['mult','type']);
 const obj = {mult:(+props.mult),color:''};
-const type:standardPair = props.type;
 switch(obj.mult){
   case 0:
     obj.color='bg-stone-900 text-gray-300';
@@ -22,7 +20,7 @@ switch(obj.mult){
 </script>
 
 <template>
-  <div :class="'w-28 h-3/6 rounded-full pr-2 flex justify-between items-center '+obj.color">
+  <div :class="'w-28 h-5/6 rounded-full pr-2 flex justify-between items-center '+obj.color">
     <img 
       :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/'+type.url.split('/')[6]+'.png'"
       :alt="type.name+'.png'"
