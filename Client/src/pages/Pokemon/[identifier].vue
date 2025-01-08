@@ -14,31 +14,26 @@ const typeData = ref<TypeI[]>([]);
 
 getOne(route.params.identifier,(cb:PokémonI)=>{
   curPokemon.value=cb;
-  curPokemon.value.types.forEach((t)=>{
-    getParse('type',t.type.name,(type:TypeI)=>{
-      typeData.value.push(type);
-    });
-  })
 });
 </script>
 
 <template>
   <div class="w-full flex justify-center items-center">
     <div class="w-full h-full xl:w-2/3 overflow-y-scroll">
-      <div class="w-full p-4 rounded-lg border-2 border-bg2 mt-3 flex flex-wrap bg-bg1 shadow-lg">
+      <div class="w-full p-4 rounded-lg border-2 border-bg2 mt-3 flex flex-wrap bg-bg1 shadow-xl">
         <div class="w-2/3 flex flex-wrap">
           <h1 class="w-full text-header text-7xl">
             {{ curPokemon.name.charAt(0).toUpperCase()+curPokemon.name.slice(1) }}
           </h1>
           <img 
             v-for="t in curPokemon.types"
-            :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/'+t.type.url.split('/')[6]+'.png'"
-            :alt="t.type.name+'.png'"
+            :src="t.src"
+            :alt="t.name+'.png'"
             class="max-h-11 md:m-4"
           >
         </div>
-        <img class="w-1/6 bg-bg2 rounded-s-full" :src="curPokemon.sprites.front_default" alt="front-sprite.png">
-        <img class="w-1/6 bg-bg2 rounded-e-full" :src="curPokemon.sprites.back_default" alt="back-default.png">
+        <img class="w-1/6 bg-bg2 rounded-s-full" :src="curPokemon.front_sprite" alt="front-sprite.png">
+        <img class="w-1/6 bg-bg2 rounded-e-full" :src="curPokemon.back_sprite" alt="back-default.png">
         <div class="w-full">
           <span class="text-header text-2xl">
             Damage relations:
