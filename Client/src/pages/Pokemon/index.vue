@@ -21,8 +21,8 @@ getAll({offset:+(query.offset??0),limit:+(query.limit??50)},(cb:PokémonI)=>{
         
       </div>
     </div>
-    <ul style="height: calc(100% - 4rem);" class="w-full xl:w-3/4 p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 overflow-y-scroll overflow-x-hidden">
-      <li v-for="[_,value] in pokeList" :key="value.name" class="group w-full h-58 p-2 col-span-1 z-0 transition-all ease-in-out hover:scale-[1.2] hover:z-10">
+    <ul style="height: calc(100% - 4rem);" class="w-full xl:w-3/4 p-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 overflow-y-scroll overflow-x-hidden">
+      <li v-for="[_,value] in pokeList" :key="value.name" class="group w-full h-58 col-span-1 z-0 transition-all ease-in-out sm:hover:scale-110 hover:z-10">
         <RouterLink :to="'pokemon/'+value.name" class="w-full h-full drop-shadow-md">
           <PokeCard :pokemon="value"/>
         </RouterLink>
