@@ -30,12 +30,12 @@ getOne(route.params.identifier,(cb:PokémonI)=>{
             v-for="t in curPokemon.types"
             :src="t.src"
             :alt="t.name+'.png'"
-            class="max-h-11 md:m-4"
+            class="max-h-12 md:mx-4"
           >
         </div>
-        <div class="flex justify-center w-1/3 h-full bg-bg2 rounded-full">
-          <img class="w-1/2" :src="curPokemon.front_sprite" alt="front-sprite.png">
-          <img class="w-1/2" :src="curPokemon.back_sprite" v-if="curPokemon.back_sprite" alt="back-default.png">
+        <div class="flex justify-center w-1/3 bg-bg2 rounded-full">
+          <img class="w-1/2 aspect-square" :src="curPokemon.front_sprite" alt="front-sprite.png">
+          <img class="w-1/2 aspect-square" :src="curPokemon.back_sprite" v-if="curPokemon.back_sprite" alt="back-default.png">
         </div>
       </div>
       <!--Pokemon Stats-->
