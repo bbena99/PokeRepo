@@ -10,10 +10,20 @@ import DamageMultiplier from '../../components/DamageMultiplier.vue';
 const route = useRoute('/Pokemon/[identifier]');
 
 const curPokemon = ref<PokémonI>(emptyPokemon());
+const baseStatTotal = ref<number>(0);
 const typeData = ref<TypeI[]>([]);
+const STAT_COLOR = [
+  'bg-green-500', //hp
+  'bg-red-600',//atk
+  'bg-blue-600',//def
+  'bg-yellow-400',  //sp atk
+  'bg-purple-500',//sp def
+  'bg-cyan-500',  //spd
+]
 
 getOne(route.params.identifier,(cb:PokémonI)=>{
-  curPokemon.value=cb;
+  curPokemon.value=cb
+  baseStatTotal.value = Object.values(curPokemon.value.stats).reduce((acc, value)=>acc+value,0);
 });
 </script>
 
@@ -40,6 +50,30 @@ getOne(route.params.identifier,(cb:PokémonI)=>{
       </div>
       <!--Pokemon Stats-->
       <div class="w-full p-4 col-span-4 rounded-lg border-2 border-bg2 mt-3 flex flex-wrap bg-bg1 shadow-xl">
+        <div
+        v-for="(stat,key,index) in curPokemon.stats"
+        :id="curPokemon.name+'_'+key"
+        :key="curPokemon.name+key"
+        class="flex justify-between max-w-full h-6 m-1 pr-2 text-bg1 bg-text rounded-full overflow-hidden"
+        style="width: calc(50% - 0.5rem);"
+      >
+        <div
+          :class="'h-full pl-0.5 flex items-center text-header rounded-full '+STAT_COLOR[index]"
+          :style="{'width': (stat!/210*100+'\%')}"
+        >
+          {{ stat }}
+        </div>
+        {{
+        //@ts-ignore This method does exist on strings, and works as intended.
+        key.replaceAll('-',' ')
+         }}
+      </div>
+      <div class="flex justify-between w-full h-6 m-1 pr-2 text-bg1 bg-text rounded-full overflow-hidden">
+        <div :style="{'width': ((baseStatTotal-175)/700*100+'\%')}" class="h-full pl-1 flex items-center text-header rounded-e-full bg-bg2">
+          {{ baseStatTotal }}
+        </div>
+        base stat total
+      </div>
       </div>
       <!--Pokemon damage taken-->
       <div class="w-full p-4 rounded-lg border-2 border-bg2 mt-3 flex flex-wrap bg-bg1 shadow-xl">
