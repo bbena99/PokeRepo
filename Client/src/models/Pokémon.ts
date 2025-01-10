@@ -11,13 +11,12 @@ export interface PokémonI{
     src:string;
   }[];
   stats:{
-    hp:number;
-    attack:number;
-    defense:number;
-    'special-attack':number;
-    'special-defense':number;
-    speed:number;
-    total?:number;
+    "hp":number;
+    "attack":number;
+    "defense":number;
+    "special-attack":number;
+    "special-defense":number;
+    "speed":number;
   }
   abilities:{
     id:number;
@@ -46,13 +45,12 @@ export function emptyPokemon():PokémonI{
     back_sprite:'',
     types:[],
     stats:{
-      hp:-1,
-      attack:-1,
-      defense:-1,
-      'special-attack':-1,
-      'special-defense':-1,
-      speed:-1,
-      total:-1
+      "hp":-1,
+      "attack":-1,
+      "defense":-1,
+      "special-attack":-1,
+      "special-defense":-1,
+      "speed":-1
     },
     abilities:[],
     moves:[]
