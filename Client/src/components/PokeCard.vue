@@ -11,8 +11,7 @@ const STAT_COLOR = [
   'bg-purple-500',//sp def
   'bg-cyan-500',  //spd
 ]
-const baseStatTotal = pokemon.stats.total!;
-delete pokemon.stats.total;
+let baseStatTotal = Object.values(pokemon.stats).reduce((acc, value)=>acc+value,0);
 </script>
 
 <template>
