@@ -60,12 +60,9 @@ class dbgen
       // return response()->json($pokemonJSON->moves);
       $pokemon->setMoves($pokemonJSON->moves);
       /** Start of pokemon => stats */
-      $base_stat_total=0;
       foreach($pokemonJSON->stats as $stat){
-        $base_stat_total+=$stat->base_stat;
         $pokemon->setSingleStat($stat->stat->name,$stat->base_stat);
       }
-      $pokemon->setSingleStat('total',$base_stat_total);
       $pokemonArray[$pokemon->getId()]=$pokemon;
       $pokemon->minimalPrint();
     }
