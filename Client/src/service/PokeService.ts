@@ -9,20 +9,8 @@ interface FiltersI{
   type?:number;
 }
 
-const url='http://127.0.0.1:8000/'
+const url='http://127.0.0.1:8000/';
 
-export function getParse(parse:string,identifier:string,cb:(a:any)=>void){
-  axios.get(`${url}${parse}/${identifier}`)
-  .then(res=>{
-    console.log(res.data)
-    cb(JSON.parse(res.data));
-  })
-  .catch(err=>{
-    console.warn("err in PokeServe.ts/getResource()");
-    console.error(err);
-    cb(err);
-  });
-}
 export function getAll(filters:FiltersI,cb:(a:PokémonI)=>void):void{
   axios.get(`${url}pokemon?limit=${filters.limit}&offset=${filters.offset}`)
     .then(res=>{
@@ -46,6 +34,6 @@ export function getOne(identifier:string,cb:(a:PokémonI)=>void):void{
     .catch(err=>{
       console.warn("err in PokeServe.ts/getOne()");
       console.error(err);
-      cb(err);
+      cb(err.message);
     });
 }
