@@ -6,6 +6,7 @@ import { getOne, getParse } from '../../service';
 import { emptyPokemon, PokémonI, TypeI } from '../../models';
 import { TYPES } from '../../constants';
 import DamageMultiplier from '../../components/DamageMultiplier.vue';
+import { RouterLink } from 'vue-router';
 
 const route = useRoute('/Pokemon/[identifier]');
 
@@ -46,9 +47,45 @@ getOne(route.params.identifier, (cb: PokémonI) => {
       </div>
       <!--Pokemon Abilities-->
       <div class="w-full p-4 col-span-4 rounded-lg border-2 border-bg2 mt-3 flex flex-wrap bg-bg1 shadow-xl">
-        <span class="text-header text-lg font-semibold w-full">
-          {{ curPokemon.name.charAt(0).toUpperCase() + curPokemon.name.slice(1) }}'s abilities:
-        </span>
+        <table>
+          <thead>
+            <tr class="w-full">
+              <th colspan="3">
+                <span class="text-header text-lg font-semibold w-full">
+                  {{ curPokemon.name.charAt(0).toUpperCase() + curPokemon.name.slice(1) }}'s abilities:
+                </span>
+              </th>
+            </tr>
+            <tr>
+              <th>
+                Name
+              </th>
+              <th>
+                hidden
+              </th>
+              <th>
+                Effect
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="ability in curPokemon.abilities"
+            >
+              <td>
+                <RouterLink :to="'ability/'+ability.name">
+                  {{ ability.name }}
+                </RouterLink>
+              </td>
+              <td>
+                {{ ability.hidden?'true':'false' }}
+              </td>
+              <td>
+                {{ ability.effect_entries }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       <!--Pokemon damage taken-->
       <div class="row-span-2 w-full p-4 rounded-lg border-2 border-bg2 mt-3 flex flex-wrap bg-bg1 shadow-xl">
