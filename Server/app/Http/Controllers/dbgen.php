@@ -72,10 +72,12 @@ class dbgen
     foreach($abilityNamesArray->results as $abilityStdPair){
       $abilityJSON = json_decode(Http::get($abilityStdPair->url));
       $ability = new Ability();
-      $effectEntry = end($abilityJSON->effect_entries);
+      foreach($abilityJSON->effect_entries as $effect){
+        if($effect->language->name == 'en')$effectEntry = $effect->short_effect;
+      }
       $ability->setID($abilityJSON->id)
               ->setName($abilityJSON->name)
-              ->setEffectEntry($effectEntry->short_effect??"");
+              ->setEffectEntry($effectEntry);
       $ability->minimalPrint();
       $abilityArray[$ability->getID()]=$ability;
     }
@@ -211,7 +213,7 @@ class dbgen
         ],[
           'hidden'
         ]);
-        //$out->writeln("=[".$DBPokemonAbility['ability_id']."]=> ".$DBPokemonAbility['is_hidden']);
+        $out->writeln("=[".$DBPokemonAbility['ability_id']."]=> ".$DBPokemonAbility['is_hidden']);
       }
       /** Inserting relation_pokemon_moves */
       $out->writeln($DBPokemon->getName()." moves:");
@@ -283,24 +285,6 @@ class dbgen
         //$out->writeln("=[".$DBTypeMoveID."]=> ".$DBTypeMoveName);
       }
       /** Inserting relation_damage */
-      $out->writeln($DBType->getName()." double damage");
-      foreach($DBType->getDoubleDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
-        $exists = DB::table('relation_damage')
-          ->where([
-            ['dealer_id','=',$DBType->getId()],
-            ['receiver_id','=',$DBReceiverTypeID]
-          ])->count();
-        if(!$exists)DB::table('relation_damage')->upsert([
-          'dealer_id'=>$DBType->getId(),
-          'receiver_id'=>$DBReceiverTypeID,
-          'damageable'=>true
-        ],[
-          'dealer_id','receiver_id'
-        ],[
-          'damageable'
-        ]);
-        //$out->writeln("=[".$DBType->getId()."]=> ".$DBReceiverTypeID." = 2");
-      }
       $out->writeln($DBType->getName()." half damage");
       foreach($DBType->getHalfDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
         $exists = DB::table('relation_damage')
