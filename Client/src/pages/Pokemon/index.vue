@@ -18,7 +18,7 @@ getAll({offset:+(query.offset??0),limit:+(query.limit??50)},(cb:PokémonI)=>{
   <div class="w-full h-full flex flex-wrap justify-center">
     <div id="search_bar" class="w-full h-16 flex justify-center items-center">
       <div class="w-3/4 h-full bg-bg2">
-        
+        Search bar in progress
       </div>
     </div>
     <ul style="height: calc(100% - 4rem);" class="w-full xl:w-3/4 p-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 overflow-y-scroll overflow-x-hidden">
