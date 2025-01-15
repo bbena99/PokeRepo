@@ -9,11 +9,7 @@ export interface PokémonI{
     id:number;
     name:string;
     src:string;
-    relation:{
-      dealer_id:number;
-      receiver_id:number;
-      damageable:boolean;
-    }[];
+    relation:boolean[];
   }[];
   stats:{
     "hp":number;
