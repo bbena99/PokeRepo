@@ -45,9 +45,12 @@ class PokeController{
       ->select('types.*')
       ->get();
     foreach($poke->types as $type){
-      $type->releation = DB::table('relation_damage')
+      $dbRelations = DB::table('relation_damage')
         ->where('receiver_id','=',$type->id)
         ->get();
+      foreach($dbRelations as $relation){
+        $type->relations[$relation->dealer_id] = $relation->damageable;
+      }
     }
     $dbStats = DB::table('relation_pokemon_stat')->where('pokemon_id','=',$poke->id)->get();
     foreach($dbStats as $dbstat){
