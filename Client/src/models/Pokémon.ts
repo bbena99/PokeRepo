@@ -9,7 +9,7 @@ export interface PokémonI{
     id:number;
     name:string;
     src:string;
-    relation:boolean[];
+    relations:boolean[];
   }[];
   stats:{
     "hp":number;
