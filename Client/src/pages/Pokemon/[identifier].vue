@@ -16,12 +16,12 @@ const state = ref<number>(0);
 const curPokemon = ref<PokémonI>(emptyPokemon());
 const baseStatTotal = ref<number>(0);
 const STAT_COLOR = [
-  'bg-green-500', //hp
-  'bg-red-600',//atk
-  'bg-blue-600',//def
+  'bg-green-500',   //hp
+  'bg-red-600',     //atk
+  'bg-blue-600',    //def
   'bg-yellow-400',  //sp atk
-  'bg-purple-500',//sp def
-  'bg-cyan-500',  //spd
+  'bg-purple-500',  //sp def
+  'bg-cyan-500',    //spd
 ]
 
 getOne(route.params.identifier, (cb: PokémonI) => {
@@ -47,8 +47,7 @@ getOne(route.params.identifier, (cb: PokémonI) => {
         </h1>
         <div class="flex row-span-2 justify-center w-full bg-bg2 rounded-full">
           <img class="w-1/2 h-full aspect-square" :src="curPokemon.front_sprite" alt="front-sprite.png">
-          <img class="w-1/2 h-full aspect-square" :src="curPokemon.back_sprite" v-if="curPokemon.back_sprite"
-          alt="back-default.png">
+          <img class="w-1/2 h-full aspect-square" :src="curPokemon.back_sprite" v-if="curPokemon.back_sprite" alt="back-default.png">
         </div>
         <div class="flex col-span-2">
           <img v-for="t in curPokemon.types" :src="t.src" :alt="t.name + '.png'" class="max-h-12 md:mx-4">
@@ -56,46 +55,21 @@ getOne(route.params.identifier, (cb: PokémonI) => {
       </div>
       <!--Pokemon Abilities-->
       <div class="w-full p-4 col-span-4 rounded-lg border-2 border-bg2 mt-3 flex flex-wrap bg-bg1 shadow-xl">
-        <table>
-          <thead>
-            <tr class="w-full">
-              <th colspan="3">
-                <span class="text-header text-lg font-semibold w-full">
-                  {{ curPokemon.name.charAt(0).toUpperCase() + curPokemon.name.slice(1) }}'s Abilities:
-                </span>
-              </th>
-            </tr>
-            <tr class="*:border-2 *:border-text *:text-header *:bg-bg2">
-              <th>
-                Name
-              </th>
-              <th>
-                hidden
-              </th>
-              <th>
-                Effect
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              class="*:border-2 *:border-text *:p-1"
-              v-for="ability in curPokemon.abilities"
-            >
-              <td>
-                <RouterLink :to="'../Abilities/'+ability.name" class="hover:text-hover underline">
-                  {{ ability.name.charAt(0).toUpperCase() + ability.name.slice(1) }}
-                </RouterLink>
-              </td>
-              <td>
-                {{ ability.hidden?'true':'false' }}
-              </td>
-              <td>
-                {{ ability.effect_entries }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <span class="h-8 mt-4 ml-4 text-header text-2xl">
+          {{ curPokemon.name.charAt(0).toUpperCase() + curPokemon.name.slice(1) }}'s Abilities
+        </span>
+        <div class="grid grid-cols-12 items-center w-full rounded-xl border-2 border-text overflow-hidden [&>span]:text-header [&>span]:h-full [&>span]:p-2 [&>span]:flex [&>span]:items-center [&>span]:bg-bg2">
+          <span class="border-r-2 border-header col-span-2">Name:</span>
+          <span class="border-r-2 border-header col-span-2">Hidden:</span>
+          <span class="col-span-8">Effect:</span>
+          <div v-for="ability in curPokemon.abilities" class="grid grid-cols-12 items-center col-span-12 w-full h-full border-t-2 border-header *:p-2">
+            <RouterLink :to="'../Abilities/'+ability.name" class="col-span-2 h-full flex items-center border-r-2 border-header underline hover:text-hover">
+              {{ ability.name }}
+            </RouterLink>
+            <span class="flex items-center h-full border-r-2 border-header col-span-2">{{ ability.hidden?'true':'false' }}</span>
+            <span class="col-span-8">{{ ability.effect_entries }}</span>
+          </div>
+        </div>
       </div>
       <!--Pokemon damage taken-->
       <div class="row-span-2 w-full p-4 rounded-lg border-2 border-bg2 mt-3 flex flex-wrap bg-bg1 shadow-xl">
@@ -108,7 +82,7 @@ getOne(route.params.identifier, (cb: PokémonI) => {
       </div>
       <!--Pokemon Stats-->
       <div class="w-full p-4 col-span-4 rounded-lg border-2 border-bg2 mt-3 flex flex-wrap bg-bg1 shadow-xl">
-        <span class="text-header text-lg font-semibold w-full">
+        <span class="text-header text-2xl font-semibold w-full">
           {{ curPokemon.name.charAt(0).toUpperCase() + curPokemon.name.slice(1) }}'s Stats:
         </span>
         <div v-for="(stat, key, index) in curPokemon.stats" :id="curPokemon.name + '_' + key" :key="curPokemon.name + key"
@@ -133,7 +107,7 @@ getOne(route.params.identifier, (cb: PokémonI) => {
       </div>
     </div>
   </div>
-  <PageNotFound v-if="state===-1" header="Pokemon" message="Sent from /Pokemon/[Identifier]"/>
+  <PageNotFound v-if="state===-1" header="Pokemon" :message="`Couldn't find the data for ${route.params.identifier}`"/>
 </template>
 
 <style scoped></style>
