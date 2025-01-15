@@ -15,7 +15,6 @@ const route = useRoute('/Pokemon/[identifier]');
 const state = ref<number>(0);
 const curPokemon = ref<PokémonI>(emptyPokemon());
 const baseStatTotal = ref<number>(0);
-const typeData = ref<TypeI[]>([]);
 const STAT_COLOR = [
   'bg-green-500', //hp
   'bg-red-600',//atk
@@ -47,11 +46,11 @@ getOne(route.params.identifier, (cb: PokémonI) => {
           {{ curPokemon.name.charAt(0).toUpperCase() + curPokemon.name.slice(1) }}
         </h1>
         <div class="flex row-span-2 justify-center w-full bg-bg2 rounded-full">
-          <img class="w-1/2 aspect-square" :src="curPokemon.front_sprite" alt="front-sprite.png">
-          <img class="w-1/2 aspect-square" :src="curPokemon.back_sprite" v-if="curPokemon.back_sprite"
+          <img class="w-1/2 h-full aspect-square" :src="curPokemon.front_sprite" alt="front-sprite.png">
+          <img class="w-1/2 h-full aspect-square" :src="curPokemon.back_sprite" v-if="curPokemon.back_sprite"
           alt="back-default.png">
         </div>
-        <div>
+        <div class="flex col-span-2">
           <img v-for="t in curPokemon.types" :src="t.src" :alt="t.name + '.png'" class="max-h-12 md:mx-4">
         </div>
       </div>
