@@ -3,19 +3,24 @@ import { useRoute } from 'vue-router';
 import { getAll } from '../../service';
 import { ref } from 'vue';
 import PokeCard from '../../components/PokeCard.vue';
+import Loading from '../../components/Loading.vue';
 import { PokémonI } from '../../models';
 
 const route = useRoute();
 const query = route.query;
+
+const state = ref<number>(0);
 const pokeList = ref<Map<number,PokémonI>>(new Map());
 
 getAll({offset:+(query.offset??0),limit:+(query.limit??50)},(cb:PokémonI)=>{
   pokeList.value.set(cb.id,cb);
+  state.value=1
 });
 </script>
 
 <template>
-  <div class="w-full h-full flex flex-wrap justify-center">
+  <Loading v-if="state===0"/>
+  <div v-if="state===1" class="w-full h-full flex flex-wrap justify-center">
     <div id="search_bar" class="w-full h-16 flex justify-center items-center">
       <div class="w-3/4 h-full bg-bg2">
         Search bar in progress
