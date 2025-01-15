@@ -70,7 +70,7 @@ return new class extends Migration
     Schema::create('relation_damage', function(Blueprint $table){
       $table->foreignId('dealer_id');
       $table->foreignId('receiver_id');
-      $table->boolean('damageable');//If false, deals no damage. If true, deals double damage.
+      $table->tinyInteger('damageable');//If 0, deals no damage. If 1, deals half damage, If 2, deals double damage.
     });
   }
 

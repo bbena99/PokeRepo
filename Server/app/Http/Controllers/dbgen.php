@@ -25,7 +25,7 @@ class dbgen
     set_time_limit(50000000);
     if(env('INITKEY',NULL)!=$key) return response()->json(['error'=>'Unauthorized access'], Response::HTTP_UNAUTHORIZED);
     /** Start of pokemon */
-    $pokemonNamesArray = json_decode($this->api->resourceList('pokemon',3000,0));
+    $pokemonNamesArray = json_decode($this->api->resourceList('pokemon',1,0));
     $pokemonArray =[];
     foreach($pokemonNamesArray->results as $pokemonStdPair){
       $pokemonJSON = json_decode(Http::get($pokemonStdPair->url));
@@ -67,7 +67,7 @@ class dbgen
       $pokemon->minimalPrint();
     }
     /** Start of abilities */
-    $abilityNamesArray = json_decode($this->api->resourceList('ability',3000,0));
+    $abilityNamesArray = json_decode($this->api->resourceList('ability',1,0));
     $abilityArray = [];
     foreach($abilityNamesArray->results as $abilityStdPair){
       $abilityJSON = json_decode(Http::get($abilityStdPair->url));
@@ -82,7 +82,7 @@ class dbgen
       $abilityArray[$ability->getID()]=$ability;
     }
     /** Start of moves */
-    $moveNamesArray = json_decode($this->api->resourceList('move',3000,0));
+    $moveNamesArray = json_decode($this->api->resourceList('move',1,0));
     $moveArray = [];
     foreach($moveNamesArray->results as $moveStdPair){
       $moveJSON = json_decode(Http::get($moveStdPair->url));
@@ -285,17 +285,35 @@ class dbgen
         //$out->writeln("=[".$DBTypeMoveID."]=> ".$DBTypeMoveName);
       }
       /** Inserting relation_damage */
+      $out->writeln($DBType->getName()." double damage");
+      foreach($DBType->getDoubleDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
+        $exists = DB::table('relation_damage')
+          ->where([
+              ['dealer_id','=',$DBType->getId()],
+              ['receiver_id','=',$DBReceiverTypeID],
+          ])->count();
+        if(!$exists)DB::table('relation_damage')->upsert([
+          'dealer_id'=>$DBType->getId(),
+          'receiver_id'=>$DBReceiverTypeID,
+          'damageable'=>2
+        ],[
+          'dealer_id','receiver_id'
+        ],[
+          'damageable'
+        ]);
+        //$out->writeln("=[".$DBType->getId()."]=> ".$DBReceiverTypeID." = 2");
+      }
       $out->writeln($DBType->getName()." half damage");
       foreach($DBType->getHalfDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
         $exists = DB::table('relation_damage')
           ->where([
-              ['dealer_id','=',$DBReceiverTypeID],
-              ['receiver_id','=',$DBType->getId()],
+              ['dealer_id','=',$DBType->getId()],
+              ['receiver_id','=',$DBReceiverTypeID],
           ])->count();
         if(!$exists)DB::table('relation_damage')->upsert([
-          'dealer_id'=>$DBReceiverTypeID,
-          'receiver_id'=>$DBType->getId(),
-          'damageable'=>true
+          'dealer_id'=>$DBType->getId(),
+          'receiver_id'=>$DBReceiverTypeID,
+          'damageable'=>1
         ],[
           'dealer_id','receiver_id'
         ],[
