@@ -3,7 +3,7 @@
 import { useRoute } from 'vue-router/auto';
 import { ref } from 'vue';
 import { getOne } from '../../service';
-import { emptyPokemon, PokémonI, TypeI } from '../../models';
+import { emptyPokemon, PokémonI } from '../../models';
 import Loading from '../../components/Loading.vue';
 import PageNotFound from '../../components/PageNotFound.vue'
 import { TYPES } from '../../constants';
@@ -14,6 +14,10 @@ const route = useRoute('/Pokemon/[identifier]');
 
 const state = ref<number>(0);
 const curPokemon = ref<PokémonI>(emptyPokemon());
+const tempArray:number[] = [];
+tempArray[19]=1;
+tempArray.fill(1);
+const typeRelations = ref<number[]>(tempArray);
 const baseStatTotal = ref<number>(0);
 const STAT_COLOR = [
   'bg-green-500',   //hp
@@ -32,6 +36,19 @@ getOne(route.params.identifier, (cb: PokémonI) => {
     curPokemon.value = cb
     baseStatTotal.value = Object.values(curPokemon.value.stats).reduce((acc, value) => acc + value, 0);
     state.value = 1;
+    curPokemon.value.types.forEach(type=>{
+      Object.keys(type.relations).forEach((key)=>{
+        switch(type.relations[+key]){
+          case 1:// 1/2 damage case.
+            tempArray[+key-1]/=2;
+            break;
+          default:// no damage and double damage case.
+            tempArray[+key-1]*=type.relations[+key];
+        }
+      })
+    })
+    console.log(tempArray)
+    typeRelations.value = tempArray;
   }
 });
 </script>
@@ -77,7 +94,7 @@ getOne(route.params.identifier, (cb: PokémonI) => {
           Damage Taken:
         </span>
         <div class="grid grid-cols-1 items-center">
-          <DamageMultiplier v-for="(ty, index) in TYPES" :type="ty" :mult="index" />
+          <DamageMultiplier v-for="(ty, index) in TYPES" :type="ty" :mult="typeRelations[index]" />
         </div>
       </div>
       <!--Pokemon Stats-->
