@@ -7,16 +7,16 @@ switch(obj.mult){
     obj.color='bg-stone-900 text-gray-300';
     break;
   case 1/4:
-    obj.color='bg-lime-400 text-gray-950';
+    obj.color='bg-green-800 text-gray-300';
     break;
   case 1/2:
-    obj.color='bg-cyan-400 text-gray-950';
+    obj.color='bg-green-400 text-gray-950';
     break;
   case 2:
-    obj.color='bg-yellow-300 text-gray-950';
+    obj.color='bg-red-500 text-gray-950';
     break;
   case 4:
-    obj.color='bg-red-600 text-gray-900';
+    obj.color='bg-red-800 text-gray-300';
     break;
   default:
     obj.color='bg-gray-300 text-gray-900';
