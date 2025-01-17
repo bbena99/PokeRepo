@@ -66,7 +66,7 @@ class PokeController{
     $poke->moves = DB::table('relation_pokemon_moves')
       ->where('pokemon_id','=',$poke->id)
       ->join('moves','relation_pokemon_moves.move_id','=','moves.id')
-      ->select('moves.name','moves.id','moves.damage_type','moves.accuracy','moves.power','moves.pp','relation_pokemon_moves.level')
+      ->select('moves.name','moves.id','moves.damage_type','moves.accuracy','moves.power','moves.pp','relation_pokemon_moves.level','moves.effect_entry')
       ->orderBy('level','desc')
       ->get();
 
