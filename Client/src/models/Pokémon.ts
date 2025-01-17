@@ -26,14 +26,20 @@ export interface PokémonI{
     effect_entries:string;
   }[];
   moves:{
-    id:number;
-    name:string;
-    damage_type:number;
-    accuracy:number;
-    power:number;
-    pp:number;
-    level:number;
+    level:SingleMoveI[];
+    machine:SingleMoveI[];
+    other:SingleMoveI[];
   }[];
+}
+interface SingleMoveI {
+  id:number;
+  name:string;
+  damage_type:number;
+  accuracy:number;
+  power:number;
+  pp:number;
+  level:number;
+
 }
 
 export function emptyPokemon():PokémonI{
