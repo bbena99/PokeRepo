@@ -29,7 +29,7 @@ export interface PokémonI{
     level:SingleMoveI[];
     machine:SingleMoveI[];
     other:SingleMoveI[];
-  }[];
+  };
 }
 interface SingleMoveI {
   id:number;
