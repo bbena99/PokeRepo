@@ -31,7 +31,7 @@ export interface PokémonI{
     other:SingleMoveI[];
   };
 }
-interface SingleMoveI {
+export interface SingleMoveI {
   id:number;
   name:string;
   damage_type:number;
@@ -60,6 +60,10 @@ export function emptyPokemon():PokémonI{
       "speed":-1
     },
     abilities:[],
-    moves:[]
+    moves:{
+      level:[],
+      machine:[],
+      other:[]
+    }
   }
 }
