@@ -29,13 +29,13 @@ const STAT_COLOR = [
 ]
 
 getOne(route.params.identifier, (cb: PokémonI) => {
-  console.log(cb);
   if(typeof(cb)==='string'){
     state.value = -1;
   }else{
     curPokemon.value = cb
     baseStatTotal.value = Object.values(curPokemon.value.stats).reduce((acc, value) => acc + value, 0);
     state.value = 1;
+    //Updating Type relations for the dmg taken section
     curPokemon.value.types.forEach(type=>{
       Object.keys(type.relations).forEach((key)=>{
         switch(type.relations[+key]){
@@ -47,7 +47,6 @@ getOne(route.params.identifier, (cb: PokémonI) => {
         }
       })
     })
-    console.log(tempArray)
     typeRelations.value = tempArray;
   }
 });
