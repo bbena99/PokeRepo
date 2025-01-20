@@ -48,6 +48,7 @@ getOne(route.params.identifier, (cb: PokémonI) => {
       })
     })
     typeRelations.value = tempArray;
+    console.log(curPokemon.value)
   }
 });
 </script>
@@ -71,7 +72,7 @@ getOne(route.params.identifier, (cb: PokémonI) => {
       </div>
       <!--Pokemon Abilities-->
       <div class="w-full p-4 col-span-4 rounded-lg border-2 border-bg2 mt-3 flex flex-wrap bg-bg1 shadow-xl">
-        <span class="h-8 mt-4 ml-4 text-header text-2xl">
+        <span class="text-header text-2xl font-semibold w-full">
           {{ curPokemon.name.charAt(0).toUpperCase() + curPokemon.name.slice(1) }}'s Abilities
         </span>
         <div class="grid grid-cols-12 items-center w-full rounded-xl border-2 border-text overflow-hidden [&>span]:text-header [&>span]:h-full [&>span]:p-2 [&>span]:flex [&>span]:items-center [&>span]:bg-bg2">
@@ -89,7 +90,7 @@ getOne(route.params.identifier, (cb: PokémonI) => {
       </div>
       <!--Pokemon damage taken-->
       <div class="row-span-2 w-full p-4 rounded-lg border-2 border-bg2 mt-3 flex flex-wrap bg-bg1 shadow-xl">
-        <span class="text-header text-2xl">
+        <span class="text-header text-2xl font-semibold w-full">
           Damage Taken:
         </span>
         <div class="grid grid-cols-1 items-center">
@@ -120,6 +121,12 @@ getOne(route.params.identifier, (cb: PokémonI) => {
           </div>
           base stat total
         </div>
+      </div>
+      <!-- Start of moves section -->
+      <div class="w-full p-4 col-span-5 rounded-lg border-2 border-bg2 mt-3 grid grid-cols-3 bg-bg1 shadow-xl">
+        <span class="text-header text-2xl font-semibold w-full">
+          {{ curPokemon.name.charAt(0).toUpperCase() + curPokemon.name.slice(1) }}'s Moves:
+        </span>
       </div>
     </div>
   </div>
