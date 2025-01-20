@@ -17,7 +17,7 @@ const setSecondary = (newTheme:string)=>{
 <template>
   <div :class="[theme,secondary]" class=" font-sans">
     <NavBar :theme :setTheme :secondary :setSecondary/>
-    <div class="w-screen bg-gradient-to-b from-bg1 to-bg2 text-text"style="height: calc(100vh - 5rem);">
+    <div class="w-screen bg-gradient-to-b from-bg1 to-bg2 text-text overflow-y-scroll"style="height: calc(100vh - 5rem);">
       <RouterView/>
     </div>
   </div>

@@ -13,6 +13,7 @@ import { RouterLink } from 'vue-router';
 const route = useRoute('/Pokemon/[identifier]');
 
 const state = ref<number>(0);
+
 const curPokemon = ref<PokémonI>(emptyPokemon());
 const tempArray:number[] = [];
 tempArray[19]=1;
@@ -55,8 +56,8 @@ getOne(route.params.identifier, (cb: PokémonI) => {
 
 <template>
   <Loading v-if="state===0"/>
-  <div v-if="state===1" class="flex justify-center items-center overflow-hidden">
-    <div class="grid grid-cols-5 gap-4 w-full h-full xl:w-2/3 overflow-y-scroll">
+  <div v-if="state===1" class="flex justify-center items-center py-4">
+    <div class="grid grid-cols-5 gap-4 w-full h-full xl:w-2/3">
       <!--Pokemon name, types, and sprites-->
       <div class="w-full h-72 p-4 col-span-5 rounded-lg border-2 border-bg2 mt-3 grid grid-cols-3 bg-bg1 shadow-xl">
         <h1 class="col-span-2 w-full text-header text-7xl">
@@ -127,6 +128,9 @@ getOne(route.params.identifier, (cb: PokémonI) => {
         <span class="text-header text-2xl font-semibold w-full">
           {{ curPokemon.name.charAt(0).toUpperCase() + curPokemon.name.slice(1) }}'s Moves:
         </span>
+        <div class="grid grid-cols-12">
+
+        </div>
       </div>
     </div>
   </div>
