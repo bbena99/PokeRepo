@@ -30,10 +30,11 @@ export function getOne(identifier:string,cb:(a:PokémonI)=>void):void{
     .then(res=>{
       const pokemon:PokémonI = res.data;
       const tempMoveArray:SingleMoveI[] = [...res.data.moves];
-      const newMoveObj:{level:SingleMoveI[],egg:SingleMoveI[],other:SingleMoveI[]} = {level:[],egg:[],other:[]};
+      const newMoveObj:{level:SingleMoveI[],egg:SingleMoveI[],machine:SingleMoveI[],other:SingleMoveI[]} = {level:[],egg:[],machine:[],other:[]};
       newMoveObj.level = tempMoveArray.filter((move)=>move.level>0).sort((a,b)=>{return a.level>b.level?1:0;});
       newMoveObj.egg = tempMoveArray.filter((move)=>move.level===0).sort((a,b)=>{return a.id>b.id?1:0;});
-      newMoveObj.other = tempMoveArray.filter((move)=>move.level<0).sort((a,b)=>{return a.id>b.id?1:0;});
+      newMoveObj.machine = tempMoveArray.filter((move)=>move.level===-1).sort((a,b)=>{return a.id>b.id?1:0;});
+      newMoveObj.other = tempMoveArray.filter((move)=>move.level===-2).sort((a,b)=>{return a.id>b.id?1:0;});
       pokemon.moves=newMoveObj;
       cb(pokemon);
     })

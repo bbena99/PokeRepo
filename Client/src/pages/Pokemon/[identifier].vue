@@ -124,7 +124,7 @@ getOne(route.params.identifier, (cb: PokémonI) => {
         </div>
       </div>
       <!-- Start of moves section -->
-      <div class="w-full p-4 col-span-5 rounded-lg border-2 border-bg2 mt-3 grid grid-cols-3 bg-bg1 shadow-xl">
+      <div class="w-full p-4 col-span-5 rounded-lg border-2 border-bg2 mt-3 bg-bg1 shadow-xl">
         <span class="text-header text-2xl font-semibold w-full">
           {{ curPokemon.name.charAt(0).toUpperCase() + curPokemon.name.slice(1) }}'s Moves:
         </span>
@@ -132,6 +132,7 @@ getOne(route.params.identifier, (cb: PokémonI) => {
           <span class="col-span-12 text-xl">
             {{  method==='level'?"Learned by leveling up:":
                 method==='egg'?"Learned by egg inheritance:":
+                method==='machine'?"Learned by technical machine":
                   "Learned by other means:" }}
           </span>
           <span></span>
