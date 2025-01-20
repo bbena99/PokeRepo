@@ -128,8 +128,13 @@ getOne(route.params.identifier, (cb: PokémonI) => {
         <span class="text-header text-2xl font-semibold w-full">
           {{ curPokemon.name.charAt(0).toUpperCase() + curPokemon.name.slice(1) }}'s Moves:
         </span>
-        <div class="grid grid-cols-12">
-
+        <div v-for="(method) in Object.keys(curPokemon.moves)" class="grid grid-cols-12 w-full">
+          <span class="col-span-12 text-xl">
+            {{  method==='level'?"Learned by leveling up:":
+                method==='egg'?"Learned by egg inheritance:":
+                  "Learned by other means:" }}
+          </span>
+          <span></span>
         </div>
       </div>
     </div>
