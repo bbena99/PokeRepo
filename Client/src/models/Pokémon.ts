@@ -27,7 +27,7 @@ export interface PokémonI{
   }[];
   moves:{
     level:SingleMoveI[];
-    machine:SingleMoveI[];
+    egg:SingleMoveI[];
     other:SingleMoveI[];
   };
 }
@@ -62,7 +62,7 @@ export function emptyPokemon():PokémonI{
     abilities:[],
     moves:{
       level:[],
-      machine:[],
+      egg:[],
       other:[]
     }
   }
