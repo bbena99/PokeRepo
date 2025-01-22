@@ -137,8 +137,10 @@ getOne(route.params.identifier, (cb: PokémonI) => {
                   "Learned by other means:" }}
           </span>
           <div class="w-full grid grid-cols-12 rounded-xl border-2 border-text overflow-hidden [&>span]:px-2 [&>span]:bg-bg2 [&>span]:text-header [&>span]:border-r-2 [&>span]:border-text">
-            <span class="col-span-2">Name</span>
-            <span class="col-span-1">Level</span>
+            <!--@vue-ignore This attribute does exist-->
+            <span :class="(curPokemon.moves[method][0].level>0)?'col-span-1':'col-span-2'">Name</span>
+            <!--@vue-ignore This attribute does exist-->
+            <span class="col-span-1" v-if="curPokemon.moves[method][0].level>0">Level</span>
             <span class="col-span-1">Damage Type</span>
             <span class="col-span-1">Accuracy</span>
             <span class="col-span-1">Power</span>
