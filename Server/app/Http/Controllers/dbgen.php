@@ -25,21 +25,7 @@ class dbgen
     set_time_limit(50000000);
     if(env('INITKEY',NULL)!=$key) return response()->json(['error'=>'Unauthorized access'], Response::HTTP_UNAUTHORIZED);
     $pokemonArray = $this->fetchPokemon();
-    /** Start of abilities */
-    $abilityNamesArray = json_decode($this->api->resourceList('ability',1,0));
-    $abilityArray = [];
-    foreach($abilityNamesArray->results as $abilityStdPair){
-      $abilityJSON = json_decode(Http::get($abilityStdPair->url));
-      $ability = new Ability();
-      foreach($abilityJSON->effect_entries as $effect){
-        if($effect->language->name == 'en')$effectEntry = $effect->short_effect;
-      }
-      $ability->setID($abilityJSON->id)
-              ->setName($abilityJSON->name)
-              ->setEffectEntry($effectEntry);
-      $ability->minimalPrint();
-      $abilityArray[$ability->getID()]=$ability;
-    }
+    $abilityArray = $this->fetchAbilities();
     /** Start of moves */
     $moveNamesArray = json_decode($this->api->resourceList('move',1,0));
     $moveArray = [];
@@ -302,7 +288,8 @@ class dbgen
 
     return response()->json(['message'=>'initDb done']);
   }
-  private function fetchPokemon():array{/** Start of pokemon */
+  private function fetchPokemon():array{
+    /** Start of pokemon */
     $pokemonNamesArray = json_decode($this->api->resourceList('pokemon',1,0));
     $pokemonArray =[];
     foreach($pokemonNamesArray->results as $pokemonStdPair){
@@ -345,6 +332,24 @@ class dbgen
       $pokemon->minimalPrint();
     }
     return $pokemonArray;
+  }
+  private function fetchAbilities():array{
+    /** Start of abilities */
+    $abilityNamesArray = json_decode($this->api->resourceList('ability',1,0));
+    $abilityArray = [];
+    foreach($abilityNamesArray->results as $abilityStdPair){
+      $abilityJSON = json_decode(Http::get($abilityStdPair->url));
+      $ability = new Ability();
+      foreach($abilityJSON->effect_entries as $effect){
+        if($effect->language->name == 'en')$effectEntry = $effect->short_effect;
+      }
+      $ability->setID($abilityJSON->id)
+              ->setName($abilityJSON->name)
+              ->setEffectEntry($effectEntry);
+      $ability->minimalPrint();
+      $abilityArray[$ability->getID()]=$ability;
+    }
+    return $abilityArray;
   }
   private function parseIdentifier($url):string{
     $ret = substr_replace($url,'',-1);
