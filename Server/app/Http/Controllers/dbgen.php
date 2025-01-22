@@ -24,48 +24,7 @@ class dbgen
     // return response()->json(['error'=>'initDb currently disabled'],500);
     set_time_limit(50000000);
     if(env('INITKEY',NULL)!=$key) return response()->json(['error'=>'Unauthorized access'], Response::HTTP_UNAUTHORIZED);
-    /** Start of pokemon */
-    $pokemonNamesArray = json_decode($this->api->resourceList('pokemon',1,0));
-    $pokemonArray =[];
-    foreach($pokemonNamesArray->results as $pokemonStdPair){
-      $pokemonJSON = json_decode(Http::get($pokemonStdPair->url));
-      $pokemon = new Pokemon();
-      $pokemon->setId($pokemonJSON->id)
-              ->setName($pokemonJSON->name)
-              ->setIsDefault($pokemonJSON->is_default)
-              ->setOrder($pokemonJSON->order)
-              ->setFrontSprite($pokemonJSON->sprites->front_default??"")
-              ->setBackSprite($pokemonJSON->sprites->back_default??"");
-      /** Start of pokemon => abilities */
-      // return response()->json($pokemonJSON->abilities);
-      foreach($pokemonJSON->abilities as $index => $abilityJSON){
-        $id = $this->parseIdentifier($abilityJSON->ability->url);
-        $ability = [
-          'ability_id' => $id,
-          'name' => $abilityJSON->ability->name,
-          'is_hidden' => $abilityJSON->is_hidden??0
-        ];
-        $pokemon->setSingleAbility($index,$ability);
-      }
-      /** Start of pokemon => types */
-      foreach($pokemonJSON->types as $index => $typeJSON){
-        $id = $this->parseIdentifier($typeJSON->type->url);
-        $type = [
-          'type_id'=>$id,
-          'name'=>$typeJSON->type->name
-        ];
-        $pokemon->setSingleType($index,$type);
-      }
-      /** Start of pokemon => moves */
-      // return response()->json($pokemonJSON->moves);
-      $pokemon->setMoves($pokemonJSON->moves);
-      /** Start of pokemon => stats */
-      foreach($pokemonJSON->stats as $stat){
-        $pokemon->setSingleStat($stat->stat->name,$stat->base_stat);
-      }
-      $pokemonArray[$pokemon->getId()]=$pokemon;
-      $pokemon->minimalPrint();
-    }
+    $pokemonArray = $this->fetchPokemon();
     /** Start of abilities */
     $abilityNamesArray = json_decode($this->api->resourceList('ability',1,0));
     $abilityArray = [];
@@ -342,6 +301,50 @@ class dbgen
     }
 
     return response()->json(['message'=>'initDb done']);
+  }
+  private function fetchPokemon():array{/** Start of pokemon */
+    $pokemonNamesArray = json_decode($this->api->resourceList('pokemon',1,0));
+    $pokemonArray =[];
+    foreach($pokemonNamesArray->results as $pokemonStdPair){
+      $pokemonJSON = json_decode(Http::get($pokemonStdPair->url));
+      $pokemon = new Pokemon();
+      $pokemon->setId($pokemonJSON->id)
+              ->setName($pokemonJSON->name)
+              ->setIsDefault($pokemonJSON->is_default)
+              ->setOrder($pokemonJSON->order)
+              ->setFrontSprite($pokemonJSON->sprites->front_default??"")
+              ->setBackSprite($pokemonJSON->sprites->back_default??"");
+      /** Start of pokemon => abilities */
+      // return response()->json($pokemonJSON->abilities);
+      foreach($pokemonJSON->abilities as $index => $abilityJSON){
+        $id = $this->parseIdentifier($abilityJSON->ability->url);
+        $ability = [
+          'ability_id' => $id,
+          'name' => $abilityJSON->ability->name,
+          'is_hidden' => $abilityJSON->is_hidden??0
+        ];
+        $pokemon->setSingleAbility($index,$ability);
+      }
+      /** Start of pokemon => types */
+      foreach($pokemonJSON->types as $index => $typeJSON){
+        $id = $this->parseIdentifier($typeJSON->type->url);
+        $type = [
+          'type_id'=>$id,
+          'name'=>$typeJSON->type->name
+        ];
+        $pokemon->setSingleType($index,$type);
+      }
+      /** Start of pokemon => moves */
+      // return response()->json($pokemonJSON->moves);
+      $pokemon->setMoves($pokemonJSON->moves);
+      /** Start of pokemon => stats */
+      foreach($pokemonJSON->stats as $stat){
+        $pokemon->setSingleStat($stat->stat->name,$stat->base_stat);
+      }
+      $pokemonArray[$pokemon->getId()]=$pokemon;
+      $pokemon->minimalPrint();
+    }
+    return $pokemonArray;
   }
   private function parseIdentifier($url):string{
     $ret = substr_replace($url,'',-1);
