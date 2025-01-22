@@ -144,8 +144,8 @@ getOne(route.params.identifier, (cb: PokémonI) => {
             <span class="col-span-1">Power</span>
             <span class="col-span-6 !border-r-0">Effect Entry</span>
             <!--@vue-ignore  Move does exist on curPokemon.moves[method] since method is created from the keys of curPokemon.moves-->
-            <div v-for="move in curPokemon.moves[method]" class="col-span-12 grid grid-cols-12 border-b-2 border-text [&>span]:border-r-2 [&>span]:border-text">
-              <RouterLink :to="'../Moves/'+move.name" class="col-span-2 border-r-2 border-text">{{ move.name }}</RouterLink>
+            <div v-for="move in curPokemon.moves[method]" class="col-span-12 grid grid-cols-12 border-b-2 border-text [&>span]:px-2 [&>span]:border-r-2 [&>span]:border-text">
+              <RouterLink :to="'../Moves/'+move.name" class="col-span-2 px-2 border-r-2 border-text underline hover:text-hover">{{ move.name }}</RouterLink>
               <span class="col-span-1">{{ move.level }}</span>
               <span class="col-span-1">{{ move.damage_type }}</span>
               <span class="col-span-1">{{ move.accuracy }}</span>
