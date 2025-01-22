@@ -15,9 +15,11 @@ use PokePHP\PokeApi;
 class dbgen
 {
   protected $api;
+  protected $out;
 
   public function __construct(){
     $this->api = new PokeApi();
+    $this->out = new \Symfony\Component\Console\Output\ConsoleOutput();//Using the console to keep track of the progress of the insertions
   }
 
   public function initDb($key){
@@ -27,36 +29,11 @@ class dbgen
     $pokemonArray = $this->fetchPokemon();
     $abilityArray = $this->fetchAbilities();
     $moveArray = $this->fetchMoves();
+    $typeArray = $this->fetchTypes();
 
-    /** Start of types */
-    $typeNamesArray = json_decode($this->api->resourceList('type',100,0));
-    $typeArray = [];
-    foreach($typeNamesArray->results as $typeStdPair){
-      $typeJSON = json_decode(Http::get($typeStdPair->url));
-      $type = new PokeType();
-      $type ->setId($typeJSON->id)
-            ->setName($typeJSON->name)
-            ->setSrc("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/".$typeJSON->id.".png")
-            ->setMoves($typeJSON->moves)
-            ->setDoubleDamage([])
-            ->setHalfDamage([])
-            ->setNoDamage([]);
-      foreach($typeJSON->damage_relations->double_damage_to as $doubleDamageJSON){
-        $type->setSingleDoubleDamage($this->parseIdentifier($doubleDamageJSON->url),$doubleDamageJSON->name);
-      }
-      foreach($typeJSON->damage_relations->half_damage_to as $halfDamageJSON){
-        $type->setSingleHalfDamage($this->parseIdentifier($halfDamageJSON->url),$halfDamageJSON->name);
-      }
-      foreach($typeJSON->damage_relations->no_damage_to as $noDamageJSON){
-        $type->setSingleNoDamage($this->parseIdentifier($noDamageJSON->url),$noDamageJSON->name);
-      }
-      $typeArray[$type->getId()]=$type;
-      $type->minimalPrint();
-    }
 
     /** Start of DB insertions */
-    $out = new \Symfony\Component\Console\Output\ConsoleOutput();//Using the console to keep track of the progress of the insertions
-    $out->writeln(["---Start of Inserting into DataBase---","##Start of inserting Abilities"]);
+    $this->out->writeln(["---Start of Inserting into DataBase---","##Start of inserting Abilities"]);
     /** Inserting ability */
     foreach($abilityArray as $DBAbility){
       DB::table('abilities')->upsert([
@@ -68,7 +45,7 @@ class dbgen
       ],[
         'name','effect_entries'
       ]);
-      //$out->writeln("=[".$DBAbility->getID()."]=> ".$DBAbility->getName());
+      //$this->out->writeln("=[".$DBAbility->getID()."]=> ".$DBAbility->getName());
     }
     /** Inserting moves */
     foreach($moveArray as $DBMove){
@@ -88,10 +65,10 @@ class dbgen
       ],[
         'name','damage_type','accuracy','power','pp','effect_chance','effect_entry','meta'
       ]);
-      $out->writeln("=[".$DBMove->getID()."]=> ".$DBMove->getName());
+      $this->out->writeln("=[".$DBMove->getID()."]=> ".$DBMove->getName());
     }
     /** Inserting pokemon */
-    $out->writeln("##Start of inserting Pokemon");
+    $this->out->writeln("##Start of inserting Pokemon");
     foreach($pokemonArray as $DBPokemon){
       DB::table('pokemon')->upsert([
         'id'=>$DBPokemon->getId(),
@@ -105,9 +82,9 @@ class dbgen
       ],[
         'name','is_default','order','front_sprite','back_sprite'
       ]);
-      $out->writeln("=[".$DBPokemon->getId()."]=> ".$DBPokemon->getName());
+      $this->out->writeln("=[".$DBPokemon->getId()."]=> ".$DBPokemon->getName());
       /** Inserting relation_pokemon_type */
-      $out->writeln($DBPokemon->getName()." types:");
+      $this->out->writeln($DBPokemon->getName()." types:");
       foreach($DBPokemon->getTypes() as $DBPokemonType){
         $exists = DB::table('relation_pokemon_type')
           ->where([
@@ -120,10 +97,10 @@ class dbgen
         ],[
           'pokemon_id','type_id'
         ]);
-        //$out->writeln("=[".$DBPokemonType['type_id']."]=> ".$DBPokemonType['name']);
+        //$this->out->writeln("=[".$DBPokemonType['type_id']."]=> ".$DBPokemonType['name']);
       }
       /** Inserting relation_pokemon_ability */
-      $out->writeln($DBPokemon->getName()." abilities:");
+      $this->out->writeln($DBPokemon->getName()." abilities:");
       foreach($DBPokemon->getAbilities() as $DBPokemonAbility){
         $exists = DB::table('relation_pokemon_abilities')
           ->where([
@@ -139,10 +116,10 @@ class dbgen
         ],[
           'hidden'
         ]);
-        $out->writeln("=[".$DBPokemonAbility['ability_id']."]=> ".$DBPokemonAbility['is_hidden']);
+        $this->out->writeln("=[".$DBPokemonAbility['ability_id']."]=> ".$DBPokemonAbility['is_hidden']);
       }
       /** Inserting relation_pokemon_moves */
-      $out->writeln($DBPokemon->getName()." moves:");
+      $this->out->writeln($DBPokemon->getName()." moves:");
       foreach($DBPokemon->getMoves() as $DBPokemonMoveID => $DBPokemonMoveLevel){
         $exists = DB::table('relation_pokemon_moves')
           ->where([
@@ -158,10 +135,10 @@ class dbgen
         ],[
           'level'
         ]);
-        //$out->writeln("=[".$DBPokemonMoveID."]=> ".$DBPokemonMoveLevel);
+        //$this->out->writeln("=[".$DBPokemonMoveID."]=> ".$DBPokemonMoveLevel);
       }
       /** Inserting relation_pokemon_stat */
-      $out->writeln($DBPokemon->getName()." moves:");
+      $this->out->writeln($DBPokemon->getName()." moves:");
       foreach($DBPokemon->getStats() as $DBPokemonStatName => $DBPokemonStatValue){
         $exists = DB::table('relation_pokemon_stat')
           ->where([
@@ -178,11 +155,11 @@ class dbgen
         ],[
           'base_stat'
         ]);
-        //$out->writeln("=[".$DBPokemonStatName."]=> ".$DBPokemonStatValue);
+        //$this->out->writeln("=[".$DBPokemonStatName."]=> ".$DBPokemonStatValue);
       }
     }
     /** Inserting type */
-    $out->writeln("##Start of inserting Types");
+    $this->out->writeln("##Start of inserting Types");
     foreach($typeArray as $DBType){
       DB::table('types')->upsert([
         'id'=>$DBType->getId(),
@@ -193,9 +170,9 @@ class dbgen
       ],[
         'name','src'
       ]);
-      $out->writeln("=[".$DBType->getId()."]=> ".$DBType->getName());
+      $this->out->writeln("=[".$DBType->getId()."]=> ".$DBType->getName());
       /** Inserting relation_type_moves */
-      $out->writeln($DBType->getName()." stats");
+      $this->out->writeln($DBType->getName()." stats");
       foreach($DBType->getMoves() as $DBTypeMoveID => $DBTypeMoveName){
         $exists = DB::table('relation_type_moves')
           ->where([
@@ -208,10 +185,10 @@ class dbgen
         ],[
           'type_id','move_id'
         ],[]);
-        //$out->writeln("=[".$DBTypeMoveID."]=> ".$DBTypeMoveName);
+        //$this->out->writeln("=[".$DBTypeMoveID."]=> ".$DBTypeMoveName);
       }
       /** Inserting relation_damage */
-      $out->writeln($DBType->getName()." double damage");
+      $this->out->writeln($DBType->getName()." double damage");
       foreach($DBType->getDoubleDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
         $exists = DB::table('relation_damage')
           ->where([
@@ -227,9 +204,9 @@ class dbgen
         ],[
           'damageable'
         ]);
-        //$out->writeln("=[".$DBType->getId()."]=> ".$DBReceiverTypeID." = 2");
+        //$this->out->writeln("=[".$DBType->getId()."]=> ".$DBReceiverTypeID." = 2");
       }
-      $out->writeln($DBType->getName()." half damage");
+      $this->out->writeln($DBType->getName()." half damage");
       foreach($DBType->getHalfDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
         $exists = DB::table('relation_damage')
           ->where([
@@ -245,9 +222,9 @@ class dbgen
         ],[
           'damageable'
         ]);
-        //$out->writeln("=[".$DBType->getId()."]=> ".$DBReceiverTypeID." = 1/2");
+        //$this->out->writeln("=[".$DBType->getId()."]=> ".$DBReceiverTypeID." = 1/2");
       }
-      $out->writeln($DBType->getName()." no damage");
+      $this->out->writeln($DBType->getName()." no damage");
       foreach($DBType->getNoDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
         $exists = DB::table('relation_damage')
           ->where([
@@ -263,7 +240,7 @@ class dbgen
         ],[
           'damageable'
         ]);
-        //$out->writeln("=[".$DBType->getId()."]=> ".$DBReceiverTypeID." = 0");
+        //$this->out->writeln("=[".$DBType->getId()."]=> ".$DBReceiverTypeID." = 0");
       }
     }
 
@@ -354,6 +331,34 @@ class dbgen
       $move->minimalPrint();
     }
     return $moveArray;
+  }
+  private function fetchTypes():array{
+    /** Start of types */
+    $typeNamesArray = json_decode($this->api->resourceList('type',100,0));
+    $typeArray = [];
+    foreach($typeNamesArray->results as $typeStdPair){
+      $typeJSON = json_decode(Http::get($typeStdPair->url));
+      $type = new PokeType();
+      $type ->setId($typeJSON->id)
+            ->setName($typeJSON->name)
+            ->setSrc("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/".$typeJSON->id.".png")
+            ->setMoves($typeJSON->moves)
+            ->setDoubleDamage([])
+            ->setHalfDamage([])
+            ->setNoDamage([]);
+      foreach($typeJSON->damage_relations->double_damage_to as $doubleDamageJSON){
+        $type->setSingleDoubleDamage($this->parseIdentifier($doubleDamageJSON->url),$doubleDamageJSON->name);
+      }
+      foreach($typeJSON->damage_relations->half_damage_to as $halfDamageJSON){
+        $type->setSingleHalfDamage($this->parseIdentifier($halfDamageJSON->url),$halfDamageJSON->name);
+      }
+      foreach($typeJSON->damage_relations->no_damage_to as $noDamageJSON){
+        $type->setSingleNoDamage($this->parseIdentifier($noDamageJSON->url),$noDamageJSON->name);
+      }
+      $typeArray[$type->getId()]=$type;
+      $type->minimalPrint();
+    }
+    return $typeArray;
   }
   private function parseIdentifier($url):string{
     $ret = substr_replace($url,'',-1);
