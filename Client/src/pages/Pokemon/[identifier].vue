@@ -128,14 +128,31 @@ getOne(route.params.identifier, (cb: PokémonI) => {
         <span class="text-header text-2xl font-semibold w-full">
           {{ curPokemon.name.charAt(0).toUpperCase() + curPokemon.name.slice(1) }}'s Moves:
         </span>
-        <div v-for="(method) in Object.keys(curPokemon.moves)" class="grid grid-cols-12 w-full">
-          <span class="col-span-12 text-xl">
+        <div v-for="(method) in Object.keys(curPokemon.moves)" class="w-full p-2">
+          <!--@vue-ignore  Sometimes pokemon don't have "other moves", so I added a conditional for that.-->
+          <span v-if="curPokemon.moves[method].length>0" class="w-full text-xl text-header">
             {{  method==='level'?"Learned by leveling up:":
                 method==='egg'?"Learned by egg inheritance:":
                 method==='machine'?"Learned by technical machine":
                   "Learned by other means:" }}
           </span>
-          <span></span>
+          <div class="w-full grid grid-cols-12 rounded-xl border-2 border-text overflow-hidden [&>span]:px-2 [&>span]:bg-bg2 [&>span]:text-header [&>span]:border-r-2 [&>span]:border-text">
+            <span class="col-span-2">Name</span>
+            <span class="col-span-1">Level</span>
+            <span class="col-span-1">Damage Type</span>
+            <span class="col-span-1">Accuracy</span>
+            <span class="col-span-1">Power</span>
+            <span class="col-span-6 !border-r-0">Effect Entry</span>
+            <!--@vue-ignore  Move does exist on curPokemon.moves[method] since method is created from the keys of curPokemon.moves-->
+            <div v-for="move in curPokemon.moves[method]" class="col-span-12 grid grid-cols-12 border-b-2 border-text [&>span]:border-r-2 [&>span]:border-text">
+              <RouterLink :to="'../Moves/'+move.name" class="col-span-2 border-r-2 border-text">{{ move.name }}</RouterLink>
+              <span class="col-span-1">{{ move.level }}</span>
+              <span class="col-span-1">{{ move.damage_type }}</span>
+              <span class="col-span-1">{{ move.accuracy }}</span>
+              <span class="col-span-1">{{ move.power }}</span>
+              <span class="col-span-6 !border-r-0">{{ move.effect_entry }}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
