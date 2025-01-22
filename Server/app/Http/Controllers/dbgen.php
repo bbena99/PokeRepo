@@ -26,26 +26,7 @@ class dbgen
     if(env('INITKEY',NULL)!=$key) return response()->json(['error'=>'Unauthorized access'], Response::HTTP_UNAUTHORIZED);
     $pokemonArray = $this->fetchPokemon();
     $abilityArray = $this->fetchAbilities();
-    /** Start of moves */
-    $moveNamesArray = json_decode($this->api->resourceList('move',1,0));
-    $moveArray = [];
-    foreach($moveNamesArray->results as $moveStdPair){
-      $moveJSON = json_decode(Http::get($moveStdPair->url));
-      $move = new PokeMove();
-      $effectEntryJSON = $moveJSON->effect_entries[0]->effect??NULL;
-      $move ->setId($moveJSON->id)
-            ->setName($moveJSON->name)
-            ->setDamageType($this->parseIdentifier($moveJSON->damage_class->url))
-            ->setAccuracy($moveJSON->accuracy??0)
-            ->setPower($moveJSON->power??0)
-            ->setPP($moveJSON->pp??0)
-            ->setPriority($moveJSON->priority??0)
-            ->setEffectChance($moveJSON->effect_chance??0)
-            ->setEffectEntry($effectEntryJSON??"")
-            ->setMeta($moveJSON->meta);
-      $moveArray[$move->getId()] = $move;
-      $move->minimalPrint();
-    }
+    $moveArray = $this->fetchMoves();
 
     /** Start of types */
     $typeNamesArray = json_decode($this->api->resourceList('type',100,0));
@@ -350,6 +331,29 @@ class dbgen
       $abilityArray[$ability->getID()]=$ability;
     }
     return $abilityArray;
+  }
+  private function fetchMoves():array{
+    /** Start of moves */
+    $moveNamesArray = json_decode($this->api->resourceList('move',1,0));
+    $moveArray = [];
+    foreach($moveNamesArray->results as $moveStdPair){
+      $moveJSON = json_decode(Http::get($moveStdPair->url));
+      $move = new PokeMove();
+      $effectEntryJSON = $moveJSON->effect_entries[0]->effect??NULL;
+      $move ->setId($moveJSON->id)
+            ->setName($moveJSON->name)
+            ->setDamageType($this->parseIdentifier($moveJSON->damage_class->url))
+            ->setAccuracy($moveJSON->accuracy??0)
+            ->setPower($moveJSON->power??0)
+            ->setPP($moveJSON->pp??0)
+            ->setPriority($moveJSON->priority??0)
+            ->setEffectChance($moveJSON->effect_chance??0)
+            ->setEffectEntry($effectEntryJSON??"")
+            ->setMeta($moveJSON->meta);
+      $moveArray[$move->getId()] = $move;
+      $move->minimalPrint();
+    }
+    return $moveArray;
   }
   private function parseIdentifier($url):string{
     $ret = substr_replace($url,'',-1);
