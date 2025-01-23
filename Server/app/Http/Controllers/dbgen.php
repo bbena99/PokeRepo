@@ -37,96 +37,14 @@ class dbgen
     $this->DBAbilities($abilityArray);
     $this->DBMoves($moveArray);
     $this->DBPokemon($pokemonArray);
+    $this->DBTypes($typeArray);
 
     $this->DBRelationPokemonAbility($pokemonArray);
-    $this->DBRelationPokemonMoves($pokemonArray);
+    $this->DBRelationPokemonMove($pokemonArray);
     $this->DBRelationPokemonType($pokemonArray);
     $this->DBRelationPokemonStat($pokemonArray);
-    /** Inserting type */
-    $this->out->writeln("##Start of inserting Types");
-    foreach($typeArray as $DBType){
-      DB::table('types')->upsert([
-        'id'=>$DBType->getId(),
-        'name'=>$DBType->getName(),
-        'src'=>$DBType->getSrc(),
-      ],[
-        'id',
-      ],[
-        'name','src'
-      ]);
-      $this->out->writeln("=[".$DBType->getId()."]=> ".$DBType->getName());
-      /** Inserting relation_type_moves */
-      $this->out->writeln($DBType->getName()." stats");
-      foreach($DBType->getMoves() as $DBTypeMoveID => $DBTypeMoveName){
-        $exists = DB::table('relation_type_moves')
-          ->where([
-            ['type_id','=',$DBType->getId()],
-            ['move_id','=',$DBTypeMoveID]
-          ])->count();
-        if(!$exists)DB::table('relation_type_moves')->upsert([
-          'type_id'=>$DBType->getId(),
-          'move_id'=>$DBTypeMoveID,
-        ],[
-          'type_id','move_id'
-        ],[]);
-        //$this->out->writeln("=[".$DBTypeMoveID."]=> ".$DBTypeMoveName);
-      }
-      /** Inserting relation_damage */
-      $this->out->writeln($DBType->getName()." double damage");
-      foreach($DBType->getDoubleDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
-        $exists = DB::table('relation_damage')
-          ->where([
-              ['dealer_id','=',$DBType->getId()],
-              ['receiver_id','=',$DBReceiverTypeID],
-          ])->count();
-        if(!$exists)DB::table('relation_damage')->upsert([
-          'dealer_id'=>$DBType->getId(),
-          'receiver_id'=>$DBReceiverTypeID,
-          'damageable'=>2
-        ],[
-          'dealer_id','receiver_id'
-        ],[
-          'damageable'
-        ]);
-        //$this->out->writeln("=[".$DBType->getId()."]=> ".$DBReceiverTypeID." = 2");
-      }
-      $this->out->writeln($DBType->getName()." half damage");
-      foreach($DBType->getHalfDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
-        $exists = DB::table('relation_damage')
-          ->where([
-              ['dealer_id','=',$DBType->getId()],
-              ['receiver_id','=',$DBReceiverTypeID],
-          ])->count();
-        if(!$exists)DB::table('relation_damage')->upsert([
-          'dealer_id'=>$DBType->getId(),
-          'receiver_id'=>$DBReceiverTypeID,
-          'damageable'=>1
-        ],[
-          'dealer_id','receiver_id'
-        ],[
-          'damageable'
-        ]);
-        //$this->out->writeln("=[".$DBType->getId()."]=> ".$DBReceiverTypeID." = 1/2");
-      }
-      $this->out->writeln($DBType->getName()." no damage");
-      foreach($DBType->getNoDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
-        $exists = DB::table('relation_damage')
-          ->where([
-            ['dealer_id','=',$DBType->getId()],
-            ['receiver_id','=',$DBReceiverTypeID]
-          ])->count();
-        if(!$exists)DB::table('relation_damage')->upsert([
-          'dealer_id'=>$DBType->getId(),
-          'receiver_id'=>$DBReceiverTypeID,
-          'damageable'=>false
-        ],[
-          'dealer_id','receiver_id'
-        ],[
-          'damageable'
-        ]);
-        //$this->out->writeln("=[".$DBType->getId()."]=> ".$DBReceiverTypeID." = 0");
-      }
-    }
+    $this->DBRelationTypeMove($typeArray);
+    $this->DBRelationTypeDamage($typeArray);
 
     return response()->json(['message'=>'initDb done']);
   }
@@ -298,6 +216,22 @@ class dbgen
       $this->out->writeln("=[".$DBPokemon->getId()."]=> ".$DBPokemon->getName());
     }
   }
+  private function DBTypes($typeArray):void{
+    /** Inserting type */
+    $this->out->writeln("##Start of inserting Types");
+    foreach($typeArray as $DBType){
+      DB::table('types')->upsert([
+        'id'=>$DBType->getId(),
+        'name'=>$DBType->getName(),
+        'src'=>$DBType->getSrc(),
+      ],[
+        'id',
+      ],[
+        'name','src'
+      ]);
+      $this->out->writeln("=[".$DBType->getId()."]=> ".$DBType->getName());
+    }
+  }
   private function DBRelationPokemonType($pokemonArray):void{
     foreach($pokemonArray as $DBPokemon){
       /** Inserting relation_pokemon_type */
@@ -341,7 +275,7 @@ class dbgen
       }
     }
   }
-  private function DBRelationPokemonMoves($pokemonArray):void{
+  private function DBRelationPokemonMove($pokemonArray):void{
     foreach($pokemonArray as $DBPokemon){
       /** Inserting relation_pokemon_moves */
       $this->out->writeln($DBPokemon->getName()." moves:");
@@ -386,6 +320,85 @@ class dbgen
         ]);
         //$this->out->writeln("=[".$DBPokemonStatName."]=> ".$DBPokemonStatValue);
       }
+    }
+  }
+  private function DBRelationTypeMove($typeArray):void{
+    foreach($typeArray as $DBType){
+      /** Inserting relation_type_moves */
+      $this->out->writeln($DBType->getName()." stats");
+      foreach($DBType->getMoves() as $DBTypeMoveID => $DBTypeMoveName){
+        $exists = DB::table('relation_type_moves')
+          ->where([
+            ['type_id','=',$DBType->getId()],
+            ['move_id','=',$DBTypeMoveID]
+          ])->count();
+        if(!$exists)DB::table('relation_type_moves')->upsert([
+          'type_id'=>$DBType->getId(),
+          'move_id'=>$DBTypeMoveID,
+        ],[
+          'type_id','move_id'
+        ],[]);
+        //$this->out->writeln("=[".$DBTypeMoveID."]=> ".$DBTypeMoveName);
+      }
+    }
+  }
+  private function DBRelationTypeDamage($typeArray):void{
+    foreach($typeArray as $DBType){
+      /** Inserting relation_damage */
+      $this->out->writeln($DBType->getName()." double damage");
+      foreach($DBType->getDoubleDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
+        $exists = DB::table('relation_damage')
+          ->where([
+              ['dealer_id','=',$DBType->getId()],
+              ['receiver_id','=',$DBReceiverTypeID],
+          ])->count();
+        if(!$exists)DB::table('relation_damage')->upsert([
+          'dealer_id'=>$DBType->getId(),
+          'receiver_id'=>$DBReceiverTypeID,
+          'damageable'=>2
+        ],[
+          'dealer_id','receiver_id'
+        ],[
+          'damageable'
+        ]);
+        //$this->out->writeln("=[".$DBType->getId()."]=> ".$DBReceiverTypeID." = 2");
+      }
+      $this->out->writeln($DBType->getName()." half damage");
+      foreach($DBType->getHalfDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
+        $exists = DB::table('relation_damage')
+          ->where([
+              ['dealer_id','=',$DBType->getId()],
+              ['receiver_id','=',$DBReceiverTypeID],
+          ])->count();
+        if(!$exists)DB::table('relation_damage')->upsert([
+          'dealer_id'=>$DBType->getId(),
+          'receiver_id'=>$DBReceiverTypeID,
+          'damageable'=>1
+        ],[
+          'dealer_id','receiver_id'
+        ],[
+          'damageable'
+        ]);
+        //$this->out->writeln("=[".$DBType->getId()."]=> ".$DBReceiverTypeID." = 1/2");
+      }
+    }
+    $this->out->writeln($DBType->getName()." no damage");
+    foreach($DBType->getNoDamage() as $DBReceiverTypeID => $DBReceiverTypeName){
+      $exists = DB::table('relation_damage')
+        ->where([
+          ['dealer_id','=',$DBType->getId()],
+          ['receiver_id','=',$DBReceiverTypeID]
+        ])->count();
+      if(!$exists)DB::table('relation_damage')->upsert([
+        'dealer_id'=>$DBType->getId(),
+        'receiver_id'=>$DBReceiverTypeID,
+        'damageable'=>false
+      ],[
+        'dealer_id','receiver_id'
+      ],[
+        'damageable'
+      ]);
+      //$this->out->writeln("=[".$DBType->getId()."]=> ".$DBReceiverTypeID." = 0");
     }
   }
   private function parseIdentifier($url):string{
