@@ -34,130 +34,14 @@ class dbgen
 
     /** Start of DB insertions */
     $this->out->writeln(["---Start of Inserting into DataBase---","##Start of inserting Abilities"]);
-    /** Inserting ability */
-    foreach($abilityArray as $DBAbility){
-      DB::table('abilities')->upsert([
-        "id"  =>$DBAbility->getID(),
-        "name" =>$DBAbility->getName(),
-        "effect_entries"  =>$DBAbility->getEffectEntry()
-      ],[
-        'id'
-      ],[
-        'name','effect_entries'
-      ]);
-      //$this->out->writeln("=[".$DBAbility->getID()."]=> ".$DBAbility->getName());
-    }
-    /** Inserting moves */
-    foreach($moveArray as $DBMove){
-      DB::table('moves')->upsert([
-        "id"  =>$DBMove->getID(),
-        "name" =>$DBMove->getName(),
-        "damage_type"=>$DBMove->getDamageType(),
-        "accuracy"=>$DBMove->getAccuracy(),
-        "power"=>$DBMove->getPower(),
-        "pp"=>$DBMove->getPP(),
-        "priority"=>$DBMove->getPriority(),
-        "effect_chance"=>$DBMove->getEffectChance(),
-        "effect_entry"  =>$DBMove->getEffectEntry(),
-        "meta"=>$DBMove->getMeta(),
-      ],[
-        'id'
-      ],[
-        'name','damage_type','accuracy','power','pp','effect_chance','effect_entry','meta'
-      ]);
-      $this->out->writeln("=[".$DBMove->getID()."]=> ".$DBMove->getName());
-    }
-    /** Inserting pokemon */
-    $this->out->writeln("##Start of inserting Pokemon");
-    foreach($pokemonArray as $DBPokemon){
-      DB::table('pokemon')->upsert([
-        'id'=>$DBPokemon->getId(),
-        'name'=>$DBPokemon->getName(),
-        'is_default'=>$DBPokemon->getIsDefault(),
-        'order'=>$DBPokemon->getOrder(),
-        'front_sprite'=>$DBPokemon->getFrontSprite(),
-        'back_sprite'=>$DBPokemon->getBackSprite(),
-      ],[
-        'id'
-      ],[
-        'name','is_default','order','front_sprite','back_sprite'
-      ]);
-      $this->out->writeln("=[".$DBPokemon->getId()."]=> ".$DBPokemon->getName());
-      /** Inserting relation_pokemon_type */
-      $this->out->writeln($DBPokemon->getName()." types:");
-      foreach($DBPokemon->getTypes() as $DBPokemonType){
-        $exists = DB::table('relation_pokemon_type')
-          ->where([
-            ['pokemon_id','=',$DBPokemon->getId()],
-            ['type_id','=',$DBPokemonType['type_id']]
-          ])->count();
-        if(!$exists)DB::table('relation_pokemon_type')->upsert([
-          'pokemon_id'=>$DBPokemon->getId(),
-          'type_id'=>$DBPokemonType['type_id']
-        ],[
-          'pokemon_id','type_id'
-        ]);
-        //$this->out->writeln("=[".$DBPokemonType['type_id']."]=> ".$DBPokemonType['name']);
-      }
-      /** Inserting relation_pokemon_ability */
-      $this->out->writeln($DBPokemon->getName()." abilities:");
-      foreach($DBPokemon->getAbilities() as $DBPokemonAbility){
-        $exists = DB::table('relation_pokemon_abilities')
-          ->where([
-            ['pokemon_id','=',$DBPokemon->getId()],
-            ['ability_id','=',$DBPokemonAbility]
-          ])->count();
-        if(!$exists)DB::table('relation_pokemon_abilities')->upsert([
-          'pokemon_id'=>$DBPokemon->getId(),
-          'ability_id'=>$DBPokemonAbility['ability_id'],
-          'hidden'=>$DBPokemonAbility['is_hidden'],
-        ],[
-          'pokemon_id','ability_id',
-        ],[
-          'hidden'
-        ]);
-        $this->out->writeln("=[".$DBPokemonAbility['ability_id']."]=> ".$DBPokemonAbility['is_hidden']);
-      }
-      /** Inserting relation_pokemon_moves */
-      $this->out->writeln($DBPokemon->getName()." moves:");
-      foreach($DBPokemon->getMoves() as $DBPokemonMoveID => $DBPokemonMoveLevel){
-        $exists = DB::table('relation_pokemon_moves')
-          ->where([
-            ['pokemon_id','=',$DBPokemon->getId()],
-            ['move_id','=',$DBPokemonMoveID]
-          ])->count();
-        if(!$exists)DB::table('relation_pokemon_moves')->upsert([
-          'pokemon_id'=>$DBPokemon->getId(),
-          'move_id'=>$DBPokemonMoveID,
-          'level'=>$DBPokemonMoveLevel,
-        ],[
-          'pokemon_id','move_id',
-        ],[
-          'level'
-        ]);
-        //$this->out->writeln("=[".$DBPokemonMoveID."]=> ".$DBPokemonMoveLevel);
-      }
-      /** Inserting relation_pokemon_stat */
-      $this->out->writeln($DBPokemon->getName()." moves:");
-      foreach($DBPokemon->getStats() as $DBPokemonStatName => $DBPokemonStatValue){
-        $exists = DB::table('relation_pokemon_stat')
-          ->where([
-            ['pokemon_id','=',$DBPokemon->getId()],
-            ['stat_name','=',$DBPokemonStatName],
-            ['base_stat','=',$DBPokemonStatValue]
-          ])->count();
-        if(!$exists)DB::table('relation_pokemon_stat')->upsert([
-          'pokemon_id'=>$DBPokemon->getId(),
-          'stat_name'=>$DBPokemonStatName,
-          'base_stat'=>$DBPokemonStatValue,
-        ],[
-          'pokemon_id','stat_name',
-        ],[
-          'base_stat'
-        ]);
-        //$this->out->writeln("=[".$DBPokemonStatName."]=> ".$DBPokemonStatValue);
-      }
-    }
+    $this->DBAbilities($abilityArray);
+    $this->DBMoves($moveArray);
+    $this->DBPokemon($pokemonArray);
+
+    $this->DBRelationPokemonAbility($pokemonArray);
+    $this->DBRelationPokemonMoves($pokemonArray);
+    $this->DBRelationPokemonType($pokemonArray);
+    $this->DBRelationPokemonStat($pokemonArray);
     /** Inserting type */
     $this->out->writeln("##Start of inserting Types");
     foreach($typeArray as $DBType){
@@ -359,6 +243,150 @@ class dbgen
       $type->minimalPrint();
     }
     return $typeArray;
+  }
+  private function DBAbilities($abilityArray):void{
+    foreach($abilityArray as $DBAbility){
+      DB::table('abilities')->upsert([
+        "id"  =>$DBAbility->getID(),
+        "name" =>$DBAbility->getName(),
+        "effect_entries"  =>$DBAbility->getEffectEntry()
+      ],[
+        'id'
+      ],[
+        'name','effect_entries'
+      ]);
+      //$this->out->writeln("=[".$DBAbility->getID()."]=> ".$DBAbility->getName());
+    }
+  }
+  private function DBMoves($moveArray):void{
+    foreach($moveArray as $DBMove){
+      DB::table('moves')->upsert([
+        "id"  =>$DBMove->getID(),
+        "name" =>$DBMove->getName(),
+        "damage_type"=>$DBMove->getDamageType(),
+        "accuracy"=>$DBMove->getAccuracy(),
+        "power"=>$DBMove->getPower(),
+        "pp"=>$DBMove->getPP(),
+        "priority"=>$DBMove->getPriority(),
+        "effect_chance"=>$DBMove->getEffectChance(),
+        "effect_entry"  =>$DBMove->getEffectEntry(),
+        "meta"=>$DBMove->getMeta(),
+      ],[
+        'id'
+      ],[
+        'name','damage_type','accuracy','power','pp','effect_chance','effect_entry','meta'
+      ]);
+      $this->out->writeln("=[".$DBMove->getID()."]=> ".$DBMove->getName());
+    }
+  }
+  private function DBPokemon($pokemonArray):void{
+    /** Inserting pokemon */
+    $this->out->writeln("##Start of inserting Pokemon");
+    foreach($pokemonArray as $DBPokemon){
+      DB::table('pokemon')->upsert([
+        'id'=>$DBPokemon->getId(),
+        'name'=>$DBPokemon->getName(),
+        'is_default'=>$DBPokemon->getIsDefault(),
+        'order'=>$DBPokemon->getOrder(),
+        'front_sprite'=>$DBPokemon->getFrontSprite(),
+        'back_sprite'=>$DBPokemon->getBackSprite(),
+      ],[
+        'id'
+      ],[
+        'name','is_default','order','front_sprite','back_sprite'
+      ]);
+      $this->out->writeln("=[".$DBPokemon->getId()."]=> ".$DBPokemon->getName());
+    }
+  }
+  private function DBRelationPokemonType($pokemonArray):void{
+    foreach($pokemonArray as $DBPokemon){
+      /** Inserting relation_pokemon_type */
+      $this->out->writeln($DBPokemon->getName()." types:");
+      foreach($DBPokemon->getTypes() as $DBPokemonType){
+        $exists = DB::table('relation_pokemon_type')
+          ->where([
+            ['pokemon_id','=',$DBPokemon->getId()],
+            ['type_id','=',$DBPokemonType['type_id']]
+          ])->count();
+        if(!$exists)DB::table('relation_pokemon_type')->upsert([
+          'pokemon_id'=>$DBPokemon->getId(),
+          'type_id'=>$DBPokemonType['type_id']
+        ],[
+          'pokemon_id','type_id'
+        ]);
+        //$this->out->writeln("=[".$DBPokemonType['type_id']."]=> ".$DBPokemonType['name']);
+      }
+    }
+  }
+  private function DBRelationPokemonAbility($pokemonArray):void{
+    foreach($pokemonArray as $DBPokemon){
+      /** Inserting relation_pokemon_ability */
+      $this->out->writeln($DBPokemon->getName()." abilities:");
+      foreach($DBPokemon->getAbilities() as $DBPokemonAbility){
+        $exists = DB::table('relation_pokemon_abilities')
+          ->where([
+            ['pokemon_id','=',$DBPokemon->getId()],
+            ['ability_id','=',$DBPokemonAbility]
+          ])->count();
+        if(!$exists)DB::table('relation_pokemon_abilities')->upsert([
+          'pokemon_id'=>$DBPokemon->getId(),
+          'ability_id'=>$DBPokemonAbility['ability_id'],
+          'hidden'=>$DBPokemonAbility['is_hidden'],
+        ],[
+          'pokemon_id','ability_id',
+        ],[
+          'hidden'
+        ]);
+        $this->out->writeln("=[".$DBPokemonAbility['ability_id']."]=> ".$DBPokemonAbility['is_hidden']);
+      }
+    }
+  }
+  private function DBRelationPokemonMoves($pokemonArray):void{
+    foreach($pokemonArray as $DBPokemon){
+      /** Inserting relation_pokemon_moves */
+      $this->out->writeln($DBPokemon->getName()." moves:");
+      foreach($DBPokemon->getMoves() as $DBPokemonMoveID => $DBPokemonMoveLevel){
+        $exists = DB::table('relation_pokemon_moves')
+          ->where([
+            ['pokemon_id','=',$DBPokemon->getId()],
+            ['move_id','=',$DBPokemonMoveID]
+          ])->count();
+        if(!$exists)DB::table('relation_pokemon_moves')->upsert([
+          'pokemon_id'=>$DBPokemon->getId(),
+          'move_id'=>$DBPokemonMoveID,
+          'level'=>$DBPokemonMoveLevel,
+        ],[
+          'pokemon_id','move_id',
+        ],[
+          'level'
+        ]);
+        //$this->out->writeln("=[".$DBPokemonMoveID."]=> ".$DBPokemonMoveLevel);
+      }
+    }
+  }
+  private function DBRelationPokemonStat($pokemonArray):void{
+    foreach($pokemonArray as $DBPokemon){
+      /** Inserting relation_pokemon_stat */
+      $this->out->writeln($DBPokemon->getName()." moves:");
+      foreach($DBPokemon->getStats() as $DBPokemonStatName => $DBPokemonStatValue){
+        $exists = DB::table('relation_pokemon_stat')
+          ->where([
+            ['pokemon_id','=',$DBPokemon->getId()],
+            ['stat_name','=',$DBPokemonStatName],
+            ['base_stat','=',$DBPokemonStatValue]
+          ])->count();
+        if(!$exists)DB::table('relation_pokemon_stat')->upsert([
+          'pokemon_id'=>$DBPokemon->getId(),
+          'stat_name'=>$DBPokemonStatName,
+          'base_stat'=>$DBPokemonStatValue,
+        ],[
+          'pokemon_id','stat_name',
+        ],[
+          'base_stat'
+        ]);
+        //$this->out->writeln("=[".$DBPokemonStatName."]=> ".$DBPokemonStatValue);
+      }
+    }
   }
   private function parseIdentifier($url):string{
     $ret = substr_replace($url,'',-1);
