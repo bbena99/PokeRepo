@@ -84,7 +84,7 @@ class PokeMove extends Model
   /**
    * @param string $tm The latest technical machine for $this move
    */
-  public function setMachine(string $tm):self{
+  public function setMachine(string|NULL $tm):self{
     $this->machine = $tm;
     return $this;
   }
