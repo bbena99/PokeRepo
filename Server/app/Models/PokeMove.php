@@ -15,6 +15,7 @@ class PokeMove extends Model
   private $priority;
   private $effect_chance;
   private $effect_entry;
+  private $machine;
   private $meta;
 
   /**
@@ -81,6 +82,13 @@ class PokeMove extends Model
     return $this;
   }
   /**
+   * @param string $tm The latest technical machine for $this move
+   */
+  public function setMachine(string $tm):self{
+    $this->machine = $tm;
+    return $this;
+  }
+  /**
    * @param object $meta_in set the meta data of $this move
    */
   public function setMeta(object|null $meta_in):self{
@@ -140,6 +148,12 @@ class PokeMove extends Model
    */
   public function getEffectEntry():string{
     return $this->effect_entry;
+  }
+  /**
+   * @return object returns the meta data for $this move
+   */
+  public function getMachine():string|NULL{
+    return $this->machine;
   }
   /**
    * @return object returns the meta data for $this move
