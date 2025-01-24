@@ -18,7 +18,9 @@ class PokeController{
   public function getAll(Request $request){
     $this->limit = $request->query('limit','20');
     $this->offset = $request->query('offset','0');
-    $dbPokemon = DB::table('pokemon')->get();
+    $dbPokemon = DB::table('pokemon')
+      ->where('is_default','=','1')
+      ->get();
     foreach($dbPokemon as $pokemon){
       $pokemon->types = DB::table('relation_pokemon_type')
         ->where('pokemon_id','=',$pokemon->id)
