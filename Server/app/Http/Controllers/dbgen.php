@@ -26,29 +26,41 @@ class dbgen
     // return response()->json(['error'=>'initDb currently disabled'],500);
     set_time_limit(50000000);
     if(env('INITKEY',NULL)!=$key) return response()->json(['error'=>'Unauthorized access'], Response::HTTP_UNAUTHORIZED);
-    $pokemonArray = $this->fetchPokemon();
-    $abilityArray = $this->fetchAbilities();
+    // $test = json_decode(HTTP::get('https://pokeapi.co/api/v2/move/swords-dance'));
+    // unset($test->contest_combos);
+    // unset($test->contest_effect);
+    // unset($test->contest_type);
+    // foreach($test->flavor_text_entries as $index => $temp){
+    //   if($temp->language->name != 'en'){
+    //     unset($test->flavor_text_entries[$index]);
+    //   }
+    // }
+    // unset($test->learned_by_pokemon);
+    // return response()->json($test,200,[],JSON_PRETTY_PRINT);
+
+    // $abilityArray = $this->fetchAbilities();
     $moveArray = $this->fetchMoves();
-    $typeArray = $this->fetchTypes();
+    // $typeArray = $this->fetchTypes();
+    // $pokemonArray = $this->fetchPokemon($moveArray);
 
 
     /** Start of DB insertions */
     $this->out->writeln(["---Start of Inserting into DataBase---","##Start of inserting Abilities"]);
-    $this->DBAbilities($abilityArray);
+    // $this->DBAbilities($abilityArray);
     $this->DBMoves($moveArray);
-    $this->DBPokemon($pokemonArray);
-    $this->DBTypes($typeArray);
+    // $this->DBPokemon($pokemonArray);
+    // $this->DBTypes($typeArray);
 
-    $this->DBRelationPokemonAbility($pokemonArray);
-    $this->DBRelationPokemonMove($pokemonArray);
-    $this->DBRelationPokemonType($pokemonArray);
-    $this->DBRelationPokemonStat($pokemonArray);
-    $this->DBRelationTypeMove($typeArray);
-    $this->DBRelationTypeDamage($typeArray);
+    // $this->DBRelationPokemonAbility($pokemonArray);
+    // $this->DBRelationPokemonMove($pokemonArray);
+    // $this->DBRelationPokemonType($pokemonArray);
+    // $this->DBRelationPokemonStat($pokemonArray);
+    // $this->DBRelationTypeMove($typeArray);
+    // $this->DBRelationTypeDamage($typeArray);
 
     return response()->json(['message'=>'initDb done']);
   }
-  private function fetchPokemon():array{
+  private function fetchPokemon($moveArray):array{
     /** Start of pokemon */
     $pokemonNamesArray = json_decode($this->api->resourceList('pokemon',1,0));
     $pokemonArray =[];
@@ -62,7 +74,6 @@ class dbgen
               ->setFrontSprite($pokemonJSON->sprites->front_default??"")
               ->setBackSprite($pokemonJSON->sprites->back_default??"");
       /** Start of pokemon => abilities */
-      // return response()->json($pokemonJSON->abilities);
       foreach($pokemonJSON->abilities as $index => $abilityJSON){
         $id = $this->parseIdentifier($abilityJSON->ability->url);
         $ability = [
@@ -82,8 +93,7 @@ class dbgen
         $pokemon->setSingleType($index,$type);
       }
       /** Start of pokemon => moves */
-      // return response()->json($pokemonJSON->moves);
-      $pokemon->setMoves($pokemonJSON->moves);
+      $pokemon->setMoves($pokemonJSON->moves, $moveArray);
       /** Start of pokemon => stats */
       foreach($pokemonJSON->stats as $stat){
         $pokemon->setSingleStat($stat->stat->name,$stat->base_stat);
@@ -113,12 +123,31 @@ class dbgen
   }
   private function fetchMoves():array{
     /** Start of moves */
-    $moveNamesArray = json_decode($this->api->resourceList('move',1,0));
+    $moveNamesArray = json_decode($this->api->resourceList('move',1000,0));
     $moveArray = [];
     foreach($moveNamesArray->results as $moveStdPair){
       $moveJSON = json_decode(Http::get($moveStdPair->url));
       $move = new PokeMove();
-      $effectEntryJSON = $moveJSON->effect_entries[0]->effect??NULL;
+      $machineJSON = NULL;
+      if(count($moveJSON->machines)>0){
+        $tempIdentifier = -1;
+        $tempObj = NULL;
+        foreach($moveJSON->machines as $index => $tempMachine){
+          $compareIdentifier = $this->parseIdentifier($tempMachine->version_group->url);
+          if($compareIdentifier>$tempIdentifier){
+            $tempIdentifier = $compareIdentifier;
+            $tempObj = $tempMachine;
+          }
+          // $this->out->writeln($tempIdentifier);
+        }
+        $machineJSON = json_decode(Http::get($tempObj->machine->url));
+        // $this->out->writeln($machineJSON->item->name);
+      }
+      foreach($moveJSON->flavor_text_entries as $index => $temp){
+        if($temp->language->name != 'en'){
+          unset($moveJSON->flavor_text_entries[$index]);
+        }
+      }
       $move ->setId($moveJSON->id)
             ->setName($moveJSON->name)
             ->setDamageType($this->parseIdentifier($moveJSON->damage_class->url))
@@ -127,7 +156,8 @@ class dbgen
             ->setPP($moveJSON->pp??0)
             ->setPriority($moveJSON->priority??0)
             ->setEffectChance($moveJSON->effect_chance??0)
-            ->setEffectEntry($effectEntryJSON??"")
+            ->setEffectEntry(end($moveJSON->flavor_text_entries)->flavor_text)
+            ->setMachine($machineJSON?$machineJSON->item->name:NULL)
             ->setMeta($moveJSON->meta);
       $moveArray[$move->getId()] = $move;
       $move->minimalPrint();
@@ -188,6 +218,7 @@ class dbgen
         "priority"=>$DBMove->getPriority(),
         "effect_chance"=>$DBMove->getEffectChance(),
         "effect_entry"  =>$DBMove->getEffectEntry(),
+        "machine" =>$DBMove->getMachine(),
         "meta"=>$DBMove->getMeta(),
       ],[
         'id'
