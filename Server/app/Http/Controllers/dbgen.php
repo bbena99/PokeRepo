@@ -36,10 +36,10 @@ class dbgen
     //   }
     // }
     // unset($test->learned_by_pokemon);
-    // return response()->json($test,200,[],JSON_PRETTY_PRINT);
 
     // $abilityArray = $this->fetchAbilities();
     $moveArray = $this->fetchMoves();
+    return response()->json($moveArray,200,[],JSON_PRETTY_PRINT);
     // $typeArray = $this->fetchTypes();
     // $pokemonArray = $this->fetchPokemon($moveArray);
 
@@ -123,7 +123,7 @@ class dbgen
   }
   private function fetchMoves():array{
     /** Start of moves */
-    $moveNamesArray = json_decode($this->api->resourceList('move',1000,0));
+    $moveNamesArray = json_decode($this->api->resourceList('move',3,825));
     $moveArray = [];
     foreach($moveNamesArray->results as $moveStdPair){
       $moveJSON = json_decode(Http::get($moveStdPair->url));
@@ -148,6 +148,11 @@ class dbgen
           unset($moveJSON->flavor_text_entries[$index]);
         }
       }
+      $flavText = end($moveJSON->flavor_text_entries)->flavor_text;
+      if($moveJSON->id==826){
+        $this->out->writeln($flavText);
+        return [$moveJSON->flavor_text_entries,end($moveJSON->flavor_text_entries)??"false",$flavText];
+      }
       $move ->setId($moveJSON->id)
             ->setName($moveJSON->name)
             ->setDamageType($this->parseIdentifier($moveJSON->damage_class->url))
@@ -156,7 +161,7 @@ class dbgen
             ->setPP($moveJSON->pp??0)
             ->setPriority($moveJSON->priority??0)
             ->setEffectChance($moveJSON->effect_chance??0)
-            ->setEffectEntry(end($moveJSON->flavor_text_entries)->flavor_text)
+            ->setEffectEntry($flavText)
             ->setMachine($machineJSON?$machineJSON->item->name:NULL)
             ->setMeta($moveJSON->meta);
       $moveArray[$move->getId()] = $move;
