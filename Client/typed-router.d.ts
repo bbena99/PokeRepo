@@ -21,6 +21,8 @@ declare module 'vue-router/auto-routes' {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
     '/Abilities/': RouteRecordInfo<'/Abilities/', '/Abilities', Record<never, never>, Record<never, never>>,
     '/Abilities/[identifier]': RouteRecordInfo<'/Abilities/[identifier]', '/Abilities/:identifier', { identifier: ParamValue<true> }, { identifier: ParamValue<false> }>,
+    '/moves/': RouteRecordInfo<'/moves/', '/moves', Record<never, never>, Record<never, never>>,
+    '/moves/[identifier]': RouteRecordInfo<'/moves/[identifier]', '/moves/:identifier', { identifier: ParamValue<true> }, { identifier: ParamValue<false> }>,
     '/Pokemon/': RouteRecordInfo<'/Pokemon/', '/Pokemon', Record<never, never>, Record<never, never>>,
     '/Pokemon/[identifier]': RouteRecordInfo<'/Pokemon/[identifier]', '/Pokemon/:identifier', { identifier: ParamValue<true> }, { identifier: ParamValue<false> }>,
   }
