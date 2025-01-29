@@ -111,7 +111,7 @@ class Pokemon extends Model
   /**
    * @param array<int,object> $moves_in (index => {object 'move' {string name, string url}, array<int,object> version_group_details [version_group_index => {int level_learned_at,object move_learn_method {string name, string url}}]})
    */
-  public function setMoves(array $moves_in):self{
+  public function setMoves(array $moves_in,array $moveData):self{
     if($moves_in === []){
       $this->moves = [];
       return $this;
@@ -119,23 +119,24 @@ class Pokemon extends Model
     foreach($moves_in as $move_in){
       $id = $this->parseIdentifier($move_in->move->url);
       $data_in = end($move_in->version_group_details);
-      $level = NULL;
+      $method = NULL;
+      $identifier = NULL;
       switch ($data_in->move_learn_method->name) {
         case 'level-up':
-          $level = $data_in->level_learned_at;
+          $method = 1;
+          $identifier = $data_in->level_learned_at;
           break;
         case 'egg':
-          $level = 0;
+          $method = 0;
           break;
         case 'machine':
-        case 'tutor':
-          $level = -1;
+          $method = -1;
           break;
         default:
-          $level = -2;
+          $method = -2;
           break;
       }
-      $this->moves[$id]=$level;
+      $this->moves[$id]['method']=$method;
     }
     return $this;
   }
@@ -258,8 +259,8 @@ class Pokemon extends Model
       "}",
       "moves:{"
     ]);
-    foreach($this->moves as $id => $level){
-      $out->writeln("-[".$id."]=>".$level);
+    foreach($this->moves as $id => $method){
+      $out->writeln("-[".$id."]=>".$method);
     }
     $out->writeln([
       "}",
