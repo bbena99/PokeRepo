@@ -39,7 +39,7 @@ class dbgen
 
     // $abilityArray = $this->fetchAbilities();
     $moveArray = $this->fetchMoves();
-    return response()->json($moveArray,200,[],JSON_PRETTY_PRINT);
+    // return response()->json($moveArray,200,[],JSON_PRETTY_PRINT);
     // $typeArray = $this->fetchTypes();
     // $pokemonArray = $this->fetchPokemon($moveArray);
 
@@ -123,7 +123,7 @@ class dbgen
   }
   private function fetchMoves():array{
     /** Start of moves */
-    $moveNamesArray = json_decode($this->api->resourceList('move',3,825));
+    $moveNamesArray = json_decode($this->api->resourceList('move',825,0));
     $moveArray = [];
     foreach($moveNamesArray->results as $moveStdPair){
       $moveJSON = json_decode(Http::get($moveStdPair->url));
@@ -148,11 +148,9 @@ class dbgen
           unset($moveJSON->flavor_text_entries[$index]);
         }
       }
-      $flavText = end($moveJSON->flavor_text_entries)->flavor_text;
-      if($moveJSON->id==826){
-        $this->out->writeln($flavText);
-        return [$moveJSON->flavor_text_entries,end($moveJSON->flavor_text_entries)??"false",$flavText];
-      }
+      $flavText = "";
+      $flavText = end($moveJSON->flavor_text_entries);
+      $flavText = $flavText->flavor_text;
       $move ->setId($moveJSON->id)
             ->setName($moveJSON->name)
             ->setDamageType($this->parseIdentifier($moveJSON->damage_class->url))
