@@ -1,4 +1,8 @@
 <script lang="ts">
+import { useRoute } from 'vue-router';
+
+const route = useRoute('/Pokemon/[identifier]');
+
 </script>
 
 <template>
