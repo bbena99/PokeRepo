@@ -4,7 +4,6 @@ import { PokémonI, SingleMoveI } from '../models';
 interface FiltersI{
   offset:number;
   limit:number;
-  color?:number;
   gen?:number;
   type?:number;
 }
