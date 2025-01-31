@@ -2,7 +2,7 @@
 </script>
 
 <template>
- <div class="w-full h-full flex justify-center items-center">
+<div class="w-full h-full flex justify-center items-center">
   <div class="w-56 h-20 p-10 flex justify-between items-center text-header bg-bg1 rounded-xl border-2 border-bg2">
     <div>
       Loading data 
