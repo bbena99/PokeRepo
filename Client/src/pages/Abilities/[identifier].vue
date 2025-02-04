@@ -24,7 +24,7 @@ getOneAbility(route.params.identifier,(a)=>{
 <template>
   <Loading v-if="state===0"/>
   <div v-if="state===1">
-    {{ state.identifier }} works!
+    {{ route.identifier }} works!
   </div>
   <PageNotFound v-if="state===-1" header="Ability" :message="'Ability: '+route.identifier+' was not found.'"/>
 </template>
