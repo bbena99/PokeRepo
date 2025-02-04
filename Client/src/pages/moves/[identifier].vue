@@ -12,7 +12,7 @@ const state = ref<number>(0);
 <template>
   <Loading v-if="state===0"/>
   <div v-if="state===1">
-    {{ state.identifier }} works!
+    {{ route.params.identifier }} works!
   </div>
   <PageNotFound v-if="state===-1"/>
 </template>
