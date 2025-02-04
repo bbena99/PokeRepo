@@ -6,12 +6,11 @@ import { getOne } from '../../service';
 import { emptyPokemon, PokémonI } from '../../models';
 import Loading from '../../components/Loading.vue';
 import PageNotFound from '../../components/PageNotFound.vue'
-import { TYPES } from '../../constants';
 import DamageMultiplier from '../../components/DamageMultiplier.vue';
+import { TYPES } from '../../constants';
 import { RouterLink } from 'vue-router';
 
 const route = useRoute('/Pokemon/[identifier]');
-
 const state = ref<number>(0);
 
 const curPokemon = ref<PokémonI>(emptyPokemon());
