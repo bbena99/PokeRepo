@@ -1,4 +1,4 @@
-<script lang="ts">
+<script setup lang="ts">
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import Loading from "../../components/Loading.vue";

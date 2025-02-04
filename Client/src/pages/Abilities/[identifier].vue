@@ -1,4 +1,4 @@
-<script lang="ts">
+<script setup lang="ts">
 //@ts-ignore ts says there is not export at this location, but there is.
 import { useRoute } from 'vue-router/auto';
 import { ref } from 'vue';
