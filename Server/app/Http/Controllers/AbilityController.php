@@ -16,6 +16,13 @@ class AbilityController{
   }
 
   public function getAll(Request $request){
+    $this->limit = $request->query('limit','20');
+    $this->offset = $request->query('offset','0');
+    $dbAbility = DB::table('abilities')
+        ->get();
+    return response()->json($dbAbility)
+        ->header('Access-Control-Allow-Origin', '*')
+        ->header('Access-Control-Allow-Methods', 'GET');
   }
   public function getOne(Request $request){
 
