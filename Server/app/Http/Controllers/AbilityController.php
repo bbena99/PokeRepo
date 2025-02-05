@@ -24,7 +24,12 @@ class AbilityController{
         ->header('Access-Control-Allow-Origin', '*')
         ->header('Access-Control-Allow-Methods', 'GET');
   }
-  public function getOne(Request $request){
+  public function getOne($identifier){
+    if(filter_var($identifier, FILTER_VALIDATE_INT))$dbAbility = DB::table('abilities')->where('id','=',$identifier)->get()[0];
+    else $dbAbility = DB::table('abilities')->where('name','=',$identifier)->get()[0];
 
+    return response()->json($dbAbility)
+      ->header('Access-Control-Allow-Origin', '*')
+      ->header('Access-Control-Allow-Methods', 'GET');
   }
 }
