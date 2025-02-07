@@ -32,8 +32,8 @@ class AbilityController{
 
     foreach(DB::table('relation_pokemon_abilities')
               ->where('ability_id','=',$dbAbility->id)
-              ->get() as $poke)
-    {
+              ->get()
+            as $poke){
       $dbPoke = DB::table('pokemon')
           ->where('id','=',$poke->pokemon_id)
           ->get()[0];
