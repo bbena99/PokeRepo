@@ -27,14 +27,13 @@ class AbilityController{
   public function getOne($identifier){
     if(filter_var($identifier, FILTER_VALIDATE_INT))$dbAbility = DB::table('abilities')->where('id','=',$identifier)->get()[0];
     else $dbAbility = DB::table('abilities')->where('name','=',$identifier)->get()[0];
-
-    $relation = DB::table('relation_pokemon_abilities')
-        ->where('ability_id','=',$dbAbility->id)
-        ->get();
-
     $dbAbility->pokemon = [];
     $dbAbility->hiddenPokemon = [];
-    foreach($relation as $poke){
+
+    foreach(DB::table('relation_pokemon_abilities')
+              ->where('ability_id','=',$dbAbility->id)
+              ->get() as $poke)
+    {
       $dbPoke = DB::table('pokemon')
           ->where('id','=',$poke->pokemon_id)
           ->get()[0];
