@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRoute } from 'vue-router';
 import { AbilityI } from '../../models';
 import Loading from "../../components/Loading.vue";
 import PageNotFound from '../../components/PageNotFound.vue';
 import { getAllAbilities } from '../../service';
 
 
-const route = useRoute('/Abilities/[identifier]');
 const state = ref<number>(0);
 const abilityArray = ref<AbilityI[]>([]);
 getAllAbilities({
@@ -15,7 +13,6 @@ getAllAbilities({
   offset: 0
 },(a)=>{
   abilityArray.value=[...a];
-  console.log(abilityArray.value);
   state.value=1;
 })
 </script>
