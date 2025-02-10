@@ -21,7 +21,7 @@ getAllAbilities({
   <Loading v-if="state===0"/>
   <div v-if="state===1" class="flex justify-center items-center py-4">
     <div class="grid grid-cols-12 gap-3 xl:w-2/3">
-      <RouterLink v-for="ability in abilityArray" :to="'abilities/'+ability.name" class="col-span-6 md:col-span-4 xl:col-span-3 rounded-xl shadow-lg border-2 border-bg2 bg-bg1 p-2 text-lg underline hover:text-hover hover:border-hover hover:shadow-2xl hover:scale-105">
+      <RouterLink v-for="ability in abilityArray" :to="'abilities/'+ability.name" class="col-span-6 md:col-span-4 xl:col-span-3 2xl:col-span-2 rounded-xl shadow-lg border-2 border-bg2 bg-bg1 p-2 text-lg underline hover:text-hover hover:border-hover hover:shadow-2xl hover:scale-105">
         {{ ability.name.charAt(0).toUpperCase() + ability.name.slice(1).replace('-',' ') }}
       </RouterLink>
     </div>
