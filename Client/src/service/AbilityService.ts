@@ -8,13 +8,11 @@ interface FiltersI{
 
 const url='http://127.0.0.1:8000/';
 
-export function getAllAbilities(filters:FiltersI,cb:(a:AbilityI)=>void):void{
+export function getAllAbilities(filters:FiltersI,cb:(a:AbilityI[])=>void):void{
   axios.get(`${url}ability?limit=${filters.limit}&offset=${filters.offset}`)
     .then(res=>{
       const serverPokeJSON:AbilityI[] = res.data;
-      serverPokeJSON.forEach(ability=>{
-        cb(ability)
-      })
+      cb(serverPokeJSON);
     })
     .catch(err=>{
       console.warn("err in AbilityService.ts/getAll()");
