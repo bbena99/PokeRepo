@@ -23,7 +23,6 @@ export function getAllAbilities(filters:FiltersI,cb:(a:AbilityI[])=>void):void{
 export function getOneAbility(id:string,cb:(a:AbilityI)=>void):void{
   axios.get(`${url}ability/`+id)
     .then(res=>{
-      console.log(res.data);
       const ability:AbilityI = res.data;
       cb(ability);
     })
