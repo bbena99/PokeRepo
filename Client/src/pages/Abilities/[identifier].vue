@@ -40,12 +40,12 @@ getOneAbility(route.params.identifier,(a)=>{
         <span class="text-header text-2xl font-semibold w-full">
           Pokemon that have this ability naturally:
         </span>
-        <div class="w-full grid grid-cols-2 gap-2">
-          <div v-for="poke in ability.pokemon" class="grid grid-cols-8 border-2 border-bg2 rounded-full flex items-center [&>span]:px-2">
+        <div class="w-full grid grid-cols-6 gap-2">
+          <div v-for="poke in ability.pokemon" class="col-span-6 md:col-span-3 xl:col-span-2 grid grid-cols-8 border-2 border-bg2 rounded-full items-center [&>span]:px-2">
             <img :src="poke.front_sprite" :alt="poke.name+'_sprit'" class="rounded-full bg-bg2 col-span-2">
             <span class="flex items-center col-span-3">
               <RouterLink :to="'../Pokemon/'+poke.name" class="h-full underline hover:text-hover text-xl">
-                {{ poke.name.charAt(0).toUpperCase() + poke.name.slice(1) }}
+                {{ poke.name.charAt(0).toUpperCase() + poke.name.slice(1).replace('-',' ') }}
               </RouterLink>
             </span>
             <div class="col-span-2">
@@ -60,7 +60,7 @@ getOneAbility(route.params.identifier,(a)=>{
           Pokemon that have this ability hidden:
         </span>
         <div class="w-full grid grid-cols-2 gap-2">
-          <div v-for="poke in ability.hiddenPokemon" class="grid grid-cols-8 border-2 border-bg2 rounded-full flex items-center [&>span]:px-2">
+          <div v-for="poke in ability.hiddenPokemon" class="grid grid-cols-8 border-2 border-bg2 rounded-full items-center [&>span]:px-2">
             <img :src="poke.front_sprite" :alt="poke.name+'_sprit'" class="rounded-full bg-bg2 col-span-2">
             <span class="flex items-center col-span-3">
               <RouterLink :to="'../Pokemon/'+poke.name" class="h-full underline hover:text-hover text-xl">
