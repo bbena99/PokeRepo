@@ -27,7 +27,7 @@ getOneAbility(route.params.identifier,(a)=>{
   <div v-if="state===1" class="flex justify-center items-center py-4">
     <div class="grid grid-cols-5 gap-4 w-full h-full xl:w-2/3">
       <!--Start of Ability name and description-->
-      <div class="w-full h-72 p-4 col-span-5 rounded-lg border-2 border-bg2 mt-3 grid grid-cols-3 bg-bg1 shadow-xl">
+      <div class="w-full h-60 p-4 col-span-5 rounded-lg border-2 border-bg2 mt-3 grid grid-cols-3 bg-bg1 shadow-xl">
         <h1 class="col-span-3 w-full text-header text-7xl">
           {{ ability.name.charAt(0).toUpperCase() + ability.name.slice(1) }}
         </h1>
@@ -40,7 +40,7 @@ getOneAbility(route.params.identifier,(a)=>{
         <span class="text-header text-2xl font-semibold w-full">
           Pokemon that have this ability naturally:
         </span>
-        <div class="w-full grid grid-cols-6 gap-2">
+        <div class="w-full grid grid-cols-6 gap-3">
           <div v-for="poke in ability.pokemon" class="col-span-6 md:col-span-3 xl:col-span-2 grid grid-cols-8 border-2 border-bg2 rounded-full items-center [&>span]:px-2">
             <img :src="poke.front_sprite" :alt="poke.name+'_sprit'" class="rounded-full bg-bg2 col-span-2">
             <span class="flex items-center col-span-3">
@@ -59,7 +59,7 @@ getOneAbility(route.params.identifier,(a)=>{
         <span class="text-header text-2xl font-semibold w-full">
           Pokemon that have this ability hidden:
         </span>
-        <div class="w-full grid grid-cols-6 gap-2">
+        <div class="w-full grid grid-cols-6 gap-3">
           <div v-for="poke in ability.hiddenPokemon" class="col-span-6 md:col-span-3 xl:col-span-2 grid grid-cols-8 border-2 border-bg2 rounded-full items-center [&>span]:px-2">
             <img :src="poke.front_sprite" :alt="poke.name+'_sprit'" class="rounded-full bg-bg2 col-span-2">
             <span class="flex items-center col-span-3">
