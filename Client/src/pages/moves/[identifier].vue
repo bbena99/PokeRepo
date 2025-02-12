@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import Loading from "../../components/Loading.vue";
 import PageNotFound from '../../components/PageNotFound.vue';
-import { emptyMove, MovesI } from '../../models/Move';
+import { emptyMove, MovesI } from '../../models';
 import { getOneMove } from '../../service';
 
 const route = useRoute('/Moves/[identifier]');
