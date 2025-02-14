@@ -18,7 +18,7 @@ class MoveController{
   public function getAll(Request $request){
     $this->limit = $request->query('limit','20');
     $this->offset = $request->query('offset','0');
-    $dbMove = DB::table('move')->get();
+    $dbMove = DB::table('moves')->get();
     return response()->json($dbMove)
         ->header('Access-Control-Allow-Origin', '*')
         ->header('Access-Control-Allow-Methods', 'GET');
