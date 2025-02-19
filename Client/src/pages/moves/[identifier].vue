@@ -35,7 +35,7 @@ getOneMove(route.params.identifier,(m)=>{
       </div>
     </div>
   </div>
-  <PageNotFound v-if="state===-1" />
+  <PageNotFound v-if="state===-1" header="Move" :message="route.params.identifier+' was not found'" />
 </template>
 
 <style scoped>
