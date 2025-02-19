@@ -35,8 +35,10 @@ class MoveController{
     ){
       $types = [];
       foreach( DB::table('relation_pokemon_type')->where('pokemon_id','=',$dbPokemon->id)->get() as $dbType ){
-
+        array_push($types,$dbType->type_id);
       }
+      $dbPokemon->types = $types;
+      array_push($dbMove->pokemon,$dbPokemon);
     }
     return response()->json($dbMove)
       ->header('Access-Control-Allow-Origin', '*')
