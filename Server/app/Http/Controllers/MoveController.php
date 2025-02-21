@@ -24,8 +24,9 @@ class MoveController{
         ->header('Access-Control-Allow-Methods', 'GET');
   }
   public function getOne($identifier){
-    if(filter_var($identifier, FILTER_VALIDATE_INT))$dbMove = DB::table('moves')->where('id','=',$identifier)->get()[0];
-    else $dbMove = DB::table('moves')->where('name','=',$identifier)->get()[0];
+    if(filter_var($identifier, FILTER_VALIDATE_INT))$dbMove = DB::table('moves')->where('id','=',$identifier)->join('relation_type_moves','moves.id','=','relation_type_moves.move_id')->get()[0];
+    else $dbMove = DB::table('moves')->where('name','=',$identifier)->join('relation_type_moves','moves.id','=','relation_type_moves.move_id')->get()[0];
+    unset($dbMove->move_id);
     $dbMove->pokemon = [];
     foreach( DB::table('relation_pokemon_moves')
           ->where('move_id','=',$dbMove->id)
@@ -38,6 +39,7 @@ class MoveController{
         array_push($types,$dbType->type_id);
       }
       $dbPokemon->types = $types;
+      unset($dbPokemon->pokemon_id,$dbPokemon->move_id);
       array_push($dbMove->pokemon,$dbPokemon);
     }
     return response()->json($dbMove)
