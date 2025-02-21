@@ -1,5 +1,5 @@
 import axios from "axios";
-import { MovesI } from "../models/Move";
+import { MovesI, SinglePokemonI } from "../models";
 
 interface FiltersI{
   limit:number;
@@ -24,7 +24,13 @@ export function getOneMove(id:string,cb:(a:MovesI)=>void):void{
   axios.get(`${url}move/`+id)
     .then(res=>{
       const move = res.data;
-      console.log(move)
+      const tempMoveArray:SinglePokemonI[] = [...res.data.pokemon];
+      move.pokemon = {level:[],egg:[],machine:[],other:[]};
+      move.pokemon.level = tempMoveArray.filter((move)=>move.level>0).sort((a,b)=>{return a.level>b.level?1:0;});
+      move.pokemon.egg = tempMoveArray.filter((move)=>move.level===0).sort((a,b)=>{return a.id>b.id?1:0;});
+      move.pokemon.machine = tempMoveArray.filter((move)=>move.level===-1).sort((a,b)=>{return a.id>b.id?1:0;});
+      move.pokemon.other = tempMoveArray.filter((move)=>move.level===-2).sort((a,b)=>{return a.id>b.id?1:0;});
+      console.log(move);
       cb(move);
     })
     .catch(err=>{
