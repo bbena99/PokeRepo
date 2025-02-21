@@ -33,6 +33,25 @@ getOneMove(route.params.identifier,(m)=>{
           {{ move.effect_entry }}
         </span>
       </div>
+      <!--Start of pokemon that learn this move by leveling up-->
+      <div v-if="move.pokemon.level.length>0" class="w-full p-4 col-span-5 rounded-lg border-2 border-bg2 mt-3 bg-bg1 shadow-xl">
+        <span class="text-header text-2xl font-semibold w-full">
+          Pokemon that learn this move through leveling up:
+        </span>
+        <div class="w-full grid grid-cols-6 gap-3">
+          <div v-for="poke in move.pokemon.level" class="col-span-6 md:col-span-3 xl:col-span-2 grid grid-cols-8 border-2 border-bg2 rounded-full items-center [&>span]:px-2">
+            <img :src="poke.front_sprite" :alt="poke.name+'_sprit'" class="rounded-full bg-bg2 col-span-2">
+            <span class="flex items-center col-span-3">
+              <RouterLink :to="'../Pokemon/'+poke.name" class="h-full underline hover:text-hover text-xl">
+                {{ poke.name.charAt(0).toUpperCase() + poke.name.slice(1).replace('-',' ') }}
+              </RouterLink>
+            </span>
+            <div class="col-span-2">
+              <img v-for="type in poke.types" :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/'+type+'.png'" alt="TypeImg">
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <PageNotFound v-if="state===-1" header="Move" :message="route.params.identifier+' was not found'" />
