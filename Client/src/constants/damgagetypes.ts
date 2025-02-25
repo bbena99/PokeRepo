@@ -3,7 +3,7 @@ import physical from "../assets/images/physical.png";
 import special from "../assets/images/special.png";
 
 export const DAMAGETYPES=[
-  {
+  {},{
     name:"status",
     src: status
   },{
