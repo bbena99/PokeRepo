@@ -26,9 +26,12 @@ getOneMove(route.params.identifier,(m)=>{
     <div class="grid grid-cols-5 gap-4 w-full h-full xl:w-2/3">
       <!--Start of Ability name and description-->
       <div class="w-full h-60 p-4 col-span-5 rounded-lg border-2 border-bg2 mt-3 grid grid-cols-3 bg-bg1 shadow-xl">
-        <h1 class="col-span-3 w-full text-header text-7xl">
+        <h1 class="col-span-3 lg:col-span-2 w-full text-header text-7xl">
           {{ move.name.charAt(0).toUpperCase() + move.name.slice(1) }}
         </h1>
+        <div class="col-span-3 lg:col-span-1 flex flex-wrap">
+          <img :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/'+move.type_id+'.png'" alt="">
+        </div>
         <span class="col-span-3 w-full text-text text-xl">
           {{ move.effect_entry }}
         </span>

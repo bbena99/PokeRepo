@@ -10,6 +10,7 @@ export interface MovesI{
   priority:number;
   accuracy:number;
   meta:any;
+  type_id:number;
   pokemon:{
     level:SinglePokemonI[];
     egg:SinglePokemonI[];
@@ -41,6 +42,7 @@ export function emptyMove():MovesI{
     priority:-1,
     accuracy:-1,
     meta:{},
+    type_id:-1,
     pokemon:{
       level:[],
       egg:[],
