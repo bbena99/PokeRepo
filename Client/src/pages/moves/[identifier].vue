@@ -6,6 +6,7 @@ import Loading from "../../components/Loading.vue";
 import PageNotFound from '../../components/PageNotFound.vue';
 import { emptyMove, MovesI } from '../../models';
 import { getOneMove } from '../../service';
+import { DAMAGETYPES } from '../../constants';
 
 const route = useRoute('/Moves/[identifier]');
 const state = ref<number>(0);
@@ -29,8 +30,12 @@ getOneMove(route.params.identifier,(m)=>{
         <h1 class="col-span-3 lg:col-span-2 w-full text-header text-7xl">
           {{ move.name.charAt(0).toUpperCase() + move.name.slice(1) }}
         </h1>
-        <div class="col-span-3 lg:col-span-1 flex flex-wrap">
-          <img :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/'+move.type_id+'.png'" alt="">
+        <div class="col-span-3 lg:col-span-1 h-16 mt-2 flex flex-wrap">
+          <img
+            :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/'+move.type_id+'.png'"
+            :alt="'type'+move.type_id"
+          >
+          <img :src="DAMAGETYPES[move.damage_type].src" :alt="DAMAGETYPES[move.damage_type].src">
         </div>
         <span class="col-span-3 w-full text-text text-xl">
           {{ move.effect_entry }}
@@ -46,7 +51,8 @@ getOneMove(route.params.identifier,(m)=>{
             <img :src="poke.front_sprite" :alt="poke.name+'_sprit'" class="rounded-full bg-bg2 col-span-2">
             <span class="flex items-center col-span-3">
               <RouterLink :to="'../Pokemon/'+poke.name" class="h-full underline hover:text-hover text-xl">
-                {{ poke.name.charAt(0).toUpperCase() + poke.name.slice(1).replace('-',' ') }}
+                <!--@vue-ignore replaceAll() does exist...-->
+                {{ poke.name.charAt(0).toUpperCase() + poke.name.slice(1).replaceAll('-',' ') }}
               </RouterLink>
             </span>
             <div class="col-span-2">
