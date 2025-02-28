@@ -25,17 +25,17 @@ function themeChanger(){
       <div class="hidden w-full md:block md:w-auto" id="navbar-default">
         <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 [&>li]:flex">
           <li>
-            <RouterLink to="/Abilities" class="block py-2 px-3 rounded md:bg-transparent" aria-current="page">
+            <RouterLink to="/Abilities" class="block py-2 px-3 rounded hover:text-hover md:bg-transparent" aria-current="page">
               Abilities
             </RouterLink>
           </li>
           <li>
-            <RouterLink to="/Moves" class="block py-2 px-3 rounded md:bg-transparent" aria-current="page">
+            <RouterLink to="/Moves" class="block py-2 px-3 rounded hover:text-hover md:bg-transparent" aria-current="page">
               Moves
             </RouterLink>
           </li>
           <li>
-            <RouterLink to="/Pokemon" class="block py-2 px-3 rounded md:bg-transparent" aria-current="page">
+            <RouterLink to="/Pokemon" class="block py-2 px-3 rounded hover:text-hover md:bg-transparent" aria-current="page">
               Pokemon
             </RouterLink>
           </li>
