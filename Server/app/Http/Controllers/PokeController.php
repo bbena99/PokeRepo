@@ -8,18 +8,37 @@ use Illuminate\Support\Facades\DB;
 
 class PokeController{
   protected $output;
-  protected $limit;
-  protected $offset;
 
   public function __construct(){
     $this->output = new \Symfony\Component\Console\Output\ConsoleOutput();//Using the console to keep track of the progress of the insertions
   }
   public function getAll(Request $request){
-    $this->limit = $request->query('limit','20');
-    $this->offset = $request->query('offset','0');
-    $dbPokemon = DB::table('pokemon')
-      ->where('is_default','=','1')
-      ->get();
+    $name = $request->query('name');
+    $type = $request->query('type');
+    $notType = $request->query('notType');
+    $limit = $request->query('limit');
+    $offset = $request->query('offset');
+
+    $dbQueryBuilder = DB::table('pokemon')->where('is_default','=','1');
+    if($name)$dbQueryBuilder->where('name','like',"%".$name."%");
+    if($type){
+      $type = preg_split("/\,/",$type);
+      $dbQueryBuilder->whereIn('id',DB::table('relation_pokemon_type')
+        ->whereIn('type_id',$type)
+        ->distinct()
+        ->pluck('pokemon_id'));
+    }
+    if($notType){
+      $notType = preg_split("/\,/",$notType);
+      $dbQueryBuilder->whereNotIn('id',DB::table('relation_pokemon_type')
+        ->whereIn('type_id',$notType)
+        ->distinct()
+        ->pluck('pokemon_id'));
+    }
+    if($limit)$dbQueryBuilder->limit($limit);
+    if($offset)$dbQueryBuilder->offset($offset);
+    $dbPokemon = $dbQueryBuilder->get();
+
     foreach($dbPokemon as $pokemon){
       $pokemon->types = DB::table('relation_pokemon_type')
         ->where('pokemon_id','=',$pokemon->id)
