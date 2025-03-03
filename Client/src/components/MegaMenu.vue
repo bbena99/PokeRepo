@@ -36,7 +36,7 @@ function bgHandler(value:number,index:number){
     <font-awesome-icon v-if="display==='grid '" :icon="faChevronUp"/>
     <font-awesome-icon v-else :icon="faChevronDown"/>
 </button>
-<div :id=props.id :class="display+'grid-cols-'+props.cols+' absolute top-full z-10 w-auto border rounded-lg shadow-md bg-bg1 border-bg2 '+props.menuClass">
+<div :id=props.id :class="display+'grid-cols-'+props.cols+' absolute top-full z-20 w-auto h-auto border rounded-lg shadow-md bg-bg1 border-bg2 '+props.menuClass">
   <button 
     type="button"
     v-for="(item,index) in props.list"
