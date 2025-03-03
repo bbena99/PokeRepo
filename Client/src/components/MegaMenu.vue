@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
-const props = defineProps(['btnTitle','id','list','cols']);
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+const props = defineProps(['btnTitle','btnClass','id','list','cols','menuClass','itemClass']);
 const display = ref<string>("hidden ");
 const bgRef = ref<string[]>([""].fill("",0,props.list.length-1));
 function clickHandler(){
@@ -13,10 +15,10 @@ function bgHandler(value:number,index:number){
       bgRef.value[index]="";
       break;
     case 1:
-      bgRef.value[index]=" bg-green-800";
+      bgRef.value[index]=" bg-green-700";
       break;
     case 2:
-      bgRef.value[index]=" bg-red-800";
+      bgRef.value[index]=" bg-red-700";
       break;
     default:
       bgRef.value[index]=" FAILURE";//This should never happen
@@ -27,20 +29,21 @@ function bgHandler(value:number,index:number){
 <template>
 <button 
   type="button"
-  class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-header rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+  :class="'flex items-center justify-center p-2 text-header rounded-lg '+props.btnClass"
   @click="clickHandler()"
 >
-    <span class="sr-only text-header">{{ props.btnTitle }}</span>
+    <span class="mr-2">{{ props.btnTitle }}</span>
+    <font-awesome-icon :icon="faChevronDown" class="bg-transparent text-header"/>
 </button>
-<div :id=props.id :class="display+'absolute z-10 w-auto text-sm border rounded-lg shadow-md bg-bg1 border-bg2'">
+<div :id=props.id :class="display+'grid-cols-'+props.cols+' absolute z-10 w-auto border rounded-lg shadow-md bg-bg1 border-bg2 '+props.menuClass">
   <button 
     type="button"
     v-for="(item,index) in props.list"
     :key="item.key"
-    :class="'p-2 m-2 rounded-lg'+bgRef[index]"
+    :class="'p-2 m-2 rounded-2xl'+bgRef[index]+' '+props.itemClass"
     @click="item.value++;item.value%=3;bgHandler(item.value,index);"
   >
-    {{ item.key }}
+    <img :src="item.src" :alt="item.key+'img'">
   </button>
 </div>
 </template>
