@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 const props = defineProps(['btnTitle','btnClass','id','list','cols','menuClass','itemClass']);
 const display = ref<string>("hidden ");
 const bgRef = ref<string[]>([""].fill("",0,props.list.length-1));
@@ -29,11 +29,12 @@ function bgHandler(value:number,index:number){
 <template>
 <button 
   type="button"
-  :class="'flex items-center justify-center p-2 text-header rounded-lg '+props.btnClass"
+  :class="'flex items-center justify-center p-3 text-header rounded-lg '+props.btnClass"
   @click="clickHandler()"
 >
     <span class="mr-2">{{ props.btnTitle }}</span>
-    <font-awesome-icon :icon="faChevronDown" class="bg-transparent text-header"/>
+    <font-awesome-icon v-if="display==='grid '" :icon="faChevronUp"/>
+    <font-awesome-icon v-else :icon="faChevronDown"/>
 </button>
 <div :id=props.id :class="display+'grid-cols-'+props.cols+' absolute z-10 w-auto border rounded-lg shadow-md bg-bg1 border-bg2 '+props.menuClass">
   <button 
