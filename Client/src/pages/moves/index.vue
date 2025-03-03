@@ -23,9 +23,11 @@ getAllMoves({
   <Loading v-if="state===0"/>
   <div v-if="state===1" class="flex justify-center items-center py-4">
     <div class="grid grid-cols-12 gap-3 xl:w-2/3">
-      <RouterLink v-for="move in moveArray" :to="'Moves/'+move.name" class="flex justify-between col-span-12 sm:col-span-6 md:col-span-4 2xl:col-span-3 rounded-xl shadow border-2 border-bg2 bg-bg1 p-2 text-lg underline hover:text-hover hover:border-hover hover:shadow-2xl hover:scale-105">
-        {{ move.name.charAt(0).toUpperCase() + move.name.slice(1).replace('-',' ') }}
-        <div class="flex w-28 h-8">
+      <RouterLink v-for="move in moveArray" :to="'Moves/'+move.name" class="grid grid-cols-2 col-span-12 sm:col-span-6 md:col-span-4 2xl:col-span-3 rounded-xl shadow border-2 border-bg2 bg-bg1 p-2 pl-3 text-lg underline hover:text-hover hover:border-hover hover:shadow-2xl hover:scale-105">
+        <span>
+          {{ move.name.charAt(0).toUpperCase() + move.name.slice(1).replace('-',' ') }}
+        </span>
+        <div class="flex w-28 h-7">
           <img 
             :src="DAMAGETYPES[move.damage_type].src"
             :alt="DAMAGETYPES[move.damage_type].src"
