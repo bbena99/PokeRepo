@@ -4,14 +4,15 @@ import { PokémonI, SingleMoveI } from '../models';
 interface FiltersI{
   offset:number;
   limit:number;
-  gen?:number;
-  type?:number;
+  name:string;
+  type:number[];
+  notType:number[];
 }
 
 const url='http://127.0.0.1:8000/';
 
 export function getAll(filters:FiltersI,cb:(a:PokémonI)=>void):void{
-  axios.get(`${url}pokemon?limit=${filters.limit}&offset=${filters.offset}`)
+  axios.get(`${url}pokemon?limit=${filters.limit}&offset=${filters.offset}&name=${filters.name}&type=${filters.type.join(',')}&notType=${filters.notType.join(',')}`)
     .then(res=>{
       const serverPokeJSON:PokémonI[] = res.data;
       serverPokeJSON.forEach(pokemon=>{
