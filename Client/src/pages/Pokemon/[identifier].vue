@@ -48,7 +48,6 @@ getOne(route.params.identifier, (cb: PokémonI) => {
       })
     })
     typeRelations.value = tempArray;
-    console.log(curPokemon.value)
   }
 });
 </script>
