@@ -9,8 +9,8 @@ function clickHandler(){
   if(display.value==="hidden ")display.value="grid "
   else display.value="hidden "
 }
+//@ts-ignore
 props.list.forEach((obj,index) => {
-  console.log(index,obj.value)
   switch(obj.value){
     case 0:
       bgRef.value[index]="";
