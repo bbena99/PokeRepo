@@ -1,18 +1,51 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
-import { getAll } from '../../service';
 import { ref } from 'vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faMagnifyingGlass, faPen, faRotate } from '@fortawesome/free-solid-svg-icons';
+import { getAll } from '../../service';
 import PokeCard from '../../components/PokeCard.vue';
 import Loading from '../../components/Loading.vue';
 import { PokémonI } from '../../models';
+import MegaMenu from '../../components/MegaMenu.vue';
+import { TYPES } from '../../constants';
+
+interface pokeQueryI{
+  offset?:number;
+  limit:number;
+  name?:string;
+  type?:string;
+  notType?:string;
+}
 
 const route = useRoute();
-const query = route.query;
-
+const query:pokeQueryI = {
+  offset:undefined,
+  limit:50,
+  name:undefined,
+  type:undefined,
+  notType:undefined,
+  ...route.query
+};
+const typeArray:number[] = query.type?query.type.split(',').map(v=>{return +v;}):[];
+const notTypeArray:number[] = query.notType?query.notType.toString().split(',').map(v=>{return +v;}):[];
+const list = TYPES.map((T,i)=>{
+  let value = 0;
+  if(typeArray.includes(i+1))value=1;
+  else if(notTypeArray.includes(i+1))value=2;
+  const item = {
+    name:T.name,
+    value:value,
+    src:'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/'+(i+1)+'.png',
+  }
+  console.log(item)
+  return item;
+})
+const nameInput = ref<string>(query.name??'');
 const state = ref<number>(0);
 const pokeList = ref<Map<number,PokémonI>>(new Map());
 
-getAll({offset:+(query.offset??0),limit:+(query.limit??50)},(cb:PokémonI)=>{
+getAll({offset:+(query.offset??0),limit:+(query.limit??50),name:nameInput.value,type:typeArray,notType:notTypeArray},(cb:PokémonI)=>{
   pokeList.value.set(cb.id,cb);
   state.value=1
 });
@@ -21,18 +54,60 @@ getAll({offset:+(query.offset??0),limit:+(query.limit??50)},(cb:PokémonI)=>{
 <template>
   <Loading v-if="state===0"/>
   <div v-if="state===1" class="w-full h-full flex flex-wrap justify-center">
-    <div id="search_bar" class="w-full h-16 flex justify-center items-center">
-      <div class="w-3/4 h-full bg-bg2">
-        Search bar in progress
+    <div id="search_bar" class="w-full h-16 mt-4 flex justify-center items-center text-header">
+      <div class="flex items-center justify-evenly w-3/4 h-16 bg-bg2 rounded-full">
+        <form class="grid grid-cols-12 gap-2 items-center relative w-11/12">
+          <div class="h-3/4 flex items-center justify-center col-span-4">
+            <div class="inset-y-0 start-0 flex items-center ps-3 z-10 -mr-7">
+              <FontAwesomeIcon :icon="faPen"/>
+            </div>
+            <input 
+              type="search"
+              id="name-search"
+              class="block w-full h-full p-3 ps-10 text-sm text-text border-none shadow-sm rounded-lg bg-bg1 focus:ring-hover"
+              placeholder="Name Search"
+              v-model="nameInput"
+              required
+            />
+          </div>
+          <div class="h-3/4 col-span-2 grid grid-cols-2 items-center rounded-lg bg-bg1 text-text">
+            <label for="page-count" class="w-20 block mx-2 text-sm font-medium">Results per page</label>
+            <select id="page-count" class="h-full border-none text-sm rounded-lg block w-full" v-model="query.limit">
+              <option selected value=50>50</option>
+              <option value=10> 10</option>
+              <option value=25> 25</option>
+              <option value=100>100</option>
+              <option value=200>200</option>
+            </select>
+          </div>
+          <MegaMenu
+            id="type_filter"
+            btnTitle='Type Filter'
+            btnClass='first:pr-1'
+            cols=5
+            :list=list
+          />
+          <RouterLink :to="'pokemon?'" class="flex items-center justify-center h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2">
+            <FontAwesomeIcon :icon="faMagnifyingGlass" class="pr-1"/>
+            Search
+          </RouterLink>
+          <button type="button" class="flex items-center justify-center h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2">
+            <FontAwesomeIcon :icon="faRotate" class="pr-1"/>
+            Reset Filters
+          </button>
+        </form>
       </div>
     </div>
-    <ul style="height: calc(100% - 4rem);" class="w-full xl:w-3/4 p-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 overflow-y-scroll overflow-x-hidden">
+    <ul style="height: calc(100% - 10rem);" class="w-full xl:w-3/4 p-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 overflow-y-scroll overflow-x-hidden">
       <li v-for="[_,value] in pokeList" :key="value.name" class="group w-full h-58 col-span-1 z-0 transition-all ease-in-out sm:hover:scale-110 hover:z-10">
         <RouterLink :to="'pokemon/'+value.name" class="w-full h-full drop-shadow-md">
           <PokeCard :pokemon="value"/>
         </RouterLink>
       </li>
     </ul>
+    <div class="flex items-center justify-center w-full h-14 m-2 bg-bg1">
+
+    </div>
   </div>
 </template>
 
