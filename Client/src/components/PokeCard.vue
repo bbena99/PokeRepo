@@ -40,7 +40,7 @@ let baseStatTotal = Object.values(pokemon.stats).reduce((acc, value)=>acc+value,
       >
         <div
           :class="'h-full pl-0.5 flex items-center text-header rounded-full '+STAT_COLOR[index]"
-          :style="{'width': (stat!/210*100+'\%')}"
+          :style="{'width': (stat!/210*85+15+'\%')}"
         >
           {{ stat }}
         </div>
