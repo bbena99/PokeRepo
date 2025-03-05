@@ -9,8 +9,10 @@ function clickHandler(){
   if(display.value==="hidden ")display.value="grid "
   else display.value="hidden "
 }
-//@ts-ignore
-props.list.forEach((obj,index) => {
+bgHandler();
+function bgHandler(){
+  //@ts-ignore
+  props.list.forEach((obj,index) => {
   switch(obj.value){
     case 0:
       bgRef.value[index]="";
@@ -25,6 +27,7 @@ props.list.forEach((obj,index) => {
       bgRef.value[index]=" FAILURE";//This should never happen
   }
 });
+}
 </script>
 
 <template>
@@ -43,7 +46,7 @@ props.list.forEach((obj,index) => {
     v-for="(item,index) in props.list"
     :key="item.key"
     :class="'p-2 m-2 rounded-2xl'+bgRef[index]+' '+props.itemClass"
-    @click="item.value++;item.value%=3"
+    @click="item.value++;item.value%=3;bgHandler()"
   >
     <img :src="item.src" :alt="item.key+'img'">
   </button>
