@@ -19,17 +19,17 @@ interface pokeQueryI{
 }
 
 const route = useRoute();
-const query:pokeQueryI = {
+const query = ref<pokeQueryI>({
   offset:undefined,
   limit:50,
   name:undefined,
   type:undefined,
   notType:undefined,
   ...route.query
-};
-const typeArray:number[] = query.type?query.type.split(',').map(v=>{return +v;}):[];
-const notTypeArray:number[] = query.notType?query.notType.toString().split(',').map(v=>{return +v;}):[];
-const list = TYPES.map((T,i)=>{
+});
+let typeArray:number[] = query.value.type?query.value.type.split(',').map(v=>{return +v;}):[];
+let notTypeArray:number[] = query.value.notType?query.value.notType.toString().split(',').map(v=>{return +v;}):[];
+const list = ref(TYPES.map((T,i)=>{
   let value = 0;
   if(typeArray.includes(i+1))value=1;
   else if(notTypeArray.includes(i+1))value=2;
@@ -38,17 +38,46 @@ const list = TYPES.map((T,i)=>{
     value:value,
     src:'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/'+(i+1)+'.png',
   }
-  console.log(item)
   return item;
-})
-const nameInput = ref<string>(query.name??'');
+}))
+const pageNumber = Math.floor(query.value.offset??0/query.value.limit);
 const state = ref<number>(0);
 const pokeList = ref<Map<number,PokémonI>>(new Map());
 
-getAll({offset:+(query.offset??0),limit:+(query.limit??50),name:nameInput.value,type:typeArray,notType:notTypeArray},(cb:PokémonI)=>{
+getAll({offset:+(query.value.offset??0),limit:+(query.value.limit??50),name:query.value.name??'',type:typeArray,notType:notTypeArray},(cb:PokémonI)=>{
   pokeList.value.set(cb.id,cb);
   state.value=1
 });
+function queryBuilder():string{
+  let retQuery:string = '';
+
+  if(query.value.limit!==50)retQuery+='limit='+query.value.limit+'&';
+  if(query.value.offset)retQuery+='offset='+query.value.offset+'&';
+  if(query.value.name)retQuery+='name='+query.value.name+'&';
+  list.value.forEach((obj,index)=>{
+    const id=index+1;
+    console.log(id,obj.value)
+    switch(obj.value){
+      case 1:
+        if(!typeArray.includes(id))typeArray.push(id);
+        notTypeArray = notTypeArray.filter((value)=>{if(value!==id)return true; else return false;})
+        console.log('typeArray:',typeArray);
+        break;
+      case 2:
+        if(!notTypeArray.includes(id))notTypeArray.push(id);
+        typeArray = typeArray.filter((value)=>{if(value!==id)return true; else return false;})
+        console.log('notTypeArray',notTypeArray)
+        break;
+      default:
+        typeArray = typeArray.filter((value)=>{if(value!==id)return true; else return false;})
+        notTypeArray = notTypeArray.filter((value)=>{if(value!==id)return true; else return false;})
+        console.log('neither',typeArray,notTypeArray)
+    }
+  })
+  if(typeArray.length>0)retQuery+='type='+typeArray.join(',')+'&';
+  if(notTypeArray.length>0)retQuery+='notType='+notTypeArray.join(',')+'&';
+  return retQuery;
+}
 </script>
 
 <template>
@@ -66,7 +95,7 @@ getAll({offset:+(query.offset??0),limit:+(query.limit??50),name:nameInput.value,
               id="name-search"
               class="block w-full h-full p-3 ps-10 text-sm text-text border-none shadow-sm rounded-lg bg-bg1 focus:ring-hover"
               placeholder="Name Search"
-              v-model="nameInput"
+              v-model="query.name"
               required
             />
           </div>
@@ -87,11 +116,18 @@ getAll({offset:+(query.offset??0),limit:+(query.limit??50),name:nameInput.value,
             cols=5
             :list=list
           />
-          <RouterLink :to="'pokemon?'" class="flex items-center justify-center h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2">
+          <RouterLink :to="'pokemon?'+queryBuilder()" @click="getAll({offset:+(query.offset??0),limit:+(query.limit??50),name:query.name??'',type:typeArray,notType:notTypeArray},(cb:PokémonI)=>{
+              pokeList.set(cb.id,cb);
+            })"
+            class="flex items-center justify-center h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2">
             <FontAwesomeIcon :icon="faMagnifyingGlass" class="pr-1"/>
             Search
           </RouterLink>
-          <button type="button" class="flex items-center justify-center h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2">
+          <button
+            type="button"
+            @click="query.offset=undefined;query.limit=50;query.name=undefined;query.type=undefined;query.notType=undefined"
+            class="flex items-center justify-center h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2"
+          >
             <FontAwesomeIcon :icon="faRotate" class="pr-1"/>
             Reset Filters
           </button>
