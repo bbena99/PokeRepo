@@ -56,22 +56,21 @@ function queryBuilder():string{
   if(query.value.name)retQuery+='name='+query.value.name+'&';
   list.value.forEach((obj,index)=>{
     const id=index+1;
-    console.log(id,obj.value)
     switch(obj.value){
       case 1:
         if(!typeArray.includes(id))typeArray.push(id);
         notTypeArray = notTypeArray.filter((value)=>{if(value!==id)return true; else return false;})
-        console.log('typeArray:',typeArray);
+        // console.log('typeArray:',typeArray);
         break;
       case 2:
         if(!notTypeArray.includes(id))notTypeArray.push(id);
         typeArray = typeArray.filter((value)=>{if(value!==id)return true; else return false;})
-        console.log('notTypeArray',notTypeArray)
+        // console.log('notTypeArray',notTypeArray)
         break;
       default:
         typeArray = typeArray.filter((value)=>{if(value!==id)return true; else return false;})
         notTypeArray = notTypeArray.filter((value)=>{if(value!==id)return true; else return false;})
-        console.log('neither',typeArray,notTypeArray)
+        // console.log('neither',typeArray,notTypeArray)
     }
   })
   if(typeArray.length>0)retQuery+='type='+typeArray.join(',')+'&';
@@ -82,11 +81,11 @@ function queryBuilder():string{
 
 <template>
   <Loading v-if="state===0"/>
-  <div v-if="state===1" class="w-full h-full flex flex-wrap justify-center">
+  <div v-if="state===1" class="w-full h-full flex flex-wrap content-start items-start justify-center">
     <div id="search_bar" class="w-full h-16 mt-4 flex justify-center items-center text-header">
       <div class="flex items-center justify-evenly w-3/4 h-16 bg-bg2 rounded-full">
         <form class="grid grid-cols-12 gap-2 items-center relative w-11/12">
-          <div class="h-3/4 flex items-center justify-center col-span-4">
+          <div class="h-3/4 flex items-center justify-center col-span-6">
             <div class="inset-y-0 start-0 flex items-center ps-3 z-10 -mr-7">
               <FontAwesomeIcon :icon="faPen"/>
             </div>
@@ -109,40 +108,43 @@ function queryBuilder():string{
               <option value=200>200</option>
             </select>
           </div>
-          <MegaMenu
-            id="type_filter"
-            btnTitle='Type Filter'
-            btnClass='first:pr-1'
-            cols=5
-            :list=list
-          />
-          <RouterLink :to="'pokemon?'+queryBuilder()" @click="getAll({offset:+(query.offset??0),limit:+(query.limit??50),name:query.name??'',type:typeArray,notType:notTypeArray},(cb:PokémonI)=>{
-              pokeList.set(cb.id,cb);
-            })"
-            class="flex items-center justify-center h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2">
+            <MegaMenu
+              id="type_filter"
+              btnTitle='Type Filter'
+              btnClass='first:pr-1 bg-bg1 w-full col-span-2'
+              cols=3
+              :list=list
+            />
+          <RouterLink
+            :to="'./Pokemon?'+queryBuilder()"
+            class="flex items-center justify-center h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2"
+          >
             <FontAwesomeIcon :icon="faMagnifyingGlass" class="pr-1"/>
             Search
           </RouterLink>
-          <button
+          <RouterLink
             type="button"
-            @click="query.offset=undefined;query.limit=50;query.name=undefined;query.type=undefined;query.notType=undefined"
+            force
+            to="Pokemon/"
             class="flex items-center justify-center h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2"
           >
             <FontAwesomeIcon :icon="faRotate" class="pr-1"/>
             Reset Filters
-          </button>
+          </RouterLink>
         </form>
       </div>
     </div>
-    <ul style="height: calc(100% - 10rem);" class="w-full xl:w-3/4 p-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 overflow-y-scroll overflow-x-hidden">
+    <ul style="max-height: calc(100% - 8.5rem);" class="w-full xl:w-3/4 p-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 overflow-y-scroll overflow-x-hidden">
       <li v-for="[_,value] in pokeList" :key="value.name" class="group w-full h-58 col-span-1 z-0 transition-all ease-in-out sm:hover:scale-110 hover:z-10">
-        <RouterLink :to="'pokemon/'+value.name" class="w-full h-full drop-shadow-md">
+        <a href="" class="w-full drop-shadow-md">
           <PokeCard :pokemon="value"/>
-        </RouterLink>
+        </a>
       </li>
     </ul>
-    <div class="flex items-center justify-center w-full h-14 m-2 bg-bg1">
-
+    <div class="flex items-center justify-center absolute bottom-0 w-full h-14 p-2">
+      <div class="grid grid-cols-7 w-1/2 bg-bg1 h-full">
+        
+      </div>
     </div>
   </div>
 </template>
