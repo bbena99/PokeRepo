@@ -40,6 +40,15 @@ const list = ref(TYPES.map((T,i)=>{
   }
   return item;
 }))
+const genList = ref([{}]);
+genList.value.pop();
+for(let i=1; i<10; i++){
+  genList.value.push({
+    name:"Gen-"+i,
+    value:0,
+    src:"Gen "+i
+  })
+}
 const pageNumber = Math.floor(query.value.offset??0/query.value.limit);
 const state = ref<number>(0);
 const pokeList = ref<Map<number,PokémonI>>(new Map());
@@ -124,14 +133,20 @@ function queryBuilder(){
               <img :src="src" :alt="alt"/>
             </template>
           </MegaMenu>
-          <!-- <MegaMenu
+          <MegaMenu
             id="gen_filter"
             btnTitle='Gen Filter'
-            btnClass='first:pr-1 bg-bg1 w-full'
+            btnClass='first:pr-1 bg-bg1 w-full h-3/4'
             cols=1
-            :list=[{}]
+            :list="genList"
             states=2
-          /> -->
+          >
+            <template v-slot:default="{src,alt}">
+              <span>
+                {{ src }}
+              </span>
+            </template>
+          </MegaMenu>
           <button
             type="button"
             @click="queryBuilder()"
