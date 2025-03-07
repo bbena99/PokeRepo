@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
-const props = defineProps(['btnTitle','btnClass','id','list','cols','menuClass','itemClass']);
+const props = defineProps(['btnTitle','btnClass','id','list','cols','menuClass','itemClass','states']);
 const display = ref<string>("hidden ");
 const bgRef = ref<string[]>([""].fill("",0,props.list.length-1));
 function clickHandler(){
@@ -46,7 +46,7 @@ function bgHandler(){
     v-for="(item,index) in props.list"
     :key="item.key"
     :class="'p-2 m-2 rounded-2xl'+bgRef[index]+' '+props.itemClass"
-    @click="item.value++;item.value%=3;bgHandler()"
+    @click="item.value++;item.value%=props.states;bgHandler()"
   >
     <img :src="item.src" :alt="item.key+'img'">
   </button>
