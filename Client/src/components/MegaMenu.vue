@@ -52,6 +52,9 @@ function bgHandler(){
     </slot>
   </button>
 </div>
+<div v-if="display==='grid '" @click="clickHandler()" class="fixed w-screen h-screen z-10 top-0 left-0">
+
+</div>
 </template>
 
 <style scoped>
