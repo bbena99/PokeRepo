@@ -36,22 +36,22 @@ function bgHandler(){
   :class="'flex items-center justify-center p-3 text-header rounded-lg '+props.btnClass"
   @click="clickHandler()"
 >
-    <span class="mr-2">{{ props.btnTitle }}</span>
-    <font-awesome-icon v-if="display==='grid '" :icon="faChevronUp"/>
-    <font-awesome-icon v-else :icon="faChevronDown"/>
+  <span class="mr-2">{{ props.btnTitle }}</span>
+  <font-awesome-icon v-if="display==='grid '" :icon="faChevronUp"/>
+  <font-awesome-icon v-else :icon="faChevronDown"/>
+  <div :id=props.id :class="display+'grid-cols-'+props.cols+' absolute top-full z-20 w-auto h-auto border rounded-lg shadow-md bg-bg1 border-bg2 '+props.menuClass">
+    <button 
+      type="button"
+      v-for="(item,index) in props.list"
+      :key="item.name+'key'"
+      :class="'p-2 m-2 rounded-2xl'+bgRef[index]+' '+props.itemClass"
+      @click="item.value++;item.value%=props.states;bgHandler()"
+    >
+      <slot :src="item.src" :alt="item.name+'.png'">
+      </slot>
+    </button>
+  </div>
 </button>
-<div :id=props.id :class="display+'grid-cols-'+props.cols+' absolute top-full z-20 w-auto h-auto border rounded-lg shadow-md bg-bg1 border-bg2 '+props.menuClass">
-  <button 
-    type="button"
-    v-for="(item,index) in props.list"
-    :key="item.name+'key'"
-    :class="'p-2 m-2 rounded-2xl'+bgRef[index]+' '+props.itemClass"
-    @click="item.value++;item.value%=props.states;bgHandler()"
-  >
-    <slot :src="item.src" :alt="item.name+'.png'">
-    </slot>
-  </button>
-</div>
 <div v-if="display==='grid '" @click="clickHandler()" class="fixed w-screen h-screen z-10 top-0 left-0">
 
 </div>
