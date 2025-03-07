@@ -48,7 +48,9 @@ getAll({offset:+(query.value.offset??0),limit:+(query.value.limit??50),name:quer
   pokeList.value.set(cb.id,cb);
   state.value=1
 });
-function queryBuilder():string{
+function queryBuilder(){
+  state.value=0;
+  pokeList.value.clear();
   let retQuery:string = '';
 
   if(query.value.limit!==50)retQuery+='limit='+query.value.limit+'&';
@@ -75,7 +77,10 @@ function queryBuilder():string{
   })
   if(typeArray.length>0)retQuery+='type='+typeArray.join(',')+'&';
   if(notTypeArray.length>0)retQuery+='notType='+notTypeArray.join(',')+'&';
-  return retQuery;
+  getAll({offset:+(query.value.offset??0),limit:+(query.value.limit??50),name:query.value.name??'',type:typeArray,notType:notTypeArray},(cb:PokémonI)=>{
+    pokeList.value.set(cb.id,cb);
+    state.value=1;
+  });
 }
 </script>
 
@@ -95,7 +100,6 @@ function queryBuilder():string{
               class="block w-full h-full p-3 ps-10 text-sm text-text border-none shadow-sm rounded-lg bg-bg1 focus:ring-hover"
               placeholder="Name Search"
               v-model="query.name"
-              required
             />
           </div>
           <div class="h-3/4 col-span-2 grid grid-cols-2 items-center rounded-lg bg-bg1 text-text">
@@ -115,22 +119,24 @@ function queryBuilder():string{
               cols=3
               :list=list
             />
-          <RouterLink
-            :to="'./Pokemon?'+queryBuilder()"
+          <button
+            type="button"
+            @click="queryBuilder()"
             class="flex items-center justify-center h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2"
           >
             <FontAwesomeIcon :icon="faMagnifyingGlass" class="pr-1"/>
             Search
-          </RouterLink>
-          <RouterLink
+          </button>
+          <button
             type="button"
-            force
-            to="Pokemon/"
+            id="reset-button"
+            @click="query.limit=50;query.name=undefined;query.notType=undefined;query.type=undefined;"
+            @dblclick="query.limit=50;query.name=undefined;query.notType=undefined;query.type=undefined;queryBuilder();"
             class="flex items-center justify-center h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2"
           >
             <FontAwesomeIcon :icon="faRotate" class="pr-1"/>
             Reset Filters
-          </RouterLink>
+          </button>
         </form>
       </div>
     </div>
