@@ -112,14 +112,26 @@ function queryBuilder(){
               <option value=200>200</option>
             </select>
           </div>
-            <MegaMenu
-              id="type_filter"
-              btnTitle='Type Filter'
-              btnClass='first:pr-1 bg-bg1 w-full col-span-2'
-              cols=3
-              :list=list
-              states=3
-            />
+          <MegaMenu
+            id="type_filter"
+            btnTitle='Type Filter'
+            btnClass='first:pr-1 bg-bg1 w-full'
+            cols=3
+            :list=list
+            states=3
+          >
+            <template v-slot:default="{src,alt}">
+              <img :src="src" :alt="alt"/>
+            </template>
+          </MegaMenu>
+          <!-- <MegaMenu
+            id="gen_filter"
+            btnTitle='Gen Filter'
+            btnClass='first:pr-1 bg-bg1 w-full'
+            cols=1
+            :list=[{}]
+            states=2
+          /> -->
           <button
             type="button"
             @click="queryBuilder()"
