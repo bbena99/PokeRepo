@@ -118,6 +118,7 @@ function queryBuilder(){
               btnClass='first:pr-1 bg-bg1 w-full col-span-2'
               cols=3
               :list=list
+              states=3
             />
           <button
             type="button"
