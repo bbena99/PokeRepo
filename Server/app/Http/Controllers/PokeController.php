@@ -18,6 +18,7 @@ class PokeController{
     $notType = $request->query('notType');
     $limit = $request->query('limit');
     $offset = $request->query('offset');
+    $gen = $request->query('gen');
 
     $dbQueryBuilder = DB::table('pokemon')->where('is_default','=','1');
     if($name)$dbQueryBuilder->where('name','like',"%".$name."%");
@@ -34,6 +35,9 @@ class PokeController{
         ->whereIn('type_id',$notType)
         ->distinct()
         ->pluck('pokemon_id'));
+    }
+    if($gen){
+      $gen = preg_split("/\,/",$gen);
     }
     if($limit)$dbQueryBuilder->limit($limit);
     if($offset)$dbQueryBuilder->offset($offset);
