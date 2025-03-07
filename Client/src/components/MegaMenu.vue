@@ -13,20 +13,20 @@ bgHandler();
 function bgHandler(){
   //@ts-ignore
   props.list.forEach((obj,index) => {
-  switch(obj.value){
-    case 0:
-      bgRef.value[index]="";
-      break;
-    case 1:
-      bgRef.value[index]=" bg-green-700";
-      break;
-    case 2:
-      bgRef.value[index]=" bg-red-700";
-      break;
-    default:
-      bgRef.value[index]=" FAILURE";//This should never happen
-  }
-});
+    switch(obj.value){
+      case 0:
+        bgRef.value[index]="";
+        break;
+      case 1:
+        bgRef.value[index]=" bg-green-700";
+        break;
+      case 2:
+        bgRef.value[index]=" bg-red-700";
+        break;
+      default:
+        bgRef.value[index]=" FAILURE";//This should never happen
+    }
+  });
 }
 </script>
 
@@ -44,11 +44,12 @@ function bgHandler(){
   <button 
     type="button"
     v-for="(item,index) in props.list"
-    :key="item.key"
+    :key="item.name+'key'"
     :class="'p-2 m-2 rounded-2xl'+bgRef[index]+' '+props.itemClass"
     @click="item.value++;item.value%=props.states;bgHandler()"
   >
-    <img :src="item.src" :alt="item.key+'img'">
+    <slot :src="item.src" :alt="item.name+'.png'">
+    </slot>
   </button>
 </div>
 </template>
