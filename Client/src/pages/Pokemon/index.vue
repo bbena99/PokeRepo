@@ -137,14 +137,18 @@ function queryBuilder(){
             <FontAwesomeIcon :icon="faRotate" class="pr-1"/>
             Reset Filters
           </button>
+          <div id="tooltip-reset-button" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip">
+              Tooltip content
+              <div class="tooltip-arrow" data-popper-arrow></div>
+          </div>
         </form>
       </div>
     </div>
     <ul style="max-height: calc(100% - 8.5rem);" class="w-full xl:w-3/4 p-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 overflow-y-scroll overflow-x-hidden">
       <li v-for="[_,value] in pokeList" :key="value.name" class="group w-full h-58 col-span-1 z-0 transition-all ease-in-out sm:hover:scale-110 hover:z-10">
-        <a href="" class="w-full drop-shadow-md">
+        <RouterLink :to="'Pokemon/'+value.name" class="w-full drop-shadow-md">
           <PokeCard :pokemon="value"/>
-        </a>
+        </RouterLink>
       </li>
     </ul>
     <div class="flex items-center justify-center absolute bottom-0 w-full h-14 p-2">
