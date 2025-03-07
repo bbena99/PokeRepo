@@ -115,7 +115,7 @@ function queryBuilder(){
           <MegaMenu
             id="type_filter"
             btnTitle='Type Filter'
-            btnClass='first:pr-1 bg-bg1 w-full'
+            btnClass='first:pr-1 bg-bg1 w-full h-3/4'
             cols=3
             :list=list
             states=3
