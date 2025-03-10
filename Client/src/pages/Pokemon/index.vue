@@ -15,6 +15,8 @@ interface pokeQueryI{
   limit:number;
   name?:string;
   type?:string;
+  gen?:string;
+  sort?:number;
   notType?:string;
 }
 
@@ -25,6 +27,7 @@ const query = ref<pokeQueryI>({
   name:undefined,
   type:undefined,
   notType:undefined,
+  sort:undefined,
   ...route.query
 });
 let typeArray:number[] = query.value.type?query.value.type.split(',').map(v=>{return +v;}):[];
@@ -40,15 +43,22 @@ const list = ref(TYPES.map((T,i)=>{
   }
   return item;
 }))
+let genArray:number[] = query.value.gen?query.value.gen.split(',').map(v=>{return +v;}):[];
 const genList = ref([{}]);
 genList.value.pop();
 for(let i=1; i<10; i++){
   genList.value.push({
     name:"Gen-"+i,
-    value:0,
+    value:genArray.includes(i)?1:0,
     src:"Gen "+i
   })
 }
+const sortArray = [
+  'Number',
+  'Name',
+  'Base stat',
+  'Type'
+]
 const pageNumber = Math.floor(query.value.offset??0/query.value.limit);
 const state = ref<number>(0);
 const pokeList = ref<Map<number,PokémonI>>(new Map());
@@ -99,7 +109,7 @@ function queryBuilder(){
     <div id="search_bar" class="w-full h-16 mt-4 flex justify-center items-center text-header">
       <div class="flex items-center justify-evenly w-3/4 h-16 bg-bg2 rounded-full">
         <form class="grid grid-cols-12 gap-2 items-center relative w-11/12">
-          <div class="h-3/4 flex items-center justify-center col-span-6">
+          <div class="h-3/4 flex items-center justify-center col-span-5">
             <div class="inset-y-0 start-0 flex items-center ps-3 z-10 -mr-7">
               <FontAwesomeIcon :icon="faPen"/>
             </div>
@@ -141,7 +151,7 @@ function queryBuilder(){
             :list="genList"
             states=2
           >
-            <template v-slot:default="{src,alt}">
+            <template v-slot:default="{src}">
               <span>
                 {{ src }}
               </span>
@@ -165,9 +175,10 @@ function queryBuilder(){
             <FontAwesomeIcon :icon="faRotate" class="pr-1"/>
             Reset Filters
           </button>
-          <div id="tooltip-reset-button" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip">
-              Tooltip content
-              <div class="tooltip-arrow" data-popper-arrow></div>
+          <div class="h-3/4  items-center rounded-lg bg-bg1 text-text">
+            <select id="page-count" class="w-full h-full border-none text-sm rounded-lg block" v-model="query.sort">
+              <option v-for="(val,index) in sortArray" :value="index===0?undefined:index">{{ val }}</option>
+            </select>
           </div>
         </form>
       </div>
