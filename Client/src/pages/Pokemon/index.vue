@@ -123,7 +123,7 @@ function queryBuilder(){
           </div>
           <div class="h-3/4 col-span-2 grid grid-cols-2 items-center rounded-lg bg-bg1 text-text">
             <label for="page-count" class="w-20 block mx-2 text-sm font-medium">Results per page</label>
-            <select id="page-count" class="h-full border-none text-sm rounded-lg block w-full" v-model="query.limit">
+            <select id="page-count" class="h-full border-none text-sm rounded-lg block" v-model="query.limit">
               <option selected value=50>50</option>
               <option value=10> 10</option>
               <option value=25> 25</option>
