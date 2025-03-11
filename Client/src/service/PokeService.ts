@@ -7,6 +7,7 @@ interface FiltersI{
   name:string;
   type:number[];
   notType:number[];
+  sort:number;
 }
 
 const url='http://127.0.0.1:8000/';
