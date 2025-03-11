@@ -63,7 +63,7 @@ const pageNumber = Math.floor(query.value.offset??0/query.value.limit);
 const state = ref<number>(0);
 const pokeList = ref<Map<number,PokémonI>>(new Map());
 
-getAll({offset:+(query.value.offset??0),limit:+(query.value.limit??50),name:query.value.name??'',type:typeArray,notType:notTypeArray,sort:query.value.sort??0},(cb:PokémonI)=>{
+getAll({offset:+(query.value.offset??0),limit:+(query.value.limit??50),name:query.value.name??'',type:typeArray,notType:notTypeArray,gen:genArray,sort:query.value.sort??0},(cb:PokémonI)=>{
   pokeList.value.set(cb.id,cb);
   state.value=1
 });
@@ -96,7 +96,7 @@ function queryBuilder(){
   })
   if(typeArray.length>0)retQuery+='type='+typeArray.join(',')+'&';
   if(notTypeArray.length>0)retQuery+='notType='+notTypeArray.join(',')+'&';
-  getAll({offset:+(query.value.offset??0),limit:+(query.value.limit??50),name:query.value.name??'',type:typeArray,notType:notTypeArray,sort:query.sort??0},(cb:PokémonI)=>{
+  getAll({offset:+(query.value.offset??0),limit:+(query.value.limit??50),name:query.value.name??'',type:typeArray,notType:notTypeArray,gen:genArray,sort:query.value.sort??0},(cb:PokémonI)=>{
     pokeList.value.set(cb.id,cb);
     state.value=1;
   });

@@ -7,6 +7,7 @@ interface FiltersI{
   name:string;
   type:number[];
   notType:number[];
+  gen:number[];
   sort:number;
 }
 
