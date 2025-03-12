@@ -68,7 +68,7 @@ getAll(
     name:query.value.name??'',
     type:typeArray,notType:
     notTypeArray,gen:genArray,
-    sort:query.value.sort??0
+    sort:+(query.value.sort??0)
   },
   (cb:PokémonI)=>{
     pokeList.value.set(cb.id,cb);
@@ -182,8 +182,8 @@ console.log(Math.min(pageNumber+2,Math.floor(maxPokemon.value/query.value.limit)
           <button
             type="button"
             id="reset-button"
-            @click="query.limit=50;query.name=undefined;query.notType=undefined;query.type=undefined;query.sort=undefined;"
-            @dblclick="query.limit=50;query.name=undefined;query.notType=undefined;query.type=undefined;query.sort=undefined;queryBuilder();"
+            @click="query.limit=50;query.offset=undefined;query.name=undefined;list.forEach((item)=>{item.value=0});query.sort=undefined;"
+            @dblclick="query.limit=50;query.offset=undefined;query.name=undefined;list.forEach((item)=>{item.value=0});query.sort=undefined;queryBuilder();"
             class="flex items-center justify-center h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2"
           >
             <FontAwesomeIcon :icon="faRotate" class="pr-1"/>
@@ -197,6 +197,7 @@ console.log(Math.min(pageNumber+2,Math.floor(maxPokemon.value/query.value.limit)
         </form>
       </div>
     </div>
+    <!--Start of pokemon list-->
     <ul style="max-height: calc(100% - 8.5rem);" class="w-full xl:w-3/4 p-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 overflow-y-scroll overflow-x-hidden">
       <li v-for="[_,value] in pokeList" :key="value.name" class="group w-full h-58 col-span-1 z-0 transition-all ease-in-out sm:hover:scale-110 hover:z-10">
         <RouterLink :to="'Pokemon/'+value.name" class="w-full drop-shadow-md">
@@ -204,6 +205,7 @@ console.log(Math.min(pageNumber+2,Math.floor(maxPokemon.value/query.value.limit)
         </RouterLink>
       </li>
     </ul>
+    <!--Start of pagination bar-->
     <div class="flex items-center justify-center absolute bottom-0 w-full h-14 p-2">
       <div class="flex justify-center w-1/3 h-full [&>button]:bg-bg1 [&>button]:rounded-full [&>button]:w-10 [&>button]:mx-2">
         <button
