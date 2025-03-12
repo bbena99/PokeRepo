@@ -35,6 +35,7 @@ function bgHandler(){
   type="button"
   :class="'flex items-center justify-center p-3 text-header rounded-lg '+props.btnClass"
   @click="clickHandler()"
+  :disabled="display==='grid '"
 >
   <span class="mr-2">{{ props.btnTitle }}</span>
   <font-awesome-icon v-if="display==='grid '" :icon="faChevronUp"/>
@@ -53,7 +54,6 @@ function bgHandler(){
   </div>
 </button>
 <div v-if="display==='grid '" @click="clickHandler()" class="fixed w-screen h-screen z-10 top-0 left-0">
-
 </div>
 </template>
 
