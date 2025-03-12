@@ -39,8 +39,9 @@ class PokeController{
     if($gen){
       $gen = preg_split("/\,/",$gen);
     }
-    if($limit)$dbQueryBuilder->limit($limit);
     if($offset)$dbQueryBuilder->offset($offset);
+    $count = $dbQueryBuilder->count();
+    if($limit)$dbQueryBuilder->limit($limit);
     $dbPokemon = $dbQueryBuilder->get();
 
     foreach($dbPokemon as $pokemon){
@@ -55,7 +56,11 @@ class PokeController{
         $pokemon->stats[$dbstat->stat_name]=$dbstat->base_stat;
       }
     }
-    return response()->json($dbPokemon)
+    $results = [
+        'maxPokemon' => $count,
+        'pokemonArray' => $dbPokemon,
+    ];
+    return response()->json($results)
       ->header('Access-Control-Allow-Origin', '*')
       ->header('Access-Control-Allow-Methods', 'GET');
   }
