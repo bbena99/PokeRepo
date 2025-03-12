@@ -19,7 +19,7 @@ interface pokeQueryI{
   sort?:number;
   notType?:string;
 }
-let maxPokemon=1025;
+let maxPokemon=ref<number>(1025);
 const route = useRoute();
 const query = ref<pokeQueryI>({
   offset:+(route.query.offset??0),
@@ -68,12 +68,14 @@ getAll(
     name:query.value.name??'',
     type:typeArray,notType:
     notTypeArray,gen:genArray,
-    sort:query.value.sort??0,
-    max:maxPokemon
+    sort:query.value.sort??0
   },
   (cb:PokémonI)=>{
     pokeList.value.set(cb.id,cb);
     state.value=1
+  },(cb:number)=>{
+    console.log(cb)
+    maxPokemon.value=cb;
   }
 );
 const pageNumber = Math.floor(+(query.value.offset??0)/query.value.limit)+1;
@@ -110,6 +112,9 @@ function queryBuilder(){
   if(query.value.sort)retQuery+='sort='+query.value.sort+'&';
   window.location.href=retQuery;
 }
+console.log(pageNumber+2)
+console.log(Math.floor(maxPokemon.value/query.value.limit))
+console.log(Math.min(pageNumber+2,Math.floor(maxPokemon.value/query.value.limit)))
 </script>
 
 <template>
@@ -167,7 +172,7 @@ function queryBuilder(){
             </template>
           </MegaMenu>
           <button
-            type="button"
+            type="submit"
             @click="queryBuilder()"
             class="flex items-center justify-center h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2"
           >
@@ -203,27 +208,36 @@ function queryBuilder(){
       <div class="flex justify-center w-1/3 h-full [&>button]:bg-bg1 [&>button]:rounded-full [&>button]:w-10 [&>button]:mx-2">
         <button
           :disabled="pageNumber===1||query.offset===undefined"
-          @click="query.offset=query.offset??10-query.limit;if(query.offset<0)query.offset=undefined;queryBuilder();"
+          @click="query.offset=query.offset!-query.limit;if(query.offset<0){query.offset=undefined};queryBuilder();"
         >
           <FontAwesomeIcon :icon="faArrowLeft"/>
         </button>
-        <button v-if="pageNumber>3" @click="query.offset=undefined;queryBuilder();">
+        <button
+          @click="query.offset=undefined;queryBuilder();"
+          :class="1===pageNumber?'border-hover border-2 text-hover font-bold':''"
+        >
           1
         </button>
         <button disabled v-if="pageNumber>4">
           ...
         </button>
         <button
-          v-for="n in Array.from({length:Math.min(pageNumber+2,Math.floor(maxPokemon/query.limit))-Math.max(pageNumber-2,1)+1},(_,i)=>Math.max(pageNumber-2,1)+i)"
+          v-for="n in Array.from({length:Math.min(pageNumber+2,Math.floor(maxPokemon/query.limit))-Math.max(pageNumber-2,2)+1},(_,i)=>Math.max(pageNumber-2,2)+i)"
           @click="query.offset=(n-1)*query.limit;queryBuilder();"
+          :disabled="n===pageNumber"
+          :class="n===pageNumber?'border-hover border-2 text-hover font-bold':''"
         >
           {{ n }}
         </button>
-        <button disabled v-if="pageNumber<(Math.floor(maxPokemon/query.limit)-3)">
+        <button disabled v-if="pageNumber<(Math.floor(maxPokemon/query.limit)-2)">
           ...
         </button>
-        <button v-if="pageNumber<(Math.floor(maxPokemon/query.limit)-2)" @click="query.offset=maxPokemon-query.limit;queryBuilder();">
-          {{ Math.floor(maxPokemon/query.limit) }}
+        <button
+          v-if="Math.floor(maxPokemon/query.limit)>0"
+          @click="query.offset=Math.floor(maxPokemon/query.limit)*query.limit;queryBuilder();"
+          :class="Math.floor(maxPokemon/query.limit)+1===pageNumber?'border-hover border-2 text-hover font-bold':''"
+        >
+          {{ Math.floor(maxPokemon/query.limit)+1 }}
         </button>
         <button :disabled="pageNumber>(Math.floor(maxPokemon/query.limit))" @click="query.offset=(query.offset??0)+query.limit;queryBuilder();">
           <FontAwesomeIcon :icon="faArrowRight"/>
