@@ -9,6 +9,7 @@ interface FiltersI{
   notType:number[];
   gen:number[];
   sort:number;
+  max:number;
 }
 
 const url='http://127.0.0.1:8000/';
