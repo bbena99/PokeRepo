@@ -172,7 +172,7 @@ console.log(Math.min(pageNumber+2,Math.floor(maxPokemon.value/query.value.limit)
             </template>
           </MegaMenu>
           <button
-            type="submit"
+            type="button"
             @click="queryBuilder()"
             class="flex items-center justify-center h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2"
           >
