@@ -39,8 +39,8 @@ class PokeController{
     if($gen){
       $gen = preg_split("/\,/",$gen);
     }
-    if($offset)$dbQueryBuilder->offset($offset);
     $count = $dbQueryBuilder->count();
+    if($offset)$dbQueryBuilder->offset($offset);
     if($limit)$dbQueryBuilder->limit($limit);
     $dbPokemon = $dbQueryBuilder->get();
 
