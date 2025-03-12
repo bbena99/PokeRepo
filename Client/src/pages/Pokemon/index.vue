@@ -2,7 +2,7 @@
 import { useRoute } from 'vue-router';
 import { ref } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faMagnifyingGlass, faPen, faRotate } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faArrowRight, faMagnifyingGlass, faPen, faRotate } from '@fortawesome/free-solid-svg-icons';
 import { getAll } from '../../service';
 import PokeCard from '../../components/PokeCard.vue';
 import Loading from '../../components/Loading.vue';
@@ -19,17 +19,17 @@ interface pokeQueryI{
   sort?:number;
   notType?:string;
 }
-
+const MAX_POKEMON = 1025;
 const route = useRoute();
 const query = ref<pokeQueryI>({
-  offset:undefined,
-  limit:50,
-  name:undefined,
-  type:undefined,
-  notType:undefined,
-  sort:undefined,
-  ...route.query
+  offset:+(route.query.offset??0),
+  limit:+(route.query.limit??50),
+  name:route.query.name?.toString(),
+  type:route.query.type?.toString(),
+  notType:route.query.notType?.toString(),
+  sort:+(route.query.sort??0),
 });
+console.log(query.value);
 let typeArray:number[] = query.value.type?query.value.type.split(',').map(v=>{return +v;}):[];
 let notTypeArray:number[] = query.value.notType?query.value.notType.toString().split(',').map(v=>{return +v;}):[];
 const list = ref(TYPES.map((T,i)=>{
@@ -59,7 +59,6 @@ const sortArray = [
   'Base stat',
   'Type'
 ]
-const pageNumber = Math.floor(query.value.offset??0/query.value.limit);
 const state = ref<number>(0);
 const pokeList = ref<Map<number,PokémonI>>(new Map());
 
@@ -67,10 +66,12 @@ getAll({offset:+(query.value.offset??0),limit:+(query.value.limit??50),name:quer
   pokeList.value.set(cb.id,cb);
   state.value=1
 });
+const pageNumber = Math.floor(+(query.value.offset??0)/query.value.limit)+1;
 function queryBuilder(){
+  console.log(query.value.offset)
   state.value=0;
   pokeList.value.clear();
-  let retQuery:string = '';
+  let retQuery:string = '?';
 
   if(query.value.limit!==50)retQuery+='limit='+query.value.limit+'&';
   if(query.value.offset)retQuery+='offset='+query.value.offset+'&';
@@ -96,10 +97,8 @@ function queryBuilder(){
   })
   if(typeArray.length>0)retQuery+='type='+typeArray.join(',')+'&';
   if(notTypeArray.length>0)retQuery+='notType='+notTypeArray.join(',')+'&';
-  getAll({offset:+(query.value.offset??0),limit:+(query.value.limit??50),name:query.value.name??'',type:typeArray,notType:notTypeArray,gen:genArray,sort:query.value.sort??0},(cb:PokémonI)=>{
-    pokeList.value.set(cb.id,cb);
-    state.value=1;
-  });
+  if(query.value.sort)retQuery+='sort='+query.value.sort+'&';
+  window.location.href=retQuery;
 }
 </script>
 
@@ -168,8 +167,8 @@ function queryBuilder(){
           <button
             type="button"
             id="reset-button"
-            @click="query.limit=50;query.name=undefined;query.notType=undefined;query.type=undefined;"
-            @dblclick="query.limit=50;query.name=undefined;query.notType=undefined;query.type=undefined;queryBuilder();"
+            @click="query.limit=50;query.name=undefined;query.notType=undefined;query.type=undefined;query.sort=undefined;"
+            @dblclick="query.limit=50;query.name=undefined;query.notType=undefined;query.type=undefined;query.sort=undefined;queryBuilder();"
             class="flex items-center justify-center h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2"
           >
             <FontAwesomeIcon :icon="faRotate" class="pr-1"/>
@@ -177,7 +176,7 @@ function queryBuilder(){
           </button>
           <div class="h-3/4  items-center rounded-lg bg-bg1 text-text">
             <select id="page-count" class="w-full h-full border-none text-sm rounded-lg block" v-model="query.sort">
-              <option v-for="(val,index) in sortArray" :value="index===0?undefined:index">{{ val }}</option>
+              <option v-for="(val,index) in sortArray" :value="index">{{ val }}</option>
             </select>
           </div>
         </form>
@@ -191,8 +190,34 @@ function queryBuilder(){
       </li>
     </ul>
     <div class="flex items-center justify-center absolute bottom-0 w-full h-14 p-2">
-      <div class="grid grid-cols-7 w-1/2 bg-bg1 h-full">
-        
+      <div class="flex justify-center w-1/3 h-full [&>button]:bg-bg1 [&>button]:rounded-full [&>button]:w-10 [&>button]:mx-2">
+        <button
+          :disabled="pageNumber===1||query.offset===undefined"
+          @click="query.offset=query.offset??10-query.limit;if(query.offset<0)query.offset=undefined;queryBuilder();"
+        >
+          <FontAwesomeIcon :icon="faArrowLeft"/>
+        </button>
+        <button v-if="pageNumber>3" @click="query.offset=undefined;queryBuilder();">
+          1
+        </button>
+        <button disabled v-if="pageNumber>4">
+          ...
+        </button>
+        <button
+          v-for="n in Array.from({length:Math.min(pageNumber+2,Math.floor(MAX_POKEMON/query.limit))-Math.max(pageNumber-2,1)+1},(_,i)=>Math.max(pageNumber-2,1)+i)"
+          @click="query.offset=(n-1)*query.limit;queryBuilder();"
+        >
+          {{ n }}
+        </button>
+        <button disabled v-if="pageNumber<(Math.floor(MAX_POKEMON/query.limit)-3)">
+          ...
+        </button>
+        <button v-if="pageNumber<(Math.floor(MAX_POKEMON/query.limit)-2)" @click="query.offset=MAX_POKEMON-query.limit;queryBuilder();">
+          {{ Math.floor(MAX_POKEMON/query.limit) }}
+        </button>
+        <button :disabled="pageNumber>(Math.floor(MAX_POKEMON/query.limit))" @click="query.offset=(query.offset??0)+query.limit;queryBuilder();">
+          <FontAwesomeIcon :icon="faArrowRight"/>
+        </button>
       </div>
     </div>
   </div>
