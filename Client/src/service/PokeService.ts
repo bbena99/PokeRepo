@@ -9,16 +9,15 @@ interface FiltersI{
   notType:number[];
   gen:number[];
   sort:number;
-  max:number;
 }
 
 const url='http://127.0.0.1:8000/';
 
-export function getAll(filters:FiltersI,cb:(a:PokémonI)=>void):void{
+export function getAll(filters:FiltersI,cb:(a:PokémonI)=>void,max:(m:number)=>void):void{
   axios.get(`${url}pokemon?limit=${filters.limit}&offset=${filters.offset}&name=${filters.name}&type=${filters.type.join(',')}&notType=${filters.notType.join(',')}`)
     .then(res=>{
       console.log(res.data)
-      filters.max=res.data.maxPokemon;
+      max(res.data.maxPokemon);
       const serverPokeJSON:PokémonI[] = res.data.pokemonArray;
       serverPokeJSON.forEach(pokemon=>{
         cb(pokemon)
