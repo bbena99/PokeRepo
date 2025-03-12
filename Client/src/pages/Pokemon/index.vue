@@ -19,7 +19,7 @@ interface pokeQueryI{
   sort?:number;
   notType?:string;
 }
-const MAX_POKEMON = 1025;
+let maxPokemon=1025;
 const route = useRoute();
 const query = ref<pokeQueryI>({
   offset:+(route.query.offset??0),
@@ -29,7 +29,6 @@ const query = ref<pokeQueryI>({
   notType:route.query.notType?.toString(),
   sort:+(route.query.sort??0),
 });
-console.log(query.value);
 let typeArray:number[] = query.value.type?query.value.type.split(',').map(v=>{return +v;}):[];
 let notTypeArray:number[] = query.value.notType?query.value.notType.toString().split(',').map(v=>{return +v;}):[];
 const list = ref(TYPES.map((T,i)=>{
@@ -62,10 +61,21 @@ const sortArray = [
 const state = ref<number>(0);
 const pokeList = ref<Map<number,PokémonI>>(new Map());
 
-getAll({offset:+(query.value.offset??0),limit:+(query.value.limit??50),name:query.value.name??'',type:typeArray,notType:notTypeArray,gen:genArray,sort:query.value.sort??0},(cb:PokémonI)=>{
-  pokeList.value.set(cb.id,cb);
-  state.value=1
-});
+getAll(
+  {
+    offset:+(query.value.offset??0),
+    limit:+(query.value.limit??50),
+    name:query.value.name??'',
+    type:typeArray,notType:
+    notTypeArray,gen:genArray,
+    sort:query.value.sort??0,
+    max:maxPokemon
+  },
+  (cb:PokémonI)=>{
+    pokeList.value.set(cb.id,cb);
+    state.value=1
+  }
+);
 const pageNumber = Math.floor(+(query.value.offset??0)/query.value.limit)+1;
 function queryBuilder(){
   console.log(query.value.offset)
@@ -204,18 +214,18 @@ function queryBuilder(){
           ...
         </button>
         <button
-          v-for="n in Array.from({length:Math.min(pageNumber+2,Math.floor(MAX_POKEMON/query.limit))-Math.max(pageNumber-2,1)+1},(_,i)=>Math.max(pageNumber-2,1)+i)"
+          v-for="n in Array.from({length:Math.min(pageNumber+2,Math.floor(maxPokemon/query.limit))-Math.max(pageNumber-2,1)+1},(_,i)=>Math.max(pageNumber-2,1)+i)"
           @click="query.offset=(n-1)*query.limit;queryBuilder();"
         >
           {{ n }}
         </button>
-        <button disabled v-if="pageNumber<(Math.floor(MAX_POKEMON/query.limit)-3)">
+        <button disabled v-if="pageNumber<(Math.floor(maxPokemon/query.limit)-3)">
           ...
         </button>
-        <button v-if="pageNumber<(Math.floor(MAX_POKEMON/query.limit)-2)" @click="query.offset=MAX_POKEMON-query.limit;queryBuilder();">
-          {{ Math.floor(MAX_POKEMON/query.limit) }}
+        <button v-if="pageNumber<(Math.floor(maxPokemon/query.limit)-2)" @click="query.offset=maxPokemon-query.limit;queryBuilder();">
+          {{ Math.floor(maxPokemon/query.limit) }}
         </button>
-        <button :disabled="pageNumber>(Math.floor(MAX_POKEMON/query.limit))" @click="query.offset=(query.offset??0)+query.limit;queryBuilder();">
+        <button :disabled="pageNumber>(Math.floor(maxPokemon/query.limit))" @click="query.offset=(query.offset??0)+query.limit;queryBuilder();">
           <FontAwesomeIcon :icon="faArrowRight"/>
         </button>
       </div>
