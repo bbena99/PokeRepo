@@ -38,6 +38,26 @@ class PokeController{
     }
     if($gen){
       $gen = preg_split("/\,/",$gen);
+      $genBuilder = [];
+      $firstQuery = true;
+      foreach($gen as $genVal){
+        switch($genVal){
+          case 0:
+            if($firstQuery){
+              $dbQueryBuilder->whereBetween('id',[1,151]);
+              $firstQuery=false;
+            }
+            else $dbQueryBuilder->orWhereBetween('id',[1,151]);
+            break;
+          case 1:
+            if($firstQuery){
+              $dbQueryBuilder->whereBetween('id',[152,251]);
+              $firstQuery=false;
+            }
+            else $dbQueryBuilder->orWhereBetween('id',[152,251]);
+            break;
+        }
+      }
     }
     $count = $dbQueryBuilder->count();
     if($offset)$dbQueryBuilder->offset($offset);
