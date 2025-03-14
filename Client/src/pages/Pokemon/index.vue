@@ -118,7 +118,7 @@ function queryBuilder(){
         if(!genArray.includes(id))genArray.push(id);
         break;
       default:
-        genArray.filter((value)=>{if(value!==(id))return true; else return false;})
+        genArray = genArray.filter((value)=>{if(value!==id)return true; else return false;})
     }
   })
   if(genArray.length>0)retQuery+='gen='+genArray.join(',')+'&'
