@@ -27,6 +27,7 @@ const query = ref<pokeQueryI>({
   name:route.query.name?.toString(),
   type:route.query.type?.toString(),
   notType:route.query.notType?.toString(),
+  gen:route.query.gen?.toString(),
   sort:+(route.query.sort??0),
 });
 let typeArray:number[] = query.value.type?query.value.type.split(',').map(v=>{return +v;}):[];
@@ -77,6 +78,8 @@ getAll(
     maxPokemon.value=cb-1;
   }
 );
+console.log(genArray)
+console.log(genList.value)
 const pageNumber = Math.floor(+(query.value.offset??0)/query.value.limit)+1;
 function queryBuilder(){
   console.log(query.value)
@@ -109,12 +112,13 @@ function queryBuilder(){
   if(typeArray.length>0)retQuery+='type='+typeArray.join(',')+'&';
   if(notTypeArray.length>0)retQuery+='notType='+notTypeArray.join(',')+'&';
   genList.value.forEach((obj,index)=>{
+    const id = index+1;
     switch(obj.value){
       case 1:
-        if(!genArray.includes(index))genArray.push(index);
+        if(!genArray.includes(id))genArray.push(id);
         break;
       default:
-        genArray.filter((value)=>{if(value!==index)return true; else return false;})
+        genArray.filter((value)=>{if(value!==(id))return true; else return false;})
     }
   })
   if(genArray.length>0)retQuery+='gen='+genArray.join(',')+'&'
