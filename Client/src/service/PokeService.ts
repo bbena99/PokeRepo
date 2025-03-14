@@ -16,7 +16,6 @@ const url='http://127.0.0.1:8000/';
 export function getAll(filters:FiltersI,cb:(a:PokémonI)=>void,max:(m:number)=>void):void{
   axios.get(`${url}pokemon?limit=${filters.limit}&offset=${filters.offset}&name=${filters.name}&type=${filters.type.join(',')}&notType=${filters.notType.join(',')}`)
     .then(res=>{
-      console.log(res.data)
       max(res.data.maxPokemon);
       const serverPokeJSON:PokémonI[] = res.data.pokemonArray;
       serverPokeJSON.forEach(pokemon=>{
