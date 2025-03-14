@@ -72,15 +72,14 @@ getAll(
   },
   (cb:PokémonI)=>{
     pokeList.value.set(cb.id,cb);
+    if(state.value===1)return;
     state.value=1
   },(cb:number)=>{
-    console.log(cb)
-    maxPokemon.value=cb;
+    maxPokemon.value=cb-1;
   }
 );
 const pageNumber = Math.floor(+(query.value.offset??0)/query.value.limit)+1;
 function queryBuilder(){
-  console.log(query.value.offset)
   state.value=0;
   pokeList.value.clear();
   let retQuery:string = '?';
@@ -112,9 +111,6 @@ function queryBuilder(){
   if(query.value.sort)retQuery+='sort='+query.value.sort+'&';
   window.location.href=retQuery;
 }
-console.log(pageNumber+2)
-console.log(Math.floor(maxPokemon.value/query.value.limit))
-console.log(Math.min(pageNumber+2,Math.floor(maxPokemon.value/query.value.limit)))
 </script>
 
 <template>
@@ -207,9 +203,10 @@ console.log(Math.min(pageNumber+2,Math.floor(maxPokemon.value/query.value.limit)
     </ul>
     <!--Start of pagination bar-->
     <div class="flex items-center justify-center absolute bottom-0 w-full h-14 p-2">
-      <div class="flex justify-center w-1/3 h-full [&>button]:bg-bg1 [&>button]:rounded-full [&>button]:w-10 [&>button]:mx-2">
+      <div class="flex justify-center w-full sm:w-2/3 lg:w-1/3 h-full [&>button]:bg-bg1 [&>button]:rounded-full [&>button]:w-10 [&>button]:mx-2">
         <button
           :disabled="pageNumber===1||query.offset===undefined"
+          :class="(pageNumber===1||query.offset===undefined)?'border-2 !bg-header text-text border-text':''"
           @click="query.offset=query.offset!-query.limit;if(query.offset<0){query.offset=undefined};queryBuilder();"
         >
           <FontAwesomeIcon :icon="faArrowLeft"/>
@@ -241,7 +238,11 @@ console.log(Math.min(pageNumber+2,Math.floor(maxPokemon.value/query.value.limit)
         >
           {{ Math.floor(maxPokemon/query.limit)+1 }}
         </button>
-        <button :disabled="pageNumber>(Math.floor(maxPokemon/query.limit))" @click="query.offset=(query.offset??0)+query.limit;queryBuilder();">
+        <button
+          :disabled="pageNumber>(Math.floor(maxPokemon/query.limit))"
+          @click="query.offset=(query.offset??0)+query.limit;queryBuilder();"
+          :class="(pageNumber>(Math.floor(maxPokemon/query.limit)))?'border-2 !bg-header text-text border-text':''"
+        >
           <FontAwesomeIcon :icon="faArrowRight"/>
         </button>
       </div>
