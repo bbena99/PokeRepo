@@ -2,8 +2,8 @@ import axios from 'axios';
 import { PokémonI, SingleMoveI } from '../models';
 
 interface FiltersI{
-  offset:number;
   limit:number;
+  offset:number;
   name:string;
   type:number[];
   notType:number[];
@@ -14,7 +14,7 @@ interface FiltersI{
 const url='http://127.0.0.1:8000/';
 
 export function getAll(filters:FiltersI,cb:(a:PokémonI)=>void,max:(m:number)=>void):void{
-  axios.get(`${url}pokemon?limit=${filters.limit}&offset=${filters.offset}&name=${filters.name}&type=${filters.type.join(',')}&notType=${filters.notType.join(',')}`)
+  axios.get(`${url}pokemon?limit=${filters.limit}&offset=${filters.offset}&name=${filters.name}&type=${filters.type.join(',')}&notType=${filters.notType.join(',')}&gen=${filters.gen.join(',')}&sort=${filters.sort}`)
     .then(res=>{
       max(res.data.maxPokemon);
       const serverPokeJSON:PokémonI[] = res.data.pokemonArray;
