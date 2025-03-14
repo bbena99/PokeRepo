@@ -41,20 +41,73 @@ class PokeController{
       $firstQuery = true;
       foreach($gen as $genVal){
         switch(+$genVal){
-          case 0:
+          case 1:
             if($firstQuery){
               $dbQueryBuilder->whereBetween('id',[1,151]);
               $firstQuery=false;
             }
             else $dbQueryBuilder->orWhereBetween('id',[1,151]);
             break;
-          case 1:
+          case 2:
             if($firstQuery){
               $dbQueryBuilder->whereBetween('id',[152,251]);
               $firstQuery=false;
             }
             else $dbQueryBuilder->orWhereBetween('id',[152,251]);
             break;
+          case 3:
+            if($firstQuery){
+              $dbQueryBuilder->whereBetween('id',[252,386]);
+              $firstQuery=false;
+            }
+            else $dbQueryBuilder->orWhereBetween('id',[252,386]);
+            break;
+          case 4:
+            if($firstQuery){
+              $dbQueryBuilder->whereBetween('id',[387,493]);
+              $firstQuery=false;
+            }
+            else $dbQueryBuilder->orWhereBetween('id',[387,493]);
+            break;
+          case 5:
+            if($firstQuery){
+              $dbQueryBuilder->whereBetween('id',[494,649]);
+              $firstQuery=false;
+            }
+            else $dbQueryBuilder->orWhereBetween('id',[494,649]);
+            break;
+          case 6:
+            if($firstQuery){
+              $dbQueryBuilder->whereBetween('id',[650,721]);
+              $firstQuery=false;
+            }
+            else $dbQueryBuilder->orWhereBetween('id',[650,721]);
+            break;
+          case 7:
+            if($firstQuery){
+              $dbQueryBuilder->whereBetween('id',[722,809]);
+              $firstQuery=false;
+            }
+            else $dbQueryBuilder->orWhereBetween('id',[722,809]);
+            break;
+          case 2:
+            if($firstQuery){
+              $dbQueryBuilder->whereBetween('id',[810,905]);
+              $firstQuery=false;
+            }
+            else $dbQueryBuilder->orWhereBetween('id',[810,905]);
+            break;
+          case 2:
+            if($firstQuery){
+              $dbQueryBuilder->whereBetween('id',[906,1025]);
+              $firstQuery=false;
+            }
+            else $dbQueryBuilder->orWhereBetween('id',[906,1025]);
+            break;
+          default:
+            return response('error in gen switch statement',500)
+              ->header('Access-Control-Allow-Origin', '*')
+              ->header('Access-Control-Allow-Methods', 'GET');
         }
       }
     }
