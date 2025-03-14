@@ -43,8 +43,7 @@ const list = ref(TYPES.map((T,i)=>{
   return item;
 }))
 let genArray:number[] = query.value.gen?query.value.gen.split(',').map(v=>{return +v;}):[];
-const genList = ref([{}]);
-genList.value.pop();
+const genList = ref<{name:string;value:number;src:string}[]>([]);
 for(let i=1; i<10; i++){
   genList.value.push({
     name:"Gen-"+i,
@@ -80,6 +79,7 @@ getAll(
 );
 const pageNumber = Math.floor(+(query.value.offset??0)/query.value.limit)+1;
 function queryBuilder(){
+  console.log(query.value)
   state.value=0;
   pokeList.value.clear();
   let retQuery:string = '?';
@@ -108,6 +108,16 @@ function queryBuilder(){
   })
   if(typeArray.length>0)retQuery+='type='+typeArray.join(',')+'&';
   if(notTypeArray.length>0)retQuery+='notType='+notTypeArray.join(',')+'&';
+  genList.value.forEach((obj,index)=>{
+    switch(obj.value){
+      case 1:
+        if(!genArray.includes(index))genArray.push(index);
+        break;
+      default:
+        genArray.filter((value)=>{if(value!==index)return true; else return false;})
+    }
+  })
+  if(genArray.length>0)retQuery+='gen='+genArray.join(',')+'&'
   if(query.value.sort)retQuery+='sort='+query.value.sort+'&';
   window.location.href=retQuery;
 }
