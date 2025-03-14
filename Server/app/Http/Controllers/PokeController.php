@@ -16,7 +16,7 @@ class PokeController{
     $name = $request->query('name');
     $type = $request->query('type');
     $notType = $request->query('notType');
-    $limit = $request->query('limit');
+    $limit = $request->query('limit')??50;
     $offset = $request->query('offset');
     $gen = $request->query('gen');
 
@@ -38,10 +38,9 @@ class PokeController{
     }
     if($gen){
       $gen = preg_split("/\,/",$gen);
-      $genBuilder = [];
       $firstQuery = true;
       foreach($gen as $genVal){
-        switch($genVal){
+        switch(+$genVal){
           case 0:
             if($firstQuery){
               $dbQueryBuilder->whereBetween('id',[1,151]);
@@ -61,7 +60,7 @@ class PokeController{
     }
     $count = $dbQueryBuilder->count();
     if($offset)$dbQueryBuilder->offset($offset);
-    if($limit)$dbQueryBuilder->limit($limit);
+    $dbQueryBuilder->limit($limit);
     $dbPokemon = $dbQueryBuilder->get();
 
     foreach($dbPokemon as $pokemon){
