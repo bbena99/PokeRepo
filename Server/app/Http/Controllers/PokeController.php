@@ -19,6 +19,7 @@ class PokeController{
     $limit = $request->query('limit')??50;
     $offset = $request->query('offset');
     $gen = $request->query('gen');
+    $sort = $request->query('sort');
 
     $dbQueryBuilder = DB::table('pokemon')->where('is_default','=','1');
     if($name)$dbQueryBuilder->where('name','like',"%".$name."%");
@@ -114,7 +115,7 @@ class PokeController{
     $count = $dbQueryBuilder->count();
     if($offset)$dbQueryBuilder->offset($offset);
     $dbQueryBuilder->limit($limit);
-    $dbPokemon = $dbQueryBuilder->get();
+    $dbPokemon = $dbQueryBuilder->get()->toArray();
 
     foreach($dbPokemon as $pokemon){
       $pokemon->types = DB::table('relation_pokemon_type')
@@ -127,6 +128,11 @@ class PokeController{
       foreach($dbStats as $dbstat){
         $pokemon->stats[$dbstat->stat_name]=$dbstat->base_stat;
       }
+    }
+    switch($sort){
+      case 1: //By name
+        usort($dbPokemon,fn($a,$b)=>strcmp($a->name,$b->name));
+        break;
     }
     $results = [
         'maxPokemon' => $count,
