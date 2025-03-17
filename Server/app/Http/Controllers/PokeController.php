@@ -21,10 +21,19 @@ class PokeController{
     $gen = $request->query('gen');
     $sort = $request->query('sort');
 
-    $dbQueryBuilder = DB::table('pokemon')->where('is_default','=','1');
-    $dbQueryBuilder->join('relation_pokemon_stat', 'pokemon.id', '=', 'relation_pokemon_stat.pokemon_id')
-      ->select('pokemon.id', 'pokemon.name', DB::raw('SUM(relation_pokemon_stat.base_stat) as total_stats'))
-      ->groupBy('pokemon.id', 'pokemon.name');
+    $dbQueryBuilder = DB::table('pokemon')
+      ->join('relation_pokemon_stat', 'pokemon.id', '=', 'relation_pokemon_stat.pokemon_id')
+      ->select(
+        'pokemon.id',
+        'pokemon.name',
+        'pokemon.is_default',
+        'pokemon.order',
+        'pokemon.front_sprite',
+        'pokemon.back_sprite',
+        DB::raw('SUM(relation_pokemon_stat.base_stat) as total_stats')
+      )
+      ->where('is_default','=','1')
+      ->groupBy('pokemon.id', 'pokemon.name', 'pokemon.is_default', 'pokemon.order', 'pokemon.front_sprite', 'pokemon.back_sprite');
 
     if($name)$dbQueryBuilder->where('name','like',"%".$name."%");
     if($type){
@@ -127,7 +136,7 @@ class PokeController{
     }
     if($offset)$dbQueryBuilder->offset($offset);
     $dbQueryBuilder->limit($limit);
-    $dbPokemon = $dbQueryBuilder->get()->toArray();
+    $dbPokemon = $dbQueryBuilder->get();
 
     foreach($dbPokemon as $pokemon){
       $pokemon->types = DB::table('relation_pokemon_type')
