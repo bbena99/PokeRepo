@@ -125,7 +125,8 @@ class PokeController{
         }
       }
     }
-    $count = $dbQueryBuilder->count();
+    $count = count($dbQueryBuilder->get()->toArray());
+    $this->output->writeln($count);
     switch($sort){
       case 1: //By name
         $dbQueryBuilder->orderBy('name');
