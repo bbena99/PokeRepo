@@ -22,6 +22,10 @@ class PokeController{
     $sort = $request->query('sort');
 
     $dbQueryBuilder = DB::table('pokemon')->where('is_default','=','1');
+    $dbQueryBuilder->join('relation_pokemon_stat', 'pokemon.id', '=', 'relation_pokemon_stat.pokemon_id')
+      ->select('pokemon.id', 'pokemon.name', DB::raw('SUM(relation_pokemon_stat.base_stat) as total_stats'))
+      ->groupBy('pokemon.id', 'pokemon.name');
+
     if($name)$dbQueryBuilder->where('name','like',"%".$name."%");
     if($type){
       $type = preg_split("/\,/",$type);
@@ -113,6 +117,14 @@ class PokeController{
       }
     }
     $count = $dbQueryBuilder->count();
+    switch($sort){
+      case 1: //By name
+        $dbQueryBuilder->orderBy('name');
+        break;
+      case 2: //By Base Stat
+        $dbQueryBuilder->orderBy('total_stats');
+        break;
+    }
     if($offset)$dbQueryBuilder->offset($offset);
     $dbQueryBuilder->limit($limit);
     $dbPokemon = $dbQueryBuilder->get()->toArray();
@@ -128,11 +140,6 @@ class PokeController{
       foreach($dbStats as $dbstat){
         $pokemon->stats[$dbstat->stat_name]=$dbstat->base_stat;
       }
-    }
-    switch($sort){
-      case 1: //By name
-        usort($dbPokemon,fn($a,$b)=>strcmp($a->name,$b->name));
-        break;
     }
     $results = [
         'maxPokemon' => $count,
