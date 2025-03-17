@@ -78,11 +78,8 @@ getAll(
     maxPokemon.value=cb-1;
   }
 );
-console.log(genArray)
-console.log(genList.value)
 const pageNumber = Math.floor(+(query.value.offset??0)/query.value.limit)+1;
 function queryBuilder(){
-  console.log(query.value)
   state.value=0;
   pokeList.value.clear();
   let retQuery:string = '?';
