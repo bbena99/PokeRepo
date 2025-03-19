@@ -135,6 +135,9 @@ class PokeController{
       case 2: //By Base Stat
         $dbQueryBuilder->orderBy('total_stats');
         break;
+      case 3:
+        $dbQueryBuilder->orderBy('type')->orderBy('id');
+        break;
     }
     if($offset)$dbQueryBuilder->offset($offset);
     $dbQueryBuilder->limit($limit);
