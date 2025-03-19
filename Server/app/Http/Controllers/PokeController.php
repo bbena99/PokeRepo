@@ -23,17 +23,19 @@ class PokeController{
 
     $dbQueryBuilder = DB::table('pokemon')
       ->join('relation_pokemon_stat', 'pokemon.id', '=', 'relation_pokemon_stat.pokemon_id')
-      ->select(
+      ->leftJoin(
+        DB::raw('(SELECT pokemon_id, MIN(type_id) as type_id FROM relation_pokemon_type GROUP BY pokemon_id) as first_type'),
         'pokemon.id',
-        'pokemon.name',
-        'pokemon.is_default',
-        'pokemon.order',
-        'pokemon.front_sprite',
-        'pokemon.back_sprite',
+        '=',
+        'first_type.pokemon_id'
+      )
+      ->select(
+        'pokemon.*',
+        'first_type.type_id as type',
         DB::raw('SUM(relation_pokemon_stat.base_stat) as total_stats')
       )
       ->where('is_default','=','1')
-      ->groupBy('pokemon.id', 'pokemon.name', 'pokemon.is_default', 'pokemon.order', 'pokemon.front_sprite', 'pokemon.back_sprite');
+      ->groupBy('pokemon.id', 'pokemon.name', 'pokemon.is_default', 'pokemon.order', 'pokemon.front_sprite', 'pokemon.back_sprite','type');
 
     if($name)$dbQueryBuilder->where('name','like',"%".$name."%");
     if($type){
