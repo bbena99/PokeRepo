@@ -189,8 +189,8 @@ function queryBuilder(){
           <button
             type="button"
             id="reset-button"
-            @click="query.limit=50;query.offset=undefined;query.name=undefined;list.forEach((item)=>{item.value=0});genList.forEach((item)=>{item.value=0});query.sort=undefined;"
-            @dblclick="query.limit=50;query.offset=undefined;query.name=undefined;list.forEach((item)=>{item.value=0});genList.forEach((item)=>{item.value=0});query.sort=undefined;queryBuilder();"
+            @click="query.limit=50;query.offset=undefined;query.name=undefined;list.forEach((item)=>{item.value=0});genList.forEach((item)=>{item.value=0});query.sort=0;"
+            @dblclick="query.limit=50;query.offset=undefined;query.name=undefined;list.forEach((item)=>{item.value=0});genList.forEach((item)=>{item.value=0});query.sort=0;queryBuilder();"
             class="flex items-center justify-center h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2"
           >
             <FontAwesomeIcon :icon="faRotate" class="pr-1"/>
