@@ -35,6 +35,7 @@ let baseStatTotal = Object.values(pokemon.stats).reduce((acc, value)=>acc+value,
         v-for="(stat,key,index) in pokemon.stats"
         :id="pokemon.name+'_'+key"
         :key="pokemon.name+key"
+        :title="key"
         class="max-w-full h-6 m-1 bg-text rounded-full overflow-hidden"
         style="width: calc(50% - 0.5rem);"
       >
@@ -45,7 +46,7 @@ let baseStatTotal = Object.values(pokemon.stats).reduce((acc, value)=>acc+value,
           {{ stat }}
         </div>
       </div>
-      <div class="w-full h-6 m-1 bg-text rounded-full overflow-hidden">
+      <div title="Total Stats" class="w-full h-6 m-1 bg-text rounded-full overflow-hidden">
         <div :style="{'width': ((baseStatTotal-175)/700*85+15+'\%')}" class="h-full pl-1 flex items-center text-header rounded-e-full bg-bg2">
           {{ baseStatTotal }}
         </div>
