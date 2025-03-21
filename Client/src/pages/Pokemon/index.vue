@@ -2,7 +2,7 @@
 import { useRoute } from 'vue-router';
 import { ref } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faArrowLeft, faArrowRight, faMagnifyingGlass, faPen, faRotate } from '@fortawesome/free-solid-svg-icons';
+import { faArrowDownWideShort, faArrowLeft, faArrowRight, faMagnifyingGlass, faPen, faRotate } from '@fortawesome/free-solid-svg-icons';
 import { getAll } from '../../service';
 import PokeCard from '../../components/PokeCard.vue';
 import Loading from '../../components/Loading.vue';
@@ -129,8 +129,8 @@ function queryBuilder(){
   <div v-if="state===1" class="w-full h-full flex flex-wrap content-start items-start justify-center">
     <div id="search_bar" class="w-full h-16 mt-4 flex justify-center items-center text-header">
       <div class="flex items-center justify-evenly w-3/4 h-16 bg-bg2 rounded-full">
-        <form class="grid grid-cols-12 gap-2 items-center relative w-11/12">
-          <div class="h-3/4 flex items-center justify-center col-span-5">
+        <form class="grid grid-cols-12 gap-2 items-center relative w-11/12 h-14">
+          <div class="h-3/4 max-h-14 flex items-center justify-center col-span-5">
             <div class="inset-y-0 start-0 flex items-center ps-3 z-10 -mr-7">
               <FontAwesomeIcon :icon="faPen"/>
             </div>
@@ -142,9 +142,10 @@ function queryBuilder(){
               v-model="query.name"
             />
           </div>
+          <!--Results per page count-->
           <div class="h-3/4 col-span-2 grid grid-cols-2 items-center rounded-lg bg-bg1 text-text">
             <label for="page-count" class="w-20 block mx-2 text-sm font-medium">Results per page</label>
-            <select id="page-count" class="h-full border-none text-sm rounded-lg block" v-model="query.limit">
+            <select id="page-count" class="h-full py-0 border-none text-sm rounded-lg block" v-model="query.limit">
               <option selected value=50>50</option>
               <option value=10> 10</option>
               <option value=25> 25</option>
@@ -152,6 +153,7 @@ function queryBuilder(){
               <option value=200>200</option>
             </select>
           </div>
+          <!--Type Menu-->
           <MegaMenu
             id="type_filter"
             btnTitle='Type Filter'
@@ -164,6 +166,7 @@ function queryBuilder(){
               <img :src="src" :alt="alt"/>
             </template>
           </MegaMenu>
+          <!--Gen Menu-->
           <MegaMenu
             id="gen_filter"
             btnTitle='Gen Filter'
@@ -178,14 +181,16 @@ function queryBuilder(){
               </span>
             </template>
           </MegaMenu>
+          <!--Search Button-->
           <button
-            type="button"
+            type="submit"
             @click="queryBuilder()"
             class="flex items-center justify-center h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2"
           >
             <FontAwesomeIcon :icon="faMagnifyingGlass" class="pr-1"/>
             Search
           </button>
+          <!--Reset Filters Button-->
           <button
             type="button"
             id="reset-button"
@@ -196,8 +201,10 @@ function queryBuilder(){
             <FontAwesomeIcon :icon="faRotate" class="pr-1"/>
             Reset Filters
           </button>
-          <div class="h-3/4  items-center rounded-lg bg-bg1 text-text">
-            <select id="page-count" class="w-full h-full border-none text-sm rounded-lg block" v-model="query.sort">
+          <!--Sort selector-->
+          <div class="h-3/4 flex items-center rounded-lg bg-bg1 text-text">
+            <label for="sort_selection"><FontAwesomeIcon :icon="faArrowDownWideShort"></FontAwesomeIcon></label>
+            <select id="sort_selection" class="w-full h-full py-0 border-none text-sm rounded-lg block" v-model="query.sort">
               <option v-for="(val,index) in sortArray" :value="index">{{ val }}</option>
             </select>
           </div>
