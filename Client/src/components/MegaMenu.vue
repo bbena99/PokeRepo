@@ -45,7 +45,7 @@ function bgHandler(){
       type="button"
       v-for="(item,index) in props.list"
       :key="item.name+'key'"
-      :class="'p-2 m-2 rounded-2xl'+bgRef[index]+' '+props.itemClass"
+      :class="'p-2 m-1 rounded-2xl'+bgRef[index]+' '+props.itemClass"
       @click="item.value++;item.value%=props.states;bgHandler()"
     >
       <slot :src="item.src" :alt="item.name+'.png'">
