@@ -128,8 +128,9 @@ function queryBuilder(){
   <Loading v-if="state===0"/>
   <div v-if="state===1" class="w-full h-full flex flex-wrap content-start items-start justify-center">
     <div id="search_bar" class="w-full h-16 mt-4 flex justify-center items-center text-header">
-      <div class="flex items-center justify-evenly w-3/4 h-16 bg-bg2 rounded-full">
-        <form class="grid grid-cols-12 gap-2 items-center relative w-11/12 h-14">
+      <div class="flex items-center justify-evenly w-3/4 bg-bg2 rounded-full">
+        <form class="grid grid-cols-12 gap-2 items-center relative w-11/12">
+          <!--Search input  -->
           <div class="h-3/4 max-h-14 flex items-center justify-center col-span-5">
             <div class="inset-y-0 start-0 flex items-center ps-3 z-10 -mr-7">
               <FontAwesomeIcon :icon="faPen"/>
@@ -145,7 +146,11 @@ function queryBuilder(){
           <!--Results per page count-->
           <div class="h-3/4 col-span-2 grid grid-cols-2 items-center rounded-lg bg-bg1 text-text">
             <label for="page-count" class="w-20 block mx-2 text-sm font-medium">Results per page</label>
-            <select id="page-count" class="h-full py-0 border-none text-sm rounded-lg block" v-model="query.limit">
+            <select
+              id="page-count"
+              class="h-full py-0 border-none text-sm rounded-lg block bg-transparent hover:cursor-pointer"
+              v-model="query.limit"
+            >
               <option selected value=50>50</option>
               <option value=10> 10</option>
               <option value=25> 25</option>
@@ -202,9 +207,13 @@ function queryBuilder(){
             Reset Filters
           </button>
           <!--Sort selector-->
-          <div class="h-3/4 flex items-center rounded-lg bg-bg1 text-text">
+          <div class="h-3/4 flex items-center rounded-lg bg-bg1 text-text pl-2">
             <label for="sort_selection"><FontAwesomeIcon :icon="faArrowDownWideShort"></FontAwesomeIcon></label>
-            <select id="sort_selection" class="w-full h-full py-0 border-none text-sm rounded-lg block" v-model="query.sort">
+            <select
+              id="sort_selection"
+              class="w-full bg-transparent h-full py-0 border-none text-sm rounded-lg block hover:cursor-pointer"
+              v-model="query.sort"
+            >
               <option v-for="(val,index) in sortArray" :value="index">{{ val }}</option>
             </select>
           </div>
