@@ -128,7 +128,7 @@ function queryBuilder(){
   <Loading v-if="state===0"/>
   <div v-if="state===1" class="w-full h-full flex flex-wrap content-start items-start justify-center">
     <div id="search_bar" class="w-full mt-4 flex justify-center items-center text-header">
-      <div class="flex items-center justify-evenly w-3/4 bg-bg2 rounded-full">
+      <div class="flex items-center justify-evenly w-3/4 bg-bg2 rounded-3xl lg:rounded-full">
         <form class="grid grid-cols-12 gap-2 items-center relative w-11/12">
           <!--Search input  -->
           <div class="h-3/4 max-h-14 flex items-center justify-center col-span-12 lg:col-span-5">
