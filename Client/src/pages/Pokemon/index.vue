@@ -221,7 +221,7 @@ function queryBuilder(){
       </div>
     </div>
     <!--Start of pokemon list-->
-    <ul style="max-height: calc(100% - 8.5rem);" class="w-full xl:w-3/4 p-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 overflow-y-scroll overflow-x-hidden">
+    <ul style="max-height: calc(100% - 9rem);" class="w-full xl:w-3/4 p-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 overflow-y-scroll overflow-x-hidden">
       <li v-for="[_,value] in pokeList" :key="value.name" class="group w-full h-58 col-span-1 z-0 transition-all ease-in-out sm:hover:scale-110 hover:z-10">
         <RouterLink :to="'Pokemon/'+value.name" class="w-full drop-shadow-md">
           <PokeCard :pokemon="value"/>
@@ -230,11 +230,12 @@ function queryBuilder(){
     </ul>
     <!--Start of pagination bar-->
     <div class="flex items-center justify-center absolute bottom-0 w-full h-14 p-2">
-      <div class="flex justify-center w-full sm:w-2/3 lg:w-1/3 h-full [&>button]:bg-bg1 [&>button]:rounded-full [&>button]:w-10 [&>button]:mx-2">
+      <div class="flex justify-center h-12 p-2 bg-bg2 rounded-3xl [&>button]:bg-bg1 [&>button]:rounded-full [&>button]:w-10 [&>button]:mx-2">
         <button
           :disabled="pageNumber===1||query.offset===undefined"
-          :class="(pageNumber===1||query.offset===undefined)?'border-2 !bg-header text-text border-text':''"
+          :class="(pageNumber===1||query.offset===undefined)?' w-10 border-2 !bg-header text-text border-text':''"
           @click="query.offset=query.offset!-query.limit;if(query.offset<0){query.offset=undefined};queryBuilder();"
+          type="button"
         >
           <FontAwesomeIcon :icon="faArrowLeft"/>
         </button>
