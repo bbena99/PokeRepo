@@ -207,7 +207,7 @@ function queryBuilder(){
             Reset Filters
           </button>
           <!--Sort selector-->
-          <div class="h-3/4 flex items-center col-span-4 sm:col-span-2 lg:col-span-1 rounded-lg bg-bg1 text-text pl-2">
+          <div class="h-3/4 flex items-center col-span-4 sm:col-span-2 xl:col-span-1 rounded-lg bg-bg1 text-text pl-2">
             <label for="sort_selection"><FontAwesomeIcon :icon="faArrowDownWideShort"></FontAwesomeIcon></label>
             <select
               id="sort_selection"
