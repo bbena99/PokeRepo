@@ -6,8 +6,8 @@ import { faArrowDownWideShort, faArrowLeft, faArrowRight, faMagnifyingGlass, faP
 import { getAll } from '../../service';
 import PokeCard from '../../components/PokeCard.vue';
 import Loading from '../../components/Loading.vue';
-import { PokémonI } from '../../models';
 import MegaMenu from '../../components/MegaMenu.vue';
+import { PokémonI } from '../../models';
 import { TYPES } from '../../constants';
 
 interface pokeQueryI{
