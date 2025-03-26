@@ -128,10 +128,10 @@ function queryBuilder(){
   <Loading v-if="state===0"/>
   <div v-if="state===1" class="w-full h-full flex flex-wrap content-start items-start justify-center">
     <div id="search_bar" class="w-full mt-4 flex justify-center items-center text-header">
-      <div class="flex items-center justify-evenly w-3/4 bg-bg2 rounded-3xl lg:rounded-full">
+      <div class="flex items-center justify-evenly w-4/5 xl:w-3/4 bg-bg2 rounded-3xl xl:rounded-full">
         <form class="grid grid-cols-12 gap-2 items-center relative w-11/12">
           <!--Search input  -->
-          <div class="h-3/4 max-h-14 flex items-center justify-center col-span-12 lg:col-span-5">
+          <div class="h-3/4 max-h-14 flex items-center justify-center col-span-12 xl:col-span-5">
             <div class="inset-y-0 start-0 flex items-center ps-3 z-10 -mr-7">
               <FontAwesomeIcon :icon="faPen"/>
             </div>
@@ -144,7 +144,7 @@ function queryBuilder(){
             />
           </div>
           <!--Results per page count-->
-          <div class="h-3/4 col-span-2 w-full items-center rounded-lg bg-bg1 text-text">
+          <div class="h-3/4 col-span-4 sm:col-span-2 w-full items-center rounded-lg bg-bg1 text-text">
             <select
               id="page-count"
               class="h-full py-0 border-none text-sm rounded-lg block bg-transparent hover:cursor-pointer"
@@ -162,7 +162,7 @@ function queryBuilder(){
           <MegaMenu
             id="type_filter"
             btnTitle='Type Filter'
-            btnClass='first:pr-1 bg-bg1 w-full h-3/4 col-span-2 lg:col-span-1'
+            btnClass='first:pr-1 bg-bg1 w-full h-3/4 col-span-4 sm:col-span-2 xl:col-span-1'
             cols=3
             :list=list
             states=3
@@ -175,7 +175,7 @@ function queryBuilder(){
           <MegaMenu
             id="gen_filter"
             btnTitle='Gen Filter'
-            btnClass='first:pr-1 bg-bg1 w-full h-3/4 col-span-2 lg:col-span-1'
+            btnClass='first:pr-1 bg-bg1 w-full h-3/4 col-span-4 sm:col-span-2 xl:col-span-1'
             cols=1
             :list="genList"
             states=2
@@ -190,7 +190,7 @@ function queryBuilder(){
           <button
             type="submit"
             @click="queryBuilder()"
-            class="flex items-center col-span-2 lg:col-span-1 justify-center h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2"
+            class="flex items-center col-span-4 sm:col-span-2 xl:col-span-1 justify-center h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2"
           >
             <FontAwesomeIcon :icon="faMagnifyingGlass" class="pr-1"/>
             Search
@@ -201,13 +201,13 @@ function queryBuilder(){
             id="reset-button"
             @click="query.limit=50;query.offset=undefined;query.name=undefined;list.forEach((item)=>{item.value=0});genList.forEach((item)=>{item.value=0});query.sort=0;"
             @dblclick="query.limit=50;query.offset=undefined;query.name=undefined;list.forEach((item)=>{item.value=0});genList.forEach((item)=>{item.value=0});query.sort=0;queryBuilder();"
-            class="flex items-center justify-center col-span-2 lg:col-span-1 h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2"
+            class="flex items-center justify-center col-span-4 sm:col-span-2 xl:col-span-1 h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2"
           >
             <FontAwesomeIcon :icon="faRotate" class="pr-1"/>
             Reset Filters
           </button>
           <!--Sort selector-->
-          <div class="h-3/4 flex items-center col-span-2 lg:col-span-1 rounded-lg bg-bg1 text-text pl-2">
+          <div class="h-3/4 flex items-center col-span-4 sm:col-span-2 lg:col-span-1 rounded-lg bg-bg1 text-text pl-2">
             <label for="sort_selection"><FontAwesomeIcon :icon="faArrowDownWideShort"></FontAwesomeIcon></label>
             <select
               id="sort_selection"
@@ -229,8 +229,8 @@ function queryBuilder(){
       </li>
     </ul>
     <!--Start of pagination bar-->
-    <div class="flex items-center justify-center absolute bottom-0 w-full h-14 p-2">
-      <div class="flex justify-center h-12 p-2 bg-bg2 rounded-3xl [&>button]:bg-bg1 [&>button]:rounded-full [&>button]:w-10 [&>button]:mx-2">
+    <div style="max-width: 100vw;" class="flex items-center justify-center absolute bottom-0 w-full h-14 p-2">
+      <div class="flex justify-center w-full h-12 p-2 bg-bg2 rounded-3xl [&>button]:bg-bg1 [&>button]:rounded-full [&>button]:w-10 [&>button]:mx-2">
         <button
           :disabled="pageNumber===1||query.offset===undefined"
           :class="(pageNumber===1||query.offset===undefined)?' w-10 border-2 !bg-header text-text border-text':''"
@@ -245,11 +245,11 @@ function queryBuilder(){
         >
           1
         </button>
-        <button disabled v-if="pageNumber>4">
+        <button disabled v-if="pageNumber>3">
           ...
         </button>
         <button
-          v-for="n in Array.from({length:Math.min(pageNumber+2,Math.floor(maxPokemon/query.limit))-Math.max(pageNumber-2,2)+1},(_,i)=>Math.max(pageNumber-2,2)+i)"
+          v-for="n in Array.from({length:Math.min(pageNumber+1,Math.floor(maxPokemon/query.limit))-Math.max(pageNumber-1,1)+1},(_,i)=>Math.max(pageNumber-1,2)+i)"
           @click="query.offset=(n-1)*query.limit;queryBuilder();"
           :disabled="n===pageNumber"
           :class="n===pageNumber?'border-hover border-2 text-hover font-bold':''"
