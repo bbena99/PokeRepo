@@ -41,7 +41,7 @@ getAllMoves({
 <template>
   <Loading v-if="state===0"/>
   <div v-if="state===1" class="flex justify-center items-center flex-wrap h-100%">
-    <div class="flex items-center justify-evenly w-4/5 xl:w-3/4 h-16 m-4 bg-bg2 rounded-3xl xl:rounded-full">
+    <div class="flex items-center justify-evenly w-4/5 xl:w-3/4 h-16 mt-4 bg-bg2 rounded-3xl xl:rounded-full">
       <form class="grid grid-cols-12 gap-2 items-center relative w-11/12 p-2">
         <!-- Search Input -->
         <div class="col-span-5 h-12 flex items-center">
@@ -54,7 +54,7 @@ getAllMoves({
         </div>
       </form>
     </div>
-    <ul style="height: calc(100% - 6rem);" class="grid grid-cols-12 gap-3 xl:w-2/3 overflow-y-scroll">
+    <ul style="max-height: calc(100vh - 10rem);" class="grid grid-cols-12 gap-3 xl:w-2/3 p-4 overflow-y-scroll">
       <li v-for="move in moveArray" class="flex col-span-12 sm:col-span-6 md:col-span-4 2xl:col-span-3">
         <RouterLink :to="'Moves/'+move.name" class="w-full flex justify-between rounded-xl shadow border-2 border-bg2 bg-bg1 p-2 pl-3 text-lg underline hover:text-hover hover:border-hover hover:shadow-2xl hover:scale-105">
           <span>
