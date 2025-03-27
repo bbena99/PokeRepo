@@ -133,18 +133,18 @@ function queryBuilder(){
             />
           </div>
           <!--Results per page count-->
-          <div class="h-3/4 col-span-4 sm:col-span-2 w-full items-center rounded-lg bg-bg1 text-text">
+          <div class="h-3/4 col-span-4 sm:col-span-2 xl:col-span-1 w-full items-center rounded-lg bg-bg1 text-text">
             <select
               id="page-count"
-              class="h-full py-0 border-none text-sm rounded-lg block bg-transparent hover:cursor-pointer"
+              class="w-full h-full py-0 border-none text-sm rounded-lg block bg-transparent hover:cursor-pointer"
               v-model="query.limit"
               title="page count"
             >
-              <option selected value=50>50</option>
-              <option value=10> 10</option>
-              <option value=25> 25</option>
+              <option selected value=100>100</option>
+              <option value=50> 50</option>
               <option value=100>100</option>
               <option value=200>200</option>
+              <option value=300>300</option>
             </select>
           </div>
           <!--Type Menu-->
@@ -162,17 +162,15 @@ function queryBuilder(){
           </MegaMenu>
           <!--Gen Menu-->
           <MegaMenu
-            id="gen_filter"
-            btnTitle='Gen Filter'
+            id="dmg_filter"
+            btnTitle='Damage Filter'
             btnClass='first:pr-1 bg-bg1 w-full h-3/4 col-span-4 sm:col-span-2 xl:col-span-1'
             cols=1
             :list="damageTypeList"
-            states=2
+            states=3
           >
-            <template v-slot:default="{src}">
-              <span>
-                {{ src }}
-              </span>
+            <template v-slot:default="{src,alt}">
+              <img :src="src" :alt="alt"/>
             </template>
           </MegaMenu>
           <!--Search Button-->
@@ -188,6 +186,7 @@ function queryBuilder(){
           <button
             type="button"
             id="reset-button"
+            title="Single click to reset; Double to refresh page"
             @click="query.limit=50;query.offset=undefined;query.name=undefined;list.forEach((item)=>{item.value=0});damageTypeList.forEach((item)=>{item.value=0});query.sort=0;"
             @dblclick="query.limit=50;query.offset=undefined;query.name=undefined;list.forEach((item)=>{item.value=0});damageTypeList.forEach((item)=>{item.value=0});query.sort=0;queryBuilder();"
             class="flex items-center justify-center col-span-4 sm:col-span-2 xl:col-span-1 h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2"
@@ -196,10 +195,11 @@ function queryBuilder(){
             Reset Filters
           </button>
           <!--Sort selector-->
-          <div class="h-3/4 flex items-center col-span-4 sm:col-span-2 xl:col-span-1 rounded-lg bg-bg1 text-text pl-2">
+          <div class="h-3/4 flex items-center col-span-4 sm:col-span-2 rounded-lg bg-bg1 text-text pl-2">
             <label for="sort_selection"><FontAwesomeIcon :icon="faArrowDownWideShort"></FontAwesomeIcon></label>
             <select
               id="sort_selection"
+              title="sorting"
               class="w-full bg-transparent h-full py-0 border-none text-sm rounded-lg block hover:cursor-pointer"
               v-model="query.sort"
             >
