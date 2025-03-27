@@ -144,7 +144,7 @@ function queryBuilder(){
             />
           </div>
           <!--Results per page count-->
-          <div class="h-3/4 col-span-4 sm:col-span-2 w-full items-center rounded-lg bg-bg1 text-text">
+          <div class="h-3/4 col-span-4 sm:col-span-2 xl:col-span-1 w-full items-center rounded-lg bg-bg1 text-text">
             <select
               id="page-count"
               class="h-full py-0 border-none text-sm rounded-lg block bg-transparent hover:cursor-pointer"
@@ -199,6 +199,7 @@ function queryBuilder(){
           <button
             type="button"
             id="reset-button"
+            title="Single click to reset; Double to refresh page"
             @click="query.limit=50;query.offset=undefined;query.name=undefined;list.forEach((item)=>{item.value=0});genList.forEach((item)=>{item.value=0});query.sort=0;"
             @dblclick="query.limit=50;query.offset=undefined;query.name=undefined;list.forEach((item)=>{item.value=0});genList.forEach((item)=>{item.value=0});query.sort=0;queryBuilder();"
             class="flex items-center justify-center col-span-4 sm:col-span-2 xl:col-span-1 h-3/4 text-header bg-hover hover:bg-bg2 hover:ring-2 hover:ring-hover focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2"
@@ -207,7 +208,7 @@ function queryBuilder(){
             Reset Filters
           </button>
           <!--Sort selector-->
-          <div class="h-3/4 flex items-center col-span-4 sm:col-span-2 xl:col-span-1 rounded-lg bg-bg1 text-text pl-2">
+          <div class="h-3/4 flex items-center col-span-4 sm:col-span-2 rounded-lg bg-bg1 text-text pl-2">
             <label for="sort_selection"><FontAwesomeIcon :icon="faArrowDownWideShort"></FontAwesomeIcon></label>
             <select
               id="sort_selection"
