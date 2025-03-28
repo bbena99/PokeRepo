@@ -8,20 +8,58 @@ use Illuminate\Support\Facades\DB;
 
 class MoveController{
   protected $output;
-  protected $limit;
-  protected $offset;
 
   public function __construct(){
     $this->output = new \Symfony\Component\Console\Output\ConsoleOutput();
   }
 
   public function getAll(Request $request){
-    $this->limit = $request->query('limit','20');
-    $this->offset = $request->query('offset','0');
-    $dbMove = DB::table('moves')->join('relation_type_moves','moves.id','=','relation_type_moves.move_id')->get();
-    return response()->json($dbMove)
-        ->header('Access-Control-Allow-Origin', '*')
-        ->header('Access-Control-Allow-Methods', 'GET');
+    $name = $request->query('name');
+    $type = $request->query('type');
+    $notType = $request->query('notType');
+    $limit = $request->query('limit')??50;
+    $offset = $request->query('offset');
+    $damageType = $request->query('damageType');
+    $sort = $request->query('sort');
+
+    $dbQueryBuilder = DB::table('moves')
+      ->join('relation_type_moves','move.id','=','relation_type_moves.move_id');
+
+    if($name)$dbQueryBuilder->where('name','like',"%".$name."%");
+    if($type){
+      $type = preg_split("/\,/",$type);
+      $dbQueryBuilder->whereIn('type_id',$type);
+    }
+    if($notType){
+      $notType = preg_split("/\,/",$notType);
+      $dbQueryBuilder->whereNotIn('type_id',$notType);
+    }
+    if($damageType){
+      $damageType = preg_split("/\,/",$damageType);
+      $dbQueryBuilder->whereIn('damage_type',$damageType);
+    }
+    $count = count($dbQueryBuilder->get()->toArray());
+    switch($sort){
+      case 1: //By name
+        $dbQueryBuilder->orderBy('name');
+        break;
+      case 2: //By Base Stat
+        $dbQueryBuilder->orderBy('damage_type');
+        break;
+      case 3:
+        $dbQueryBuilder->orderBy('type_id')->orderBy('id');
+        break;
+    }
+    if($offset)$dbQueryBuilder->offset($offset);
+    $dbQueryBuilder->limit($limit);
+    $dbMove = $dbQueryBuilder->get();
+    $results = [
+      'maxMoves' => $count,
+      'movesArray' => $dbMove,
+    ];
+    return response()->json($results)
+      ->header('Access-Control-Allow-Origin', '*')
+      ->header('Access-Control-Allow-Methods', 'GET');
   }
   public function getOne($identifier){
     if(filter_var($identifier, FILTER_VALIDATE_INT))$dbMove = DB::table('moves')->where('id','=',$identifier)->join('relation_type_moves','moves.id','=','relation_type_moves.move_id')->get()[0];
