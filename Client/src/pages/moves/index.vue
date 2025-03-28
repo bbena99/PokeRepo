@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faArrowDownWideShort, faMagnifyingGlass, faPencil, faRotate } from '@fortawesome/free-solid-svg-icons';
+import { faArrowDownWideShort, faArrowLeft, faArrowRight, faMagnifyingGlass, faPencil, faRotate } from '@fortawesome/free-solid-svg-icons';
 import { getAllMoves } from '../../service';
 import Loading from '../../components/Loading.vue';
 import PageNotFound from '../../components/PageNotFound.vue';
@@ -21,6 +21,7 @@ interface moveQueryI{
 }
 
 const state = ref<number>(0);
+let maxMoves = 0;
 const route = useRoute();
 const query = ref<moveQueryI>({
   offset:+(route.query.offset??0),
@@ -60,6 +61,7 @@ const sortArray = [
   'Type',
 ]
 const moveArray = ref<MovesI[]>([]);
+const pageNumber = Math.floor(+(query.value.offset??0)/query.value.limit)+1;
 getAllMoves({
   offset:+(query.value.offset??0),
   limit:+(query.value.limit??50),
@@ -72,6 +74,8 @@ getAllMoves({
   moveArray.value=[...a];
   console.log(moveArray.value)
   state.value=1;
+},(count)=>{
+  maxMoves=count;
 })
 function queryBuilder(){
   state.value=0;
@@ -235,6 +239,53 @@ function queryBuilder(){
         </RouterLink>
       </li>
     </ul>
+    <!--Start of pagination bar-->
+    <div style="max-width: 100vw;" class="flex items-center justify-center absolute bottom-0 w-full h-14 p-2">
+      <div class="flex justify-center w-full h-12 p-2 bg-bg2 rounded-3xl [&>button]:bg-bg1 [&>button]:rounded-full [&>button]:w-10 [&>button]:mx-2">
+        <button
+          :disabled="pageNumber===1||query.offset===undefined"
+          :class="(pageNumber===1||query.offset===undefined)?' w-10 border-2 !bg-header text-text border-text':''"
+          @click="query.offset=query.offset!-query.limit;if(query.offset<0){query.offset=undefined};queryBuilder();"
+          type="button"
+        >
+          <FontAwesomeIcon :icon="faArrowLeft"/>
+        </button>
+        <button
+          @click="query.offset=undefined;queryBuilder();"
+          :class="1===pageNumber?'border-hover border-2 text-hover font-bold':''"
+        >
+          1
+        </button>
+        <button disabled v-if="pageNumber>3">
+          ...
+        </button>
+        <button
+          v-for="n in Array.from({length:Math.min(pageNumber+1,Math.floor(maxMoves/query.limit))-Math.max(pageNumber-1,1)+1},(_,i)=>Math.max(pageNumber-1,2)+i)"
+          @click="query.offset=(n-1)*query.limit;queryBuilder();"
+          :disabled="n===pageNumber"
+          :class="n===pageNumber?'border-hover border-2 text-hover font-bold':''"
+        >
+          {{ n }}
+        </button>
+        <button disabled v-if="pageNumber<(Math.floor(maxMoves/query.limit)-2)">
+          ...
+        </button>
+        <button
+          v-if="Math.floor(maxMoves/query.limit)>0"
+          @click="query.offset=Math.floor(maxMoves/query.limit)*query.limit;queryBuilder();"
+          :class="Math.floor(maxMoves/query.limit)+1===pageNumber?'border-hover border-2 text-hover font-bold':''"
+        >
+          {{ Math.floor(maxMoves/query.limit)+1 }}
+        </button>
+        <button
+          :disabled="pageNumber>(Math.floor(maxMoves/query.limit))"
+          @click="query.offset=(query.offset??0)+query.limit;queryBuilder();"
+          :class="(pageNumber>(Math.floor(maxMoves/query.limit)))?'border-2 !bg-header text-text border-text':''"
+        >
+          <FontAwesomeIcon :icon="faArrowRight"/>
+        </button>
+      </div>
+    </div>
   </div>
   <PageNotFound v-if="state===-1"/>
 </template>
