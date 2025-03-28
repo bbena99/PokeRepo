@@ -218,7 +218,7 @@ function queryBuilder(){
         </form>
       </div>
     </div>
-    <ul style="max-height: calc(100vh - 10rem);" class="grid grid-cols-12 gap-3 xl:w-2/3 p-4 overflow-y-scroll">
+    <ul style="max-height: calc(100vh - 14rem);" class="grid grid-cols-12 gap-3 xl:w-2/3 p-4 overflow-y-scroll">
       <li v-for="move in moveArray" class="flex col-span-12 sm:col-span-6 md:col-span-4 2xl:col-span-3">
         <RouterLink :to="'Moves/'+move.name" class="w-full flex justify-between rounded-xl shadow border-2 border-bg2 bg-bg1 p-2 pl-3 text-lg underline hover:text-hover hover:border-hover hover:shadow-2xl hover:scale-105">
           <span>
@@ -240,7 +240,7 @@ function queryBuilder(){
       </li>
     </ul>
     <!--Start of pagination bar-->
-    <div style="max-width: 100vw;" class="flex items-center justify-center absolute bottom-0 w-full h-14 p-2">
+    <div style="max-width: 100vw;" class="flex items-center justify-center absolute bottom-0 h-14 p-2">
       <div class="flex justify-center w-full h-12 p-2 bg-bg2 rounded-3xl [&>button]:bg-bg1 [&>button]:rounded-full [&>button]:w-10 [&>button]:mx-2">
         <button
           :disabled="pageNumber===1||query.offset===undefined"
