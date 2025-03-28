@@ -4,6 +4,11 @@ import { MovesI, SinglePokemonI } from "../models";
 interface FiltersI{
   limit:number;
   offset:number;
+  name:string;
+  type:number[];
+  notType:number[];
+  damageType:number[];
+  sort:number;
 }
 
 const url='http://127.0.0.1:8000/';
@@ -11,8 +16,9 @@ const url='http://127.0.0.1:8000/';
 export function getAllMoves(filters:FiltersI,cb:(a:MovesI[])=>void):void{
   axios.get(`${url}move?limit=${filters.limit}&offset=${filters.offset}`)
     .then(res=>{
-      const serverPokeJSON = res.data;
-      cb(serverPokeJSON);
+      console.log(res.data)
+      const serverMoveJSON = res.data.movesArray;
+      cb(serverMoveJSON);
     })
     .catch(err=>{
       console.warn("err in MoveService.ts/getAllMoves()");
