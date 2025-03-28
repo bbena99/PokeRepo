@@ -23,16 +23,17 @@ class MoveController{
     $sort = $request->query('sort');
 
     $dbQueryBuilder = DB::table('moves')
-      ->join('relation_type_moves','move.id','=','relation_type_moves.move_id');
+      ->select('moves.*','relation_type_moves.type_id as type')
+      ->join('relation_type_moves','moves.id','=','relation_type_moves.move_id');
 
     if($name)$dbQueryBuilder->where('name','like',"%".$name."%");
     if($type){
       $type = preg_split("/\,/",$type);
-      $dbQueryBuilder->whereIn('type_id',$type);
+      $dbQueryBuilder->whereIn('type',$type);
     }
     if($notType){
       $notType = preg_split("/\,/",$notType);
-      $dbQueryBuilder->whereNotIn('type_id',$notType);
+      $dbQueryBuilder->whereNotIn('type',$notType);
     }
     if($damageType){
       $damageType = preg_split("/\,/",$damageType);
@@ -47,7 +48,7 @@ class MoveController{
         $dbQueryBuilder->orderBy('damage_type');
         break;
       case 3:
-        $dbQueryBuilder->orderBy('type_id')->orderBy('id');
+        $dbQueryBuilder->orderBy('type')->orderBy('id');
         break;
     }
     if($offset)$dbQueryBuilder->offset($offset);
