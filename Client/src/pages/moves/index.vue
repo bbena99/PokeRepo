@@ -61,8 +61,13 @@ const sortArray = [
 ]
 const moveArray = ref<MovesI[]>([]);
 getAllMoves({
-  limit: 0,
-  offset: 0
+    offset:+(query.value.offset??0),
+    limit:+(query.value.limit??50),
+    name:query.value.name??'',
+    type:typeArray,
+    notType:notTypeArray,
+    damageType:damageTypeArray,
+    sort:+(query.value.sort??0)
 },(a)=>{
   moveArray.value=[...a];
   console.log(moveArray.value)
@@ -222,8 +227,8 @@ function queryBuilder(){
             class="w-1/3 h-full"
             >
             <img
-            :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/'+move.type_id+'.png'"
-            :alt="'type'+move.type_id"
+            :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/'+move.type+'.png'"
+            :alt="'type'+move.type"
             class="w-2/3 h-full"
             >
           </div>
