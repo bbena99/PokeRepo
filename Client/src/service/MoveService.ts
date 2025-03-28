@@ -13,12 +13,13 @@ interface FiltersI{
 
 const url='http://127.0.0.1:8000/';
 
-export function getAllMoves(filters:FiltersI,cb:(a:MovesI[])=>void):void{
+export function getAllMoves(filters:FiltersI,cb:(a:MovesI[])=>void,setMax:(count:number)=>void):void{
   axios.get(`${url}move?limit=${filters.limit}&offset=${filters.offset}`)
     .then(res=>{
-      console.log(res.data)
+      console.log(res.data);
       const serverMoveJSON = res.data.movesArray;
       cb(serverMoveJSON);
+      setMax(res.data.maxMoves);
     })
     .catch(err=>{
       console.warn("err in MoveService.ts/getAllMoves()");
