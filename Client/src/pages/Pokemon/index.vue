@@ -66,8 +66,9 @@ getAll(
     offset:+(query.value.offset??0),
     limit:+(query.value.limit??50),
     name:query.value.name??'',
-    type:typeArray,notType:
-    notTypeArray,gen:genArray,
+    type:typeArray,
+    notType:notTypeArray,
+    gen:genArray,
     sort:+(query.value.sort??0)
   },
   (cb:PokémonI)=>{
