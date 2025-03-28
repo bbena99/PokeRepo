@@ -61,13 +61,13 @@ const sortArray = [
 ]
 const moveArray = ref<MovesI[]>([]);
 getAllMoves({
-    offset:+(query.value.offset??0),
-    limit:+(query.value.limit??50),
-    name:query.value.name??'',
-    type:typeArray,
-    notType:notTypeArray,
-    damageType:damageTypeArray,
-    sort:+(query.value.sort??0)
+  offset:+(query.value.offset??0),
+  limit:+(query.value.limit??50),
+  name:query.value.name??'',
+  type:typeArray,
+  notType:notTypeArray,
+  damageType:damageTypeArray,
+  sort:+(query.value.sort??0)
 },(a)=>{
   moveArray.value=[...a];
   console.log(moveArray.value)
