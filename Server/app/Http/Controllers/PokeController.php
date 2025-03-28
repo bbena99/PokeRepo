@@ -127,7 +127,6 @@ class PokeController{
         }
       }
     }
-    $count = count($dbQueryBuilder->get()->toArray());
     switch($sort){
       case 1: //By name
         $dbQueryBuilder->orderBy('name');
@@ -139,7 +138,8 @@ class PokeController{
         $dbQueryBuilder->orderBy('type')->orderBy('id');
         break;
     }
-    if($offset)$dbQueryBuilder->offset($offset);
+    $count = count($dbQueryBuilder->get()->toArray());
+    if($offset&&$offset<$count)$dbQueryBuilder->offset($offset);
     $dbQueryBuilder->limit($limit);
     $dbPokemon = $dbQueryBuilder->get();
 

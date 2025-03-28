@@ -28,18 +28,17 @@ class MoveController{
 
     if($name)$dbQueryBuilder->where('name','like',"%".$name."%");
     if($type){
-      $type = preg_split("/\,/",$type);
-      $dbQueryBuilder->whereIn('type',$type);
+      $typeArray = preg_split("/\,/",$type);
+      $dbQueryBuilder->whereIn('relation_type_moves.type_id',$typeArray);
     }
     if($notType){
       $notType = preg_split("/\,/",$notType);
-      $dbQueryBuilder->whereNotIn('type',$notType);
+      $dbQueryBuilder->whereNotIn('relation_type_moves.type_id',$notType);
     }
     if($damageType){
       $damageType = preg_split("/\,/",$damageType);
       $dbQueryBuilder->whereIn('damage_type',$damageType);
     }
-    $count = count($dbQueryBuilder->get()->toArray());
     switch($sort){
       case 1: //By name
         $dbQueryBuilder->orderBy('name');
@@ -51,7 +50,8 @@ class MoveController{
         $dbQueryBuilder->orderBy('type')->orderBy('id');
         break;
     }
-    if($offset)$dbQueryBuilder->offset($offset);
+    $count = count($dbQueryBuilder->get()->toArray());
+    if($offset&&$offset<$count)$dbQueryBuilder->offset($offset);
     $dbQueryBuilder->limit($limit);
     $dbMove = $dbQueryBuilder->get();
     $results = [
