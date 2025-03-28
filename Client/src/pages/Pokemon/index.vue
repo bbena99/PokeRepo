@@ -60,6 +60,7 @@ const sortArray = [
 ]
 const state = ref<number>(0);
 const pokeList = ref<Map<number,PokémonI>>(new Map());
+const pageNumber = Math.floor(+(query.value.offset??0)/query.value.limit)+1;
 
 getAll(
   {
@@ -79,7 +80,6 @@ getAll(
     maxPokemon.value=cb-1;
   }
 );
-const pageNumber = Math.floor(+(query.value.offset??0)/query.value.limit)+1;
 function queryBuilder(){
   state.value=0;
   pokeList.value.clear();
