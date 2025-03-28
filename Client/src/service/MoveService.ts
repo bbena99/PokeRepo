@@ -14,7 +14,7 @@ interface FiltersI{
 const url='http://127.0.0.1:8000/';
 
 export function getAllMoves(filters:FiltersI,cb:(a:MovesI[])=>void,setMax:(count:number)=>void):void{
-  axios.get(`${url}move?limit=${filters.limit}&offset=${filters.offset}`)
+  axios.get(`${url}move?limit=${filters.limit}&offset=${filters.offset}&name=${filters.name}&type=${filters.type.join(',')}&notType=${filters.notType.join(',')}&gen=${filters.damageType.join(',')}&sort=${filters.sort}`)
     .then(res=>{
       console.log(res.data);
       const serverMoveJSON = res.data.movesArray;
