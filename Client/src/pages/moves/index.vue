@@ -72,7 +72,6 @@ getAllMoves({
   sort:+(query.value.sort??0)
 },(a)=>{
   moveArray.value=[...a];
-  console.log(moveArray.value)
   state.value=1;
 },(count)=>{
   maxMoves=count;
