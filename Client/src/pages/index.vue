@@ -18,26 +18,30 @@ const moveArray = DAMAGETYPES.slice(1)
     </span>
   </div>
   <div class="grid grid-cols-6 gap-4 w-full md:w-5/6 lg:w-4/5 2xl:w-3/4 h-96">
-    <RouterLink to="/pokemon" class="col-span-6 md:col-span-3 lg:col-span-2 grid grid-cols-3 justify-center justify-items-center w-full h-full bg-bg1 shadow-xl rounded-xl overflow-hidden hover:scale-105 hover:shadow-2xl hover:text-hover transition-all">
+    <RouterLink to="/pokemon" class="col-span-6 md:col-span-3 lg:col-span-2 flex flex-wrap justify-center justify-items-center w-full h-full bg-bg1 shadow-xl rounded-xl overflow-hidden md:hover:scale-105 hover:shadow-2xl hover:text-hover transition-all">
       <img
         src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
         alt="Pikachu.png"
-        class="md:col-span-3 w-full"
+        class="md:h-2/3"
         >
-      <span class="col-span-2 md:col-span-3 text-xl">
-        Pokemon list
+      <span class="flex justify-center items-center md:w-full h-full md:h-1/3 text-xl">
+        Pokemon list &nbsp;
         <FontAwesomeIcon :icon="faShare"/>
       </span>
     </RouterLink>
-    <RouterLink to="/move" class="col-span-6 md:col-span-3 lg:col-span-2 grid grid-cols-3 justify-center justify-items-center w-full h-full bg-bg1 shadow-xl rounded-xl overflow-hidden hover:scale-105 hover:shadow-2xl hover:text-hover transition-all">
-      <div class="md:col-span-3 w-full grid grid-cols-2 justify-items-center">
+    <RouterLink to="/move" class="col-span-6 md:col-span-3 lg:col-span-2 flex flex-wrap justify-center justify-items-center w-full h-full bg-bg1 shadow-xl rounded-xl overflow-hidden md:hover:scale-105 hover:shadow-2xl hover:text-hover transition-all">
+      <div class="md:w-full h-2/3 md:p-12 md:pt-14 grid grid-cols-2 items-center justify-items-center">
         <img
           v-for="img in moveArray"
           :src="img.src"
           :alt="img.name"
-          class="last:col-span-2"
+          class="last:col-span-2 w-2/3 last:w-1/3"
         >
       </div>
+      <span class="flex justify-center items-center md:w-full h-full md:h-1/3 text-xl">
+        Move list &nbsp;
+        <FontAwesomeIcon :icon="faShare"/>
+      </span>
     </RouterLink>
   </div>
 </div>
